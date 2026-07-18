@@ -1,0 +1,5 @@
+# Repositório de código separado (repositório git próprio) — ver README
+vuln-mgmt-cielo/vuln-mgmt-project/
+
+# Configuração local do Claude Code (não compartilhada)
+.claude/settings.local.json

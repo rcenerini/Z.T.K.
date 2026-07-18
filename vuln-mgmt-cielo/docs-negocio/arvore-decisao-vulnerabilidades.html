@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Árvore de Decisão — Gestão de Vulnerabilidades (Cielo)</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.1/mermaid.min.js"></script>
+<style>
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    background: #fafafa;
+    margin: 0;
+    padding: 24px;
+    color: #1a1a1a;
+  }
+  h1 {
+    font-size: 20px;
+    color: #1F3864;
+    margin-bottom: 4px;
+  }
+  p.subtitle {
+    color: #595959;
+    margin-top: 0;
+    margin-bottom: 24px;
+    font-size: 14px;
+  }
+  .diagram-wrap {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    overflow-x: auto;
+  }
+  .legend {
+    margin-top: 20px;
+    font-size: 13px;
+    color: #333;
+  }
+  .legend span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+  <h1>Árvore de Decisão Automatizável — Priorização de Vulnerabilidades</h1>
+  <p class="subtitle">Modelo SSVC adaptado ao ambiente Cielo · Stack: Veracode · GitHub Enterprise · Orca Security · Tenable</p>
+
+  <div class="diagram-wrap">
+    <pre class="mermaid">
+flowchart TD
+    A["Novo achado de vulnerabilidade<br/>(Veracode SAST/SCA · GitHub · Orca · Tenable)"] --> B["Agente de Deduplicação/Correlação<br/>(chave: CVE + Ativo + Ambiente)"]
+    B --> C{"Ativo é publicamente<br/>exposto?<br/><i>fonte: Orca (cloud) + Tenable (ASM on-prem)</i>"}
+
+    C -- "Não" --> T1["TRACK<br/>Monitoramento passivo · sem SLA de correção imediata<br/>100% automatizado, zero toque humano"]
+
+    C -- "Sim" --> D{"CVE está no catálogo<br/>KEV da CISA?<br/><i>fonte: feed KEV/Vulnrichment (novo)</i>"}
+
+    D -- "Não" --> E{"Exploit é automatizável<br/>de ponta a ponta?<br/><i>fonte: EPSS + Vulnrichment (novo)</i>"}
+
+    E -- "Não" --> F{"Impacto técnico é total<br/>(controle completo do ativo)?"}
+    F -- "Não" --> T2["TRACK*<br/>Monitorar + reavaliar se contexto mudar<br/>Automatizado, revisão humana só por exceção"]
+    F -- "Sim" --> G1["ATTEND<br/>Fila priorizada · janela 14-60 dias<br/>Triagem humana leve (validação + dono)"]
+
+    E -- "Sim" --> G1
+
+    D -- "Sim" --> H{"Impacto técnico total<br/>E automatizável?"}
+    H -- "Não" --> G1
+
+    H -- "Sim" --> I{"Ativo crítico de negócio /<br/>escopo PCI?<br/><i>fonte: CMDB + tags de contexto de negócio</i>"}
+
+    I -- "Sim" --> ACT1["ACT — Janela de 3 dias<br/>• Mitigação automática imediata (runbook pré-aprovado)<br/>• Triagem forense obrigatória (IR/SOC)<br/>• Escalação executiva automática<br/>• Patch tratado como resposta a incidente"]
+
+    I -- "Não" --> ACT2["ACT — Janela de 14 dias<br/>• Mitigação recomendada (runbook)<br/>• Priorização máxima na fila de engenharia<br/>• Sem escalação executiva automática"]
+
+    style T1 fill:#d4edda,stroke:#28a745
+    style T2 fill:#d4edda,stroke:#28a745
+    style G1 fill:#fff3cd,stroke:#ffc107
+    style ACT1 fill:#f8d7da,stroke:#dc3545
+    style ACT2 fill:#f8d7da,stroke:#dc3545
+    </pre>
+  </div>
+
+  <div class="legend">
+    <span style="background:#d4edda;border:1px solid #28a745;"></span> Automação total (sem toque humano) &nbsp;&nbsp;
+    <span style="background:#fff3cd;border:1px solid #ffc107;"></span> Triagem humana leve &nbsp;&nbsp;
+    <span style="background:#f8d7da;border:1px solid #dc3545;"></span> Trilha de exceção (Act)
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: "base", flowchart: { curve: "basis" } });
+  </script>
+</body>
+</html>
