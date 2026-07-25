@@ -1,0 +1,59 @@
+name: Nova Feature / Agente
+
+description: Proponha uma nova camada, agente, ou capacidade
+
+title: "[FEATURE] "
+
+labels: ["feature", "needs-triage"]
+
+body:
+  - type: dropdown
+    id: camada
+    attributes:
+      label: Camada de Destino
+      options:
+        - Layer 1 — Entrada & Triagem
+        - Layer 2 — Especialistas de Seguranca
+        - Layer 3 — Validacao
+        - Layer 4 — Consenso/Debate
+        - Layer 5 — Remediacao
+        - Layer 6 — Governanca
+        - Layer 7 — Model Ensemble
+        - Layer 8 — Escala
+        - Shared / Cross-layer
+        - Infraestrutura
+        - Interface de Excecoes
+    validations:
+      required: true
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descricao
+      description: O que esta feature faz? Qual problema resolve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: especificacao
+    attributes:
+      label: Especificacao Tecnica
+      description: Inputs, outputs, dependencias, fail-closed behavior
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: ssdld
+    attributes:
+      label: Checklist S-SDLC
+      options:
+        - label: Threat model STRIDE concluido
+          required: false
+        - label: ADR proposto
+          required: false
+        - label: Matriz de testes definida
+          required: false
+        - label: Contrato de API definido (Pydantic schemas)
+          required: false
+        - label: Revisao de seguranca prevista
+          required: false

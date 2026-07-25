@@ -1,0 +1,144 @@
+{
+  "project": {
+    "name": "Z.T.K. — Zero Trust Kill",
+    "description": "Sistema multiagente de analise e autocorrecao de seguranca de codigo para ambiente de adquirencia/PCI DSS",
+    "repository": "https://github.com/rcenerini/Z.T.K..git",
+    "language": "python",
+    "framework": "aws-serverless"
+  },
+  "agents": {
+    "default": {
+      "model": "kimi-k2.6",
+      "temperature": 0.2,
+      "context_budget": 128000
+    },
+    "profiles": [
+      {
+        "name": "arquiteto-seguranca",
+        "description": "Agente arquiteto de seguranca enterprise — SABSA, TOGAF, Zero Trust, threat modeling",
+        "model": "deepseek",
+        "temperature": 0.1,
+        "skills": ["security-architecture", "threat-modeling", "security-by-design"],
+        "rules": [
+          "Nunca propoe solucao sem ADR",
+          "Sempre valida contra PCI DSS 4.0 e LGPD",
+          "Prefere deterministico sobre probabilistico",
+          "Toda decisao de arquitetura exige threat model STRIDE"
+        ]
+      },
+      {
+        "name": "engenheiro-plataforma",
+        "description": "Agente de engenharia de plataforma — Terraform, AWS, EKS/ECS, CI/CD",
+        "model": "kimi-k2.6",
+        "temperature": 0.15,
+        "skills": ["platform-engineering-squad", "devsecops-lead", "iac-security"],
+        "rules": [
+          "Sempre usa Terraform para infraestrutura",
+          "Nunca hardcoded credentials",
+          "Sempre aplica least privilege IAM",
+          "Sempre inclui testes de infra (opa test, checkov)",
+          "ECS Fargate preferido sobre EKS para workloads sem orquestracao complexa"
+        ]
+      },
+      {
+        "name": "engenheiro-backend",
+        "description": "Agente de engenharia backend — Python, Lambda, SQS, DynamoDB, S3",
+        "model": "kimi-k2.6",
+        "temperature": 0.2,
+        "skills": ["appsec", "platform-engineering-squad"],
+        "rules": [
+          "Python 3.12+ com type hints obrigatorios",
+          "Pydantic v2 para todos os schemas",
+          "pytest com cobertura minima 85%",
+          "Nunca chama API externa diretamente do motor de decisao",
+          "Toda funcao que grava estado externo eh idempotente",
+          "Fail-closed: erro = comportamento conservador"
+        ]
+      },
+      {
+        "name": "engenheiro-ia",
+        "description": "Agente de IA/LLM — Bedrock, vLLM, roteamento, ensemble",
+        "model": "kimi-k2.6",
+        "temperature": 0.2,
+        "skills": ["llm-security", "agentic-security"],
+        "rules": [
+          "Dados PCI/CHD/PAN nunca tocam Bedrock",
+          "vLLM local obrigatorio para escopo PCI",
+          "Roteamento de modelos por escopo de dados + tier de tarefa",
+          "Circuit breaker de custo: nunca pausa HITL/kill switch",
+          "Prompt injection guard em toda entrada de codigo",
+          "Output de LLM tratado como untrusted input"
+        ]
+      },
+      {
+        "name": "revisor-seguranca",
+        "description": "Agente revisor de codigo e arquitetura — OWASP, SAST, DAST",
+        "model": "deepseek",
+        "temperature": 0.1,
+        "skills": ["security-reviewer", "appsec"],
+        "rules": [
+          "Review de seguranca em toda PR",
+          "Checklist OWASP Top 10 automatico",
+          "Deteccao de anti-patterns de seguranca",
+          "Nunca aprova PR sem testes de fail-closed",
+          "Valida se nenhum segredo foi commitado"
+        ]
+      },
+      {
+        "name": "qa-gatekeeper",
+        "description": "Agente de quality gates — testes, lint, typecheck, cobertura",
+        "model": "deepseek",
+        "temperature": 0.1,
+        "skills": ["qa-engineer"],
+        "rules": [
+          "CI bloqueia merge se cobertura < 85%",
+          "mypy strict obrigatorio",
+          "bandit + safety + trufflehog em toda build",
+          "Testes de contrato para conectores",
+          "Matriz de testes SSVC obrigatoria para decision_engine"
+        ]
+      }
+    ]
+  },
+  "workflows": {
+    "feature_development": {
+      "trigger": "user_story_approved",
+      "steps": [
+        "arquiteto-seguranca: threat_model + ADR",
+        "engenheiro-plataforma: terraform + infra",
+        "engenheiro-backend: implementacao + testes",
+        "engenheiro-ia: validacao de LLM security (se aplicavel)",
+        "revisor-seguranca: security review",
+        "qa-gatekeeper: quality gates",
+        "human_decision: aprovacao final do usuario"
+      ]
+    },
+    "batch_agent_generation": {
+      "trigger": "new_camada_2_agent",
+      "steps": [
+        "engenheiro-backend: template de referencia",
+        "engenheiro-backend: geracao em batch (max 10 paralelos)",
+        "qa-gatekeeper: testes de contrato",
+        "revisor-seguranca: revisao amostral",
+        "human_decision: aprova lote"
+      ]
+    }
+  },
+  "policies": {
+    "security_baseline": {
+      "secrets": "prohibited",
+      "sql_injection": "prohibited",
+      "xss": "prohibited",
+      "hardcoded_credentials": "prohibited",
+      "md5_sha1_des": "prohibited",
+      "least_privilege": "required",
+      "input_validation": "required",
+      "audit_logging": "required"
+    },
+    "compliance": {
+      "pci_dss": "4.0",
+      "lgpd": "required",
+      "bacen": "Res. 4658, 4893, 85, 3909"
+    }
+  }
+}

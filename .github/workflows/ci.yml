@@ -1,0 +1,159 @@
+name: CI/CD — Quality Gates & Security Scan
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**', 'hotfix/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  PYTHON_VERSION: "3.12"
+  AWS_REGION: us-east-1
+
+jobs:
+  lint-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Install dependencies
+        run: uv sync --all-groups
+      - name: Ruff lint
+        run: uv run ruff check src/
+      - name: MyPy strict
+        run: uv run mypy --strict src/
+
+  security-scan:
+    name: Security Scan (SAST + Secrets + SCA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: TruffleHog — Secret Detection
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --only-verified
+      - name: Bandit — Python SAST
+        run: |
+          pip install bandit[toml]
+          bandit -r src/ -f json -o bandit-report.json || true
+          bandit -r src/ -ll
+      - name: Semgrep — Static Analysis
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/owasp-top-ten
+            p/cwe-top-25
+            p/python
+      - name: Checkov — IaC Scan
+        if: hashFiles('infra/terraform/**/*.tf') != ''
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: infra/terraform/
+          framework: terraform
+          output_format: cli
+          soft_fail: false
+
+  tests:
+    name: Tests & Coverage
+    runs-on: ubuntu-latest
+    needs: [lint-typecheck]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Install dependencies
+        run: uv sync --all-groups
+      - name: Run tests with coverage
+        run: uv run pytest --cov=src --cov-report=xml --cov-report=term-missing
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          fail_ci_if_error: true
+
+  opa-policy-tests:
+    name: OPA/Rego Policy Tests
+    runs-on: ubuntu-latest
+    if: hashFiles('infra/policies/**/*.rego') != ''
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup OPA
+        uses: open-policy-agent/setup-opa@v2
+      - name: Run OPA tests
+        run: |
+          for f in $(find infra/policies -name "*_test.rego"); do
+            opa test $(dirname $f)
+          done
+
+  contract-tests:
+    name: Contract Tests
+    runs-on: ubuntu-latest
+    if: hashFiles('tests/contract/**/*.py') != ''
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Install dependencies
+        run: uv sync --all-groups
+      - name: Run contract tests
+        run: uv run pytest tests/contract/ -v
+
+  build-container:
+    name: Build & Scan Container
+    runs-on: ubuntu-latest
+    if: hashFiles('Dockerfile') != ''
+    needs: [security-scan, tests]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t ztk:${{ github.sha }} .
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ztk:${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-results.sarif
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: [lint-typecheck, security-scan, tests, opa-policy-tests, contract-tests]
+    if: always()
+    steps:
+      - name: Check all jobs passed
+        run: |
+          echo "Lint: ${{ needs.lint-typecheck.result }}"
+          echo "Security: ${{ needs.security-scan.result }}"
+          echo "Tests: ${{ needs.tests.result }}"
+          echo "OPA: ${{ needs.opa-policy-tests.result }}"
+          echo "Contract: ${{ needs.contract-tests.result }}"
+          if [[ "${{ needs.lint-typecheck.result }}" != "success" || \
+                "${{ needs.security-scan.result }}" != "success" || \
+                "${{ needs.tests.result }}" != "success" || \
+                ( "${{ needs.opa-policy-tests.result }}" != "success" && "${{ needs.opa-policy-tests.result }}" != "skipped" ) || \
+                ( "${{ needs.contract-tests.result }}" != "success" && "${{ needs.contract-tests.result }}" != "skipped" ) ]]; then
+            echo "Quality gate FAILED"
+            exit 1
+          fi
+          echo "Quality gate PASSED"

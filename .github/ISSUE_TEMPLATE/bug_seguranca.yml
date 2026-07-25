@@ -1,0 +1,79 @@
+name: Bug de Seguranca
+
+description: Reporte uma vulnerabilidade, falha de fail-closed, ou comportamento inseguro
+
+title: "[BUG-SEC] "
+
+labels: ["bug", "security", "priority-high"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ **ATENCAO:** Se esta eh uma vulnerabilidade ativa em producao, siga o processo de incidente em vez deste template.
+
+  - type: dropdown
+    id: camada
+    attributes:
+      label: Camada Afetada
+      options:
+        - Layer 1 — Entrada & Triagem
+        - Layer 2 — Especialistas de Seguranca
+        - Layer 3 — Validacao
+        - Layer 4 — Consenso/Debate
+        - Layer 5 — Remediacao
+        - Layer 6 — Governanca
+        - Layer 7 — Model Ensemble
+        - Layer 8 — Escala
+        - Shared / Cross-layer
+        - Infraestrutura
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severidade
+      options:
+        - P0 — Crítico (contorno de seguranca, dados expostos)
+        - P1 — Alto (falha de fail-closed, bypass de policy)
+        - P2 — Medio (alerta falso, degradacao de performance)
+        - P3 — Baixo (documentacao, hardening)
+    validations:
+      required: true
+
+  - type: textarea
+    id: descricao
+    attributes:
+      label: Descricao
+      description: O que aconteceu? Qual o comportamento esperado vs real?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducao
+    attributes:
+      label: Passos para Reproduzir
+      description: Passos minimos para reproduzir
+    validations:
+      required: true
+
+  - type: textarea
+    id: impacto
+    attributes:
+      label: Impacto de Seguranca
+      description: Qual o risco concreto? Dados expostos? Bypass de controle?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist do Reportador
+      options:
+        - label: Nao inclui dados sensiveis (CHD, PAN, PII) neste issue
+          required: true
+        - label: Verifiquei se ja existe issue similar
+          required: true
+        - label: Testei em shadow mode (se aplicavel)
+          required: false

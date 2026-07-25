@@ -1,0 +1,58 @@
+name: Decisao Arquitetural
+
+description: Solicite decisao humana para escolha arquitetural (D001-D006 ou outras)
+
+title: "[DECISAO] "
+
+labels: ["decision", "architecture", "human-required"]
+
+body:
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo de Decisao
+      options:
+        - Tecnologia / Stack
+        - Infraestrutura / Cloud
+        - Seguranca / Compliance
+        - Custo / ROI
+        - Interface / UX
+        - Outro
+    validations:
+      required: true
+
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: Qual a decisao a ser tomada? Qual o impacto?
+    validations:
+      required: true
+
+  - type: textarea
+    id: opcoes
+    attributes:
+      label: Opcoes Consideradas
+      description: Liste as opcoes com pros/contras
+    validations:
+      required: true
+
+  - type: textarea
+    id: recomendacao
+    attributes:
+      label: Recomendacao do Agente
+      description: Qual opcao o agente recomenda e por que?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: urgencia
+    attributes:
+      label: Urgencia
+      options:
+        - Bloqueante — impede progresso
+        - Alta — impacta cronograma
+        - Media — pode aguardar proximo sync
+        - Baixa — exploratorio
+    validations:
+      required: true

@@ -1,0 +1,59 @@
+# Z.T.K. — .cursorrules
+# Regras obrigatorias para agentes de IA neste repositorio
+
+## Comportamento Geral
+- Sempre verifique CLAUDE.md antes de implementar qualquer funcionalidade
+- Nunca ignore as 12 regras inviolaveis do CLAUDE.md
+- Sempre pergunte ao usuario (humano) quando encontrar uma [Decisao Pendente] (D001-D006)
+- Nunca tome decisao arquitetural sozinho — gere proposta e solicite aprovacao
+
+## Desenvolvimento de Codigo
+- Python 3.12+ obrigatorio
+- Type hints em TODAS as funcoes e metodos
+- Pydantic v2 para schemas — nunca dicts cruzando camadas
+- pytest com fixtures parametrizadas
+- Nunca commit sem testes (regra absoluta)
+- Nunca deixe TODO nao resolvido no codigo
+
+## Seguranca
+- NUNCA hardcoded secrets (API keys, tokens, passwords)
+- NUNCA concatene strings em queries SQL/SOAQL/Lucene
+- NUNCA use MD5, SHA-1, DES, 3DES, RC4
+- NUNCA exponha stack traces em respostas de erro
+- SEMPRE valide inputs com whitelist
+- SEMPRE aplique least privilege IAM
+- SEMPRE sanitize outputs (XSS prevention)
+
+## AWS & Infra
+- Preferir Lambda para agentes leves (< 15 min execucao)
+- Preferir ECS Fargate Spot para agentes medios (batch, SAST)
+- Preferir EC2 Spot GPU para vLLM (custo minimo)
+- Bedrock apenas para escopo nao-PCI
+- Secrets Manager em runtime — nunca .env em producao
+
+## LLM & IA
+- Dados PCI/CHD/PAN NUNCA em prompt de Bedrock
+- Sempre usar prompt injection guard antes de passar codigo para LLM
+- Sempre tratar output de LLM como untrusted input
+- Nunca permitir que LLM faca deploy ou merge automatico
+- Sempre logar chamada LLM com finding_id, agent_id, tokens
+
+## Qualidade
+- mypy --strict: zero erros
+- bandit: zero issues high/critical
+- pytest: cobertura minima 85% (100% para decision_engine)
+- checkov/tfsec: zero critical em IaC
+- trufflehog: zero secrets em commit
+
+## Processo de Decisao (Momento de Intervencao Humana)
+O agente DEVE parar e solicitar decisao humana em:
+1. Escolha entre EKS vs ECS Fargate (D001)
+2. Escolha do modelo local PCI (D002)
+3. Escolha de hosting Grafana (D003)
+4. Escolha de framework frontend (D004)
+5. Escolha de provedor LLM para debate (D005)
+6. Escolha de conectividade on-premise (D006)
+7. Mudanca em ADR aprovado
+8. Alteracao em regra de negocio OPA/Rego
+9. Deploy para producao
+10. Aprovacao de excecao a piso de severidade

@@ -1,5 +1,54 @@
-# Repositório de código separado (repositório git próprio) — ver README
-vuln-mgmt-cielo/vuln-mgmt-project/
+.venv/
+.env
+.env.local
+*.pyc
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
 
-# Configuração local do Claude Code (não compartilhada)
-.claude/settings.local.json
+# Terraform
+infra/terraform/.terraform/
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+infra/terraform/*.tfvars
+infra/terraform/.terraform.lock.hcl
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Secrets (nunca versionar)
+*.pem
+*.key
+secrets/
+.aws-credentials
+
+# Localstack / Moto
+.localstack/
+
+# Claude / OpenCode
+.claude-octopus/
+.superpowers/
+.worktrees/
+
+# Node (interface de excecoes)
+node_modules/
+.next/
+out/
