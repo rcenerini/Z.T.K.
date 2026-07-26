@@ -1,11 +1,11 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "opencode-go/kimi-k2.6",
+  "model": "opencode-go/deepseek-v4-pro",
   "default_agent": "ztk-build",
   "logLevel": "INFO",
   "instructions": [
     "Projeto Z.T.K. — Zero Trust Kill. Sistema multiagente de analise e autocorrecao de seguranca de codigo para ambiente de adquirencia/PCI DSS.",
-    "DeepSeek agents = estrategico / planejamento / revisao / governanca. Kimi agents = implementacao / codigo pesado / infraestrutura.",
+    "Todos os 12 agentes ZTK rodam em DeepSeek (v4-pro ou v4-flash). Nenhum agente usa Kimi — otimizacao de custo com qualidade mantida.",
     "Regras de seguranca obrigatorias: NUNCA hardcode credenciais. Sempre validar inputs com whitelist. Sempre aplicar least privilege. TLS 1.2+ e AES-256 para dados sensiveis.",
     "Compliance: PCI DSS 4.0, LGPD, Bacen Res. 4658/4893/85/3909. Dados PAN/CHD nunca tocam LLMs publicos.",
     "Toda decisao de arquitetura exige threat model STRIDE e ADR em docs/architecture/. Toda funcao que grava estado externo eh idempotente. Fail-closed: erro = comportamento conservador."
@@ -38,15 +38,15 @@
   },
   "agent": {
     "ztk-build": {
-      "description": "Builder principal do ZTK — implementacao, codigo pesado, integracao. Usa Kimi para capacidade de contexto longo e geracao de codigo.",
+      "description": "Builder principal do ZTK — implementacao, codigo pesado, integracao. Usa DeepSeek v4-pro para raciocinio deterministico e codigo seguro.",
       "mode": "primary",
-      "model": "opencode-go/kimi-k2.6",
+      "model": "opencode-go/deepseek-v4-pro",
       "prompt": "{file:.opencode/agents/ztk-build.md}"
     },
     "ztk-orchestrator": {
-      "description": "Orquestrador nativo do ZTK — meta-agent que analisa prompts, classifica intencao, mapeia dominio e instancia os agentes ZTK em paralelo ou sequencia conforme dependencias. NUNCA gera conteudo tecnico por conta propria — apenas coordena.",
+      "description": "Orquestrador nativo do ZTK — meta-agent que analisa prompts, classifica intencao, mapeia dominio e instancia os agentes ZTK em paralelo ou sequencia conforme dependencias. NUNCA gera conteudo tecnico por conta propria — apenas coordena. Usa DeepSeek v4-pro para orquestracao deterministica.",
       "mode": "subagent",
-      "model": "opencode-go/kimi-k2.6",
+      "model": "opencode-go/deepseek-v4-pro",
       "steps": 10,
       "permission": {
         "edit": "deny",
@@ -90,9 +90,9 @@
       "prompt": "{file:.opencode/agents/ztk-governance.md}"
     },
     "ztk-backend": {
-      "description": "Especialista backend do ZTK — Python, Lambda, SQS, DynamoDB, Pydantic, pytest. Usa Kimi para codigo pesado.",
+      "description": "Especialista backend do ZTK — Python, Lambda, SQS, DynamoDB, Pydantic, pytest. Usa DeepSeek v4-pro para codigo seguro e tipado.",
       "mode": "subagent",
-      "model": "opencode-go/kimi-k2.6",
+      "model": "opencode-go/deepseek-v4-pro",
       "steps": 5,
       "permission": {
         "edit": "ask",
@@ -101,9 +101,9 @@
       "prompt": "{file:.opencode/agents/ztk-backend.md}"
     },
     "ztk-infra": {
-      "description": "Especialista infraestrutura do ZTK — Terraform, AWS, ECS Fargate, IAM, OPA/Rego, CI/CD. Usa Kimi para IaC e automacao.",
+      "description": "Especialista infraestrutura do ZTK — Terraform, AWS, ECS Fargate, IAM, OPA/Rego, CI/CD. Usa DeepSeek v4-pro para IaC deterministico.",
       "mode": "subagent",
-      "model": "opencode-go/kimi-k2.6",
+      "model": "opencode-go/deepseek-v4-pro",
       "steps": 5,
       "permission": {
         "edit": "ask",
@@ -112,9 +112,9 @@
       "prompt": "{file:.opencode/agents/ztk-infra.md}"
     },
     "ztk-qa": {
-      "description": "Quality Assurance e Quality Gates do ZTK — testes de seguranca, regressao, contrato, cobertura, SAST. Usa Kimi para geracao de testes e automacao.",
+      "description": "Quality Assurance e Quality Gates do ZTK — testes de seguranca, regressao, contrato, cobertura, SAST. Usa DeepSeek v4-flash para execucao rapida e barata.",
       "mode": "subagent",
-      "model": "opencode-go/kimi-k2.6",
+      "model": "opencode-go/deepseek-v4-flash",
       "steps": 6,
       "permission": {
         "edit": "ask",

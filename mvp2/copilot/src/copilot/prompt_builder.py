@@ -149,7 +149,15 @@ class PromptBuilder:
 
         signals: list[AmbiguitySignal] = []
         for raw_signal in data.get("ambiguity_signals", []):
+            if not isinstance(raw_signal, dict):
+                continue
             try:
+                # Normalise: JSON may use "type" instead of "signal_type"
+                if "type" in raw_signal and "signal_type" not in raw_signal:
+                    raw_signal["signal_type"] = raw_signal.pop("type")
+                # Provide default confidence if missing
+                if "confidence" not in raw_signal:
+                    raw_signal["confidence"] = "LOW"
                 signals.append(AmbiguitySignal(**raw_signal))
             except Exception:
                 continue  # Skip malformed signal, don't block analysis

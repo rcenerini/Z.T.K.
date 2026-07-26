@@ -5,7 +5,7 @@ All models use strict validation. No defaults for security-critical fields.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Annotated, Optional
 from uuid import UUID, uuid4
@@ -91,7 +91,7 @@ class CopilotAnalysis(BaseModel):
     rag_relevant: Annotated[int, Field(ge=0, description="Number of RAG docs deemed relevant by LLM")]
     prompt_version: Annotated[str, Field(min_length=1)]
     processing_time_ms: Annotated[int, Field(ge=0)]
-    timestamp: Annotated[datetime, Field(default_factory=datetime.utcnow)]
+    timestamp: Annotated[datetime, Field(default_factory=lambda: datetime.now(timezone.utc))]
     escalation_required: Annotated[bool, Field(default=False, description="True if Sonnet escalation needed")]
     raw_response: Annotated[Optional[str], Field(default=None, description="Full LLM response (for audit)")]
 
@@ -117,7 +117,7 @@ class CopilotRequest(BaseModel):
     finding: FindingContext
     force_model: Annotated[Optional[str], Field(default=None, description="Override model selection")]
     shadow_mode: Annotated[bool, Field(default=True, description="Read-only mode (no side effects)")]
-    timestamp: Annotated[datetime, Field(default_factory=datetime.utcnow)]
+    timestamp: Annotated[datetime, Field(default_factory=lambda: datetime.now(timezone.utc))]
 
 
 class CopilotResponse(BaseModel):

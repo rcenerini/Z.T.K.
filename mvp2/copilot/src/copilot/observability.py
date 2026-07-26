@@ -54,10 +54,12 @@ class _StructuredAdapter(logging.LoggerAdapter):
     Compatible with Python 3.14+ where Logger._log() rejects unexpected kwargs.
     """
     def process(self, msg: str, kwargs: dict[str, Any]) -> tuple[str, dict[str, Any]]:
-        # Move structured context from kwargs into extra dict
+        # Move structured context from kwargs into extra dict.
+        # Use a copy of keys to avoid mutating dict during iteration.
         extra: dict[str, Any] = dict(self.extra) if self.extra else {}
+        reserved = {"exc_info", "stack_info", "stacklevel", "extra"}
         for key in list(kwargs.keys()):
-            if key not in ("exc_info", "stack_info", "stacklevel"):
+            if key not in reserved:
                 extra[key] = kwargs.pop(key)
         kwargs["extra"] = extra
         return msg, kwargs
@@ -120,12 +122,12 @@ class CopilotMetrics:
         self.rag_hits_total += rag_hits
         self.ambiguity_signals_total += ambiguity_count
         self.total_processing_time_ms += processing_time_ms
+        # Count only once: model_used determines the bucket.
+        # 'escalated' flag is informational (for metrics snapshot), not a counter.
         if "sonnet" in model_used.lower():
             self.sonnet_escalations += 1
         else:
             self.haiku_analyses += 1
-        if escalated:
-            self.sonnet_escalations += 1
 
     def record_error(self) -> None:
         self.errors += 1

@@ -11,7 +11,7 @@ from __future__ import annotations
 import json
 import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Generator
 from unittest.mock import MagicMock, patch
@@ -273,7 +273,7 @@ class TestCopilotResponse:
             shadow_mode=True,
             escalation_triggered=False,
             processing_time_ms=1000,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
         )
         assert response.analysis is not None
         assert response.error is None
@@ -287,7 +287,7 @@ class TestCopilotResponse:
             shadow_mode=True,
             escalation_triggered=False,
             processing_time_ms=500,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
         )
         assert response.analysis is None
         assert response.error == "Bedrock unavailable"
@@ -796,7 +796,7 @@ class TestFullPipeline:
         assert len(analysis.summary) >= 20
         assert len(analysis.recommendation) >= 10
         assert analysis.rag_hits > 0  # CWE-89 should match RAG docs
-        assert analysis.processing_time_ms > 0
+        assert analysis.processing_time_ms >= 0  # May be 0 with mocked Bedrock (instant response)
         assert analysis.escalation_required is False
 
     def test_full_pipeline_json_serializable(

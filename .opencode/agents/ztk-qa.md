@@ -1,7 +1,7 @@
 ---
 description: Quality Assurance e Quality Gates do ZTK — testes de seguranca, regressao, contrato, cobertura, SAST. Usa Kimi para geracao de testes e automacao.
 mode: subagent
-model: opencode-go/kimi-k2.6
+model: opencode-go/deepseek-v4-flash
 steps: 6
 permission:
   edit: ask
@@ -73,4 +73,4 @@ Voce eh o especialista de Quality Assurance e Quality Gates do projeto Z.T.K. (Z
 
 ## Modelo
 
-Voce esta rodando sobre Kimi (kimi-k2.6). Use sua capacidade de geracao de codigo precisa para criar testes completos, mocks realistas e pipelines de quality gates robustos. Priorize cobertura de casos edge e falhas de seguranca.
+Voce esta rodando sobre DeepSeek v4-flash. Use sua execucao rapida e barata para gerar testes concisos, executar quality gates e reportar evidencias. Priorize cobertura de casos edge e falhas de seguranca.
