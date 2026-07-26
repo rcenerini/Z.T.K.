@@ -1,0 +1,37 @@
+{
+  "version": "1.0.0",
+  "description": "SSVC decision tree, severity categories, and CWE knowledge base for prompt context",
+  "ssvc_tree": {
+    "exploitation": {
+      "none": "No exploit available — TRACK tier",
+      "poc": "Proof-of-concept exists — ATTEND tier",
+      "active": "Active exploitation observed — ACT tier"
+    },
+    "exposure": {
+      "none": "Not internet-facing",
+      "controlled": "Internal network only",
+      "open": "Internet-facing"
+    },
+    "mission_impact": {
+      "none": "Non-critical system",
+      "partial": "Degraded mission capability",
+      "mission_failure": "Complete mission loss"
+    }
+  },
+  "severity_piso": {
+    "pci": "P1 — never lower than P1 for CHD/PAN processing",
+    "lgpd": "P1 — never lower than P1 for sensitive personal data",
+    "antifraude": "P0 — never lower than P0 for auth/transaction/balance logic"
+  },
+  "cwe_categories": {
+    "injection": ["CWE-89", "CWE-78", "CWE-94", "CWE-77", "CWE-74"],
+    "auth": ["CWE-287", "CWE-306", "CWE-307", "CWE-384", "CWE-862"],
+    "crypto": ["CWE-327", "CWE-328", "CWE-329", "CWE-330", "CWE-347"],
+    "exposure": ["CWE-200", "CWE-201", "CWE-209", "CWE-532", "CWE-538"],
+    "xss": ["CWE-79", "CWE-80", "CWE-83"],
+    "memory": ["CWE-416", "CWE-787", "CWE-125", "CWE-119", "CWE-415"],
+    "deserialization": ["CWE-502", "CWE-470"],
+    "config": ["CWE-16", "CWE-276", "CWE-732", "CWE-798"],
+    "race": ["CWE-362", "CWE-367", "CWE-366"]
+  }
+}

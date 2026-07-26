@@ -1,0 +1,96 @@
+{
+  "version": "1.0.0",
+  "description": "Local RAG index stub — future replacement: Aurora PostgreSQL + pgvector",
+  "documents": [
+    {
+      "id": "rag-001",
+      "cwe_ids": ["CWE-89"],
+      "title": "SQL Injection — Prevention Cheat Sheet",
+      "summary": "Use parameterized queries 100% of the time. Never concatenate user input into SQL strings. Prefer ORM with safe defaults.",
+      "severity_tendency": "P0-P1",
+      "remediation_pattern": "Replace string concatenation with parameterized query or ORM method.",
+      "references": ["OWASP SQL Injection Prevention Cheat Sheet"]
+    },
+    {
+      "id": "rag-002",
+      "cwe_ids": ["CWE-79"],
+      "title": "XSS Prevention — Output Encoding",
+      "summary": "Contextual output encoding prevents XSS. Use framework auto-escaping where available. Sanitize with DOMPurify for client-side.",
+      "severity_tendency": "P1-P2",
+      "remediation_pattern": "Apply context-aware output encoding (HTML, JS, URL, CSS contexts).",
+      "references": ["OWASP XSS Prevention Cheat Sheet"]
+    },
+    {
+      "id": "rag-003",
+      "cwe_ids": ["CWE-502"],
+      "title": "Insecure Deserialization",
+      "summary": "Deserializing untrusted data leads to RCE. Use safe serializers (JSON) or type-whitelisting.",
+      "severity_tendency": "P0-P1",
+      "remediation_pattern": "Replace native deserialization with JSON schema validation or type-whitelisted deserialization.",
+      "references": ["OWASP Deserialization Cheat Sheet"]
+    },
+    {
+      "id": "rag-004",
+      "cwe_ids": ["CWE-78"],
+      "title": "OS Command Injection",
+      "summary": "Never pass user input to shell/command execution. Use library APIs instead of subprocess. Escape if unavoidable.",
+      "severity_tendency": "P0",
+      "remediation_pattern": "Replace os.system/subprocess with library-native equivalents. If shell is required, use shlex.quote() and whitelist allowed commands.",
+      "references": ["OWASP Command Injection"]
+    },
+    {
+      "id": "rag-005",
+      "cwe_ids": ["CWE-327"],
+      "title": "Weak Cryptography — Use Strong Algorithms",
+      "summary": "MD5, SHA-1, DES, 3DES, RC4 are broken. Use AES-256-GCM, SHA-256+, ECDSA/Ed25519.",
+      "severity_tendency": "P2-P3",
+      "remediation_pattern": "Replace broken algorithm with AES-256-GCM (encryption) or SHA-256+ (hashing).",
+      "references": ["NIST SP 800-131A", "OWASP Cryptographic Storage Cheat Sheet"]
+    },
+    {
+      "id": "rag-006",
+      "cwe_ids": ["CWE-798"],
+      "title": "Hardcoded Credentials",
+      "summary": "Credentials in source code are leaked on commit. Use AWS Secrets Manager, env vars, or vault.",
+      "severity_tendency": "P0",
+      "remediation_pattern": "Remove hardcoded credential and replace with Secrets Manager lookup or environment variable.",
+      "references": ["OWASP Authentication Cheat Sheet", "AWS Secrets Manager Best Practices"]
+    },
+    {
+      "id": "rag-007",
+      "cwe_ids": ["CWE-862", "CWE-306"],
+      "title": "Missing Authorization / Missing Authentication",
+      "summary": "Every endpoint that accesses sensitive data or performs privileged actions must verify authorization.",
+      "severity_tendency": "P0-P1",
+      "remediation_pattern": "Add authorization check at every entrypoint. Use middleware/decorators to enforce globally.",
+      "references": ["OWASP Authorization Cheat Sheet", "CWE-862"]
+    },
+    {
+      "id": "rag-008",
+      "cwe_ids": ["CWE-416"],
+      "title": "Use-After-Free — Memory Safety",
+      "summary": "Accessing freed memory can lead to code execution or information disclosure. Critical in C/C++.",
+      "severity_tendency": "P0-P1",
+      "remediation_pattern": "Set pointers to NULL after free. Use smart pointers in C++. Consider memory-safe languages.",
+      "references": ["CWE-416", "MITRE CWE"]
+    },
+    {
+      "id": "rag-009",
+      "cwe_ids": ["CWE-362", "CWE-367"],
+      "title": "Race Conditions / TOCTOU",
+      "summary": "Concurrent access to shared state can cause data corruption or security bypass. Critical in financial systems.",
+      "severity_tendency": "P0",
+      "remediation_pattern": "Use locks, atomic operations, or database transactions with SERIALIZABLE isolation.",
+      "references": ["CWE-362", "OWASP Race Condition"]
+    },
+    {
+      "id": "rag-010",
+      "cwe_ids": ["CWE-200", "CWE-532"],
+      "title": "Information Exposure / Sensitive Data in Logs",
+      "summary": "Logging PAN, PII, credentials, or session tokens violates PCI DSS and LGPD.",
+      "severity_tendency": "P1",
+      "remediation_pattern": "Apply log redaction/masking. Never log request bodies containing sensitive fields. PCI: never log PAN, CVV, track data.",
+      "references": ["PCI DSS 4.0 Req. 3.4", "LGPD Art. 46"]
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode-go/kimi-k2.6",
+  "default_agent": "ztk-build",
+  "logLevel": "INFO",
+  "instructions": [
+    "Projeto Z.T.K. — Zero Trust Kill. Sistema multiagente de analise e autocorrecao de seguranca de codigo para ambiente de adquirencia/PCI DSS.",
+    "DeepSeek agents = estrategico / planejamento / revisao / governanca. Kimi agents = implementacao / codigo pesado / infraestrutura.",
+    "Regras de seguranca obrigatorias: NUNCA hardcode credenciais. Sempre validar inputs com whitelist. Sempre aplicar least privilege. TLS 1.2+ e AES-256 para dados sensiveis.",
+    "Compliance: PCI DSS 4.0, LGPD, Bacen Res. 4658/4893/85/3909. Dados PAN/CHD nunca tocam LLMs publicos.",
+    "Toda decisao de arquitetura exige threat model STRIDE e ADR em docs/architecture/. Toda funcao que grava estado externo eh idempotente. Fail-closed: erro = comportamento conservador."
+  ],
+  "references": {
+    "docs": {
+      "path": "./docs",
+      "description": "Documentacao do projeto: SSDLC, ADRs, runbooks, architecture decision records"
+    },
+    "brainstorming": {
+      "path": "./Brainstorming",
+      "description": "Material de brainstorming, arquitetura visual e escopo de evolucao"
+    },
+    "infra": {
+      "path": "./infra",
+      "description": "Infraestrutura como codigo: Terraform, politicas Rego, Grafana dashboards"
+    },
+    "src": {
+      "path": "./src",
+      "description": "Codigo-fonte do sistema multiagente: layer1 a layer8"
+    },
+    "scripts": {
+      "path": "./scripts",
+      "description": "Scripts de deploy, quality gates, pre-commit hooks"
+    },
+    "steering": {
+      "path": "./.opencode/steering",
+      "description": "Artefatos de orientacao do OpenCode: development guide, layer roadmap, task tracking"
+    }
+  },
+  "agent": {
+    "ztk-build": {
+      "description": "Builder principal do ZTK — implementacao, codigo pesado, integracao. Usa Kimi para capacidade de contexto longo e geracao de codigo.",
+      "mode": "primary",
+      "model": "opencode-go/kimi-k2.6",
+      "prompt": "{file:.opencode/agents/ztk-build.md}"
+    },
+    "ztk-orchestrator": {
+      "description": "Orquestrador nativo do ZTK — meta-agent que analisa prompts, classifica intencao, mapeia dominio e instancia os agentes ZTK em paralelo ou sequencia conforme dependencias. NUNCA gera conteudo tecnico por conta propria — apenas coordena.",
+      "mode": "subagent",
+      "model": "opencode-go/kimi-k2.6",
+      "steps": 10,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-orchestrator.md}"
+    },
+    "ztk-strategist": {
+      "description": "Arquiteto estrategico do ZTK — threat modeling, ADRs, decisoes de arquitetura, planejamento. Usa DeepSeek para raciocinio profundo e deterministico.",
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "minimal",
+      "steps": 8,
+      "permission": {
+        "edit": "ask",
+        "bash": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-strategist.md}"
+    },
+    "ztk-reviewer": {
+      "description": "Revisor de seguranca do ZTK — OWASP, SAST, anti-patterns, validacao de PRs. Usa DeepSeek para analise critica profunda.",
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "minimal",
+      "steps": 5,
+      "permission": {
+        "edit": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-reviewer.md}"
+    },
+    "ztk-governance": {
+      "description": "Agente de governanca e compliance do ZTK — GRC, ISO 27001, LGPD, PCI DSS, auditoria. Usa DeepSeek para analise normativa.",
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "minimal",
+      "steps": 6,
+      "permission": {
+        "edit": "ask",
+        "bash": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-governance.md}"
+    },
+    "ztk-backend": {
+      "description": "Especialista backend do ZTK — Python, Lambda, SQS, DynamoDB, Pydantic, pytest. Usa Kimi para codigo pesado.",
+      "mode": "subagent",
+      "model": "opencode-go/kimi-k2.6",
+      "steps": 5,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask"
+      },
+      "prompt": "{file:.opencode/agents/ztk-backend.md}"
+    },
+    "ztk-infra": {
+      "description": "Especialista infraestrutura do ZTK — Terraform, AWS, ECS Fargate, IAM, OPA/Rego, CI/CD. Usa Kimi para IaC e automacao.",
+      "mode": "subagent",
+      "model": "opencode-go/kimi-k2.6",
+      "steps": 5,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask"
+      },
+      "prompt": "{file:.opencode/agents/ztk-infra.md}"
+    },
+    "ztk-qa": {
+      "description": "Quality Assurance e Quality Gates do ZTK — testes de seguranca, regressao, contrato, cobertura, SAST. Usa Kimi para geracao de testes e automacao.",
+      "mode": "subagent",
+      "model": "opencode-go/kimi-k2.6",
+      "steps": 6,
+      "permission": {
+        "edit": "ask",
+        "bash": "ask"
+      },
+      "prompt": "{file:.opencode/agents/ztk-qa.md}"
+    },
+    "ztk-security-ops": {
+      "description": "Seguranca operacional do ZTK — SOC, deteccao, resposta a incidentes, hardening, ambiente PCI. Usa DeepSeek para analise critica de operacoes de seguranca.",
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "minimal",
+      "steps": 6,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-security-ops.md}"
+    },
+    "ztk-regulatory": {
+      "description": "Regulatoria e Auditoria do ZTK — PCI DSS, Bacen, LGPD, evidencias, QSA, assessoria. Usa DeepSeek para analise normativa profunda.",
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "minimal",
+      "steps": 7,
+      "permission": {
+        "edit": "ask",
+        "bash": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-regulatory.md}"
+    },
+    "ztk-po": {
+      "description": "Product Owner do ZTK — backlog, user stories, ROI, roadmap, stakeholders, valor de negocio. Usa DeepSeek para analise estrategica de produto.",
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "minimal",
+      "steps": 5,
+      "permission": {
+        "edit": "ask",
+        "bash": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-po.md}"
+    },
+    "ztk-pm": {
+      "description": "Project Manager do ZTK — cronograma, riscos, status reports, stakeholders, RACI, dependencias. Usa DeepSeek para planejamento estrategico e gestao de riscos.",
+      "mode": "subagent",
+      "model": "opencode-go/deepseek-v4-pro",
+      "variant": "minimal",
+      "steps": 5,
+      "permission": {
+        "edit": "ask",
+        "bash": "deny"
+      },
+      "prompt": "{file:.opencode/agents/ztk-pm.md}"
+    }
+  },
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "git *": "allow",
+      "terraform *": "ask",
+      "pytest *": "allow",
+      "make *": "allow",
+      "python -m pytest *": "allow",
+      "*": "ask"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 8000
+  }
+}
