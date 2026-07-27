@@ -1,205 +1,192 @@
 <svg xmlns="http://www.w3.org/2000/svg"
-     width="1200" height="720" viewBox="0 0 1200 720"
+     width="1200" height="740" viewBox="0 0 1200 740"
      role="img" aria-labelledby="tech-title tech-desc">
   <title id="tech-title">Z.T.K. Arquitetura Tecnica — Stack Completa</title>
-  <desc id="tech-desc">Arquitetura tecnica profunda do Z.T.K. mostrando servicos AWS (Lambda, ECS, DynamoDB, S3, SQS, Bedrock), infraestrutura on-prem (vLLM local GPU), barreiras de seguranca (CDE, VPC), e fluxo de dados entre componentes.</desc>
+  <desc id="tech-desc">Arquitetura tecnica do Z.T.K. VPC com 3 tiers (DMZ, APP, CDE PCI-DSS). Servicos AWS: Lambda, ECS Fargate, DynamoDB SSE-KMS, S3, SQS, Bedrock, vLLM local GPU. Fluxo de dados com barreiras de seguranca PCI DSS.</desc>
 
   <defs>
-    <linearGradient id="cyang" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#0099cc"/></linearGradient>
-    <linearGradient id="amberg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff6b35"/><stop offset="100%" stop-color="#cc4422"/></linearGradient>
-    <linearGradient id="greeng" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#00ff88"/><stop offset="100%" stop-color="#00cc66"/></linearGradient>
-    <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/></filter>
+    <marker id="arrow-cyan" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="#00d4ff"/></marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="#00ff88"/></marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="#7b42bc"/></marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0,0 8,3 0,6" fill="#ff6b35"/></marker>
   </defs>
 
   <!-- Background -->
-  <rect width="1200" height="720" rx="18" fill="#FFFFFF"/>
-  <rect x="0" y="0" width="1200" height="720" rx="18" fill="#F8F9FA" opacity="0.3"/>
+  <rect width="1200" height="740" rx="18" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1200" height="740" rx="18" fill="#FAFAFA" opacity="0.5"/>
 
   <!-- Title -->
-  <text x="60" y="42" font-family="Montserrat,-apple-system,sans-serif" font-size="20" font-weight="700" fill="#0A0A0A">Arquitetura Técnica — Stack AWS + vLLM Local</text>
-  <text x="60" y="62" font-family="Inter,-apple-system,sans-serif" font-size="11" fill="#9CA3AF">Infraestrutura serverless com isolamento PCI DSS · 10 módulos Terraform · 7 pipelines CI/CD</text>
-  <rect x="60" y="72" width="50" height="2" rx="1" fill="url(#amberg)"/>
+  <text x="60" y="42" font-family="Montserrat,sans-serif" font-size="20" font-weight="700" fill="#0A0A0A">Arquitetura Técnica</text>
+  <text x="260" y="42" font-family="IBM Plex Mono,monospace" font-size="10" fill="#9CA3AF">AWS Serverless + vLLM Local GPU · C4 Container Diagram · PCI DSS 1.3 Trust Boundary</text>
+  <rect x="60" y="54" width="50" height="2" rx="1" fill="#00d4ff"/>
 
-  <!-- ====== VPC Boundary ====== -->
-  <rect x="44" y="96" width="1112" height="560" rx="14" fill="none" stroke="#E5E7EB" stroke-width="1.5" stroke-dasharray="8,4"/>
-  <text x="68" y="116" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#9CA3AF">VPC (10.0.0.0/16) — us-east-1</text>
+  <!-- ═══════════ VPC BOUNDARY ═══════════ -->
+  <rect x="44" y="80" width="1112" height="600" rx="14" fill="none" stroke="#D1D5DB" stroke-width="1.5" stroke-dasharray="8,4"/>
+  <text x="68" y="102" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="700" fill="#0A0A0A">AWS VPC</text>
+  <text x="160" y="102" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">10.0.0.0/16 · us-east-1 · 3 Availability Zones</text>
 
-  <!-- ====== CDE Isolated Zone ====== -->
-  <rect x="60" y="420" width="1080" height="220" rx="10" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1" stroke-dasharray="6,3"/>
-  <text x="84" y="442" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="700" fill="#C62828">CDE — Cardholder Data Environment (PCI DSS 1.3)</text>
-  <text x="320" y="442" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Subnet isolada · sem rota para internet · apenas VPC endpoints</text>
-
-  <!-- DMZ Subnet -->
-  <rect x="80" y="136" width="1060" height="120" rx="8" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="0.5"/>
-  <text x="100" y="156" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#9CA3AF">DMZ (10.0.1.0/24, 10.0.2.0/24) — Public Subnets</text>
+  <!-- ═══════════ TIER 1: DMZ ═══════════ -->
+  <rect x="68" y="116" width="1068" height="100" rx="8" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="88" y="136" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#6B7280">DMZ — Public Subnets (10.0.1.0/24, 10.0.2.0/24)</text>
 
   <!-- Internet GW -->
-  <rect x="100" y="170" width="170" height="36" rx="6" fill="#FFFFFF" stroke="#00d4ff" stroke-width="1" filter="url(#shadow)"/>
-  <text x="118" y="193" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#0A0A0A">Internet Gateway</text>
+  <rect x="88" y="152" width="180" height="50" rx="8" fill="#FFFFFF" stroke="#00d4ff" stroke-width="1.5" filter="url(#shadow)"/>
+  <text x="106" y="172" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="700" fill="#0A0A0A">Internet Gateway</text>
+  <text x="106" y="190" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Public internet access</text>
 
   <!-- WAF -->
-  <rect x="290" y="170" width="170" height="36" rx="6" fill="#FFFFFF" stroke="#ff6b35" stroke-width="1" filter="url(#shadow)"/>
-  <text x="308" y="186" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#0A0A0A">AWS WAF</text>
-  <text x="308" y="200" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">Containment rules (L5.B)</text>
+  <rect x="300" y="152" width="200" height="50" rx="8" fill="#FFFFFF" stroke="#ff6b35" stroke-width="1.5"/>
+  <text x="318" y="172" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="700" fill="#0A0A0A">AWS WAF</text>
+  <text x="318" y="190" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Containment rules (L5.B)</text>
 
   <!-- NAT GW -->
-  <rect x="480" y="170" width="170" height="36" rx="6" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" filter="url(#shadow)"/>
-  <text x="498" y="193" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#0A0A0A">NAT Gateway (×2 AZ)</text>
+  <rect x="540" y="152" width="180" height="50" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="558" y="172" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="700" fill="#0A0A0A">NAT Gateway ×2</text>
+  <text x="558" y="190" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Outbound only</text>
 
-  <!-- App Subnets -->
-  <rect x="80" y="272" width="1060" height="134" rx="8" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="0.5"/>
-  <text x="100" y="290" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#9CA3AF">APP (10.0.10.0/24, 10.0.11.0/24) — Private Subnets (com NAT)</text>
+  <!-- ALB -->
+  <rect x="760" y="152" width="180" height="50" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="778" y="172" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="700" fill="#0A0A0A">ALB</text>
+  <text x="778" y="190" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">TLS termination</text>
 
-  <!-- Lambda -->
-  <rect x="100" y="304" width="200" height="54" rx="8" fill="#FFFFFF" stroke="#00d4ff" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="118" y="322" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">AWS Lambda</text>
-  <text x="118" y="338" font-family="Inter,sans-serif" font-size="8" fill="#374151">L1, L3, L4, L6, L7, L8 handlers</text>
-  <text x="118" y="352" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">Python 3.12+ · fail_closed · structlog</text>
+  <!-- ARROW: DMZ → APP -->
+  <line x1="200" y1="218" x2="200" y2="254" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
 
-  <!-- ECS Fargate -->
-  <rect x="330" y="304" width="200" height="54" rx="8" fill="#FFFFFF" stroke="#7b42bc" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="348" y="322" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">ECS Fargate</text>
-  <text x="348" y="338" font-family="Inter,sans-serif" font-size="8" fill="#374151">L2 SAST Agents (24 containers)</text>
-  <text x="348" y="352" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">Spot · distroless · readOnlyRootFS</text>
+  <!-- ═══════════ TIER 2: APP + DATA FLOW ═══════════ -->
+  <rect x="68" y="260" width="1068" height="170" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="88" y="280" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#6B7280">APP — Private Subnets (10.0.10.0/24, 10.0.11.0/24) · NAT Gateway</text>
 
-  <!-- SQS -->
-  <rect x="560" y="304" width="180" height="54" rx="8" fill="#FFFFFF" stroke="#ff6b35" stroke-width="1.5" filter="url(#shadow)"/>
-  <text x="578" y="322" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">Amazon SQS</text>
-  <text x="578" y="338" font-family="Inter,sans-serif" font-size="8" fill="#374151">6 filas + 6 DLQs</text>
-  <text x="578" y="352" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">ingestion → copilot → hitl</text>
+  <!-- Lambda (TOP) -->
+  <rect x="88" y="296" width="460" height="52" rx="8" fill="#FFFFFF" stroke="#00d4ff" stroke-width="1.5"/>
+  <text x="110" y="317" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">AWS Lambda</text>
+  <text x="260" y="317" font-family="Inter,sans-serif" font-size="9" fill="#374151">Python 3.12+ · fail_closed · structlog</text>
+  <text x="110" y="338" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">L1 Ingest · L3 PoC · L4 Debate · L6 Policy · L7 Router · L8 Scale</text>
 
-  <!-- EventBridge -->
-  <rect x="765" y="304" width="160" height="54" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" filter="url(#shadow)"/>
-  <text x="783" y="322" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">EventBridge</text>
-  <text x="783" y="338" font-family="Inter,sans-serif" font-size="8" fill="#374151">Pipeline orchestration</text>
+  <!-- ECS Fargate (TOP) -->
+  <rect x="580" y="296" width="270" height="52" rx="8" fill="#FFFFFF" stroke="#7b42bc" stroke-width="1.5"/>
+  <text x="600" y="317" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">ECS Fargate</text>
+  <text x="710" y="317" font-family="Inter,sans-serif" font-size="9" fill="#374151">Spot · distroless</text>
+  <text x="600" y="338" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">L2 SAST Agents (Bandit, Semgrep, CodeQL, +21)</text>
 
-    <!-- Step Functions -->
-  <rect x="950" y="304" width="170" height="54" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" filter="url(#shadow)"/>
-  <text x="968" y="322" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">Step Functions</text>
-  <text x="968" y="338" font-family="Inter,sans-serif" font-size="8" fill="#374151">8 state machines</text>
+  <!-- SQS (MIDDLE) -->
+  <rect x="88" y="360" width="280" height="52" rx="8" fill="#FFFFFF" stroke="#ff6b35" stroke-width="1.5"/>
+  <text x="110" y="381" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">Amazon SQS</text>
+  <text x="230" y="381" font-family="Inter,sans-serif" font-size="9" fill="#374151">6 filas + 6 DLQs</text>
+  <text x="110" y="402" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">ingestion · normalization · decision · copilot · hitl · remediation</text>
 
-  <!-- ====== vLLM Local (GPU) ====== -->
-  <rect x="180" y="460" width="240" height="90" rx="8" fill="#FFFFFF" stroke="#00ff88" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="180" y="460" width="240" height="24" rx="8" fill="#E6F9F0"/>
-  <rect x="180" y="476" width="240" height="8" fill="#E6F9F0"/>
-  <text x="198" y="478" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">vLLM Local — GPU (EC2 g5.xlarge)</text>
-  <text x="198" y="500" font-family="Inter,sans-serif" font-size="8" fill="#374151">Meta Llama 3.3 70B Instruct</text>
-  <text x="198" y="516" font-family="Inter,sans-serif" font-size="8" fill="#374151">🔒 Sem rede externa · storage efêmero</text>
-  <text x="198" y="532" font-family="Inter,sans-serif" font-size="8" fill="#374151">PCI/PII apenas — roteamento forçado</text>
-  <text x="198" y="546" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">Firecracker microVM · seccomp strict</text>
+  <!-- EventBridge + Step Functions (MIDDLE) -->
+  <rect x="400" y="360" width="220" height="52" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="420" y="381" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">EventBridge</text>
+  <text x="420" y="402" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Pipeline orchestration</text>
 
-  <!-- Bedrock -->
-  <rect x="480" y="460" width="240" height="90" rx="8" fill="#FFFFFF" stroke="#7b42bc" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="480" y="460" width="240" height="24" rx="8" fill="#F3E8FF"/>
-  <rect x="480" y="476" width="240" height="8" fill="#F3E8FF"/>
-  <text x="498" y="478" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">Amazon Bedrock (us-east-1)</text>
-  <text x="498" y="500" font-family="Inter,sans-serif" font-size="8" fill="#374151">Claude 3.5 Haiku (volume)</text>
-  <text x="498" y="516" font-family="Inter,sans-serif" font-size="8" fill="#374151">Claude 3.5 Sonnet (reasoning)</text>
-  <text x="498" y="532" font-family="Inter,sans-serif" font-size="8" fill="#374151">Apenas dados NON-PCI</text>
-  <text x="498" y="546" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">Guardrails · prompt caching</text>
+  <rect x="650" y="360" width="200" height="52" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+  <text x="670" y="381" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">Step Functions</text>
+  <text x="670" y="402" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">8 state machines</text>
 
-  <!-- DynamoDB in CDE -->
-  <rect x="780" y="460" width="220" height="90" rx="8" fill="#FFFFFF" stroke="#00d4ff" stroke-width="2" filter="url(#shadow)"/>
-  <rect x="780" y="460" width="220" height="24" rx="8" fill="#E8F4FD"/>
-  <rect x="780" y="476" width="220" height="8" fill="#E8F4FD"/>
-  <text x="798" y="478" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A">DynamoDB (SSE-KMS)</text>
-  <text x="798" y="500" font-family="Inter,sans-serif" font-size="8" fill="#374151">5 tabelas + GSI + PITR</text>
-  <text x="798" y="516" font-family="Inter,sans-serif" font-size="8" fill="#374151">findings · decisions · audit_events</text>
-  <text x="798" y="532" font-family="Inter,sans-serif" font-size="8" fill="#374151">containment_rules · exceptions</text>
-  <text x="798" y="546" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">on-demand · tenant_id PK</text>
+  <!-- IAM + KMS -->
+  <rect x="880" y="296" width="240" height="116" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="900" y="316" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="700" fill="#0A0A0A">IAM + KMS</text>
+  <text x="900" y="336" font-family="Inter,sans-serif" font-size="8" fill="#374151">Lambda Execution Role</text>
+  <text x="900" y="354" font-family="Inter,sans-serif" font-size="8" fill="#374151">ECS Task Role</text>
+  <text x="900" y="372" font-family="Inter,sans-serif" font-size="8" fill="#374151">Bedrock Invoke Role</text>
+  <text x="900" y="390" font-family="Inter,sans-serif" font-size="8" fill="#374151">KMS Key (rotation 365d)</text>
+  <text x="900" y="406" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">Least privilege · deny-by-default</text>
 
-  <!-- S3 in CDE -->
-  <rect x="1020" y="460" width="100" height="90" rx="8" fill="#FFFFFF" stroke="#00d4ff" stroke-width="2" filter="url(#shadow)"/>
-  <text x="1040" y="490" font-family="IBM Plex Mono,monospace" font-size="10" font-weight="700" fill="#0A0A0A" text-anchor="middle">S3</text>
-  <text x="1070" y="506" font-family="Inter,sans-serif" font-size="7" fill="#374151" text-anchor="middle">Audit Trail</text>
-  <text x="1070" y="520" font-family="Inter,sans-serif" font-size="7" fill="#374151" text-anchor="middle">Evidence</text>
-  <text x="1070" y="534" font-family="Inter,sans-serif" font-size="7" fill="#374151" text-anchor="middle">Artifacts</text>
-  <text x="1070" y="546" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF" text-anchor="middle">SSE-KMS</text>
+  <!-- ARROW: APP → CDE -->
+  <line x1="200" y1="432" x2="200" y2="468" stroke="#ff6b35" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
 
-  <!-- VPC Endpoints -->
-  <g transform="translate(60 570)">
-    <text x="20" y="14" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#9CA3AF">VPC Endpoints (PrivateLink)</text>
-    <rect x="20" y="22" width="130" height="20" rx="4" fill="#F3F4F6"/>
-    <text x="32" y="36" font-family="Inter,sans-serif" font-size="7" fill="#374151">DynamoDB Gateway</text>
-    <rect x="158" y="22" width="110" height="20" rx="4" fill="#F3F4F6"/>
-    <text x="170" y="36" font-family="Inter,sans-serif" font-size="7" fill="#374151">S3 Gateway</text>
-    <rect x="276" y="22" width="100" height="20" rx="4" fill="#F3F4F6"/>
-    <text x="288" y="36" font-family="Inter,sans-serif" font-size="7" fill="#374151">SQS Interface</text>
-    <rect x="384" y="22" width="110" height="20" rx="4" fill="#F3F4F6"/>
-    <text x="396" y="36" font-family="Inter,sans-serif" font-size="7" fill="#374151">Bedrock Interface</text>
-    <rect x="502" y="22" width="100" height="20" rx="4" fill="#F3F4F6"/>
-    <text x="514" y="36" font-family="Inter,sans-serif" font-size="7" fill="#374151">KMS Interface</text>
+  <!-- Trust Boundary Label -->
+  <line x1="68" y1="450" x2="1136" y2="450" stroke="#FCA5A5" stroke-width="1" stroke-dasharray="6,3"/>
+  <rect x="490" y="442" width="220" height="16" rx="3" fill="#FEF2F2"/>
+  <text x="500" y="454" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="700" fill="#C62828">TRUST BOUNDARY — PCI DSS 1.3</text>
+
+  <!-- ═══════════ TIER 3: CDE ═══════════ -->
+  <rect x="68" y="472" width="1068" height="190" rx="8" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="0.5"/>
+  <text x="88" y="492" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="700" fill="#C62828">CDE — Cardholder Data Environment</text>
+  <text x="340" y="492" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">10.0.100.0/24, 10.0.101.0/24 · Sem internet · VPC Endpoints only</text>
+
+  <!-- DynamoDB -->
+  <rect x="88" y="512" width="260" height="70" rx="8" fill="#FFFFFF" stroke="#00d4ff" stroke-width="2"/>
+  <text x="110" y="534" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">DynamoDB (SSE-KMS)</text>
+  <text x="110" y="554" font-family="Inter,sans-serif" font-size="8" fill="#374151">findings · decisions · audit_events</text>
+  <text x="110" y="570" font-family="Inter,sans-serif" font-size="8" fill="#374151">containment_rules · exceptions · PITR enabled</text>
+
+  <!-- S3 -->
+  <rect x="380" y="512" width="200" height="70" rx="8" fill="#FFFFFF" stroke="#00d4ff" stroke-width="2"/>
+  <text x="400" y="534" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">Amazon S3 (SSE-KMS)</text>
+  <text x="400" y="554" font-family="Inter,sans-serif" font-size="8" fill="#374151">audit-trail (5yr lifecycle)</text>
+  <text x="400" y="570" font-family="Inter,sans-serif" font-size="8" fill="#374151">evidence · lambda-artifacts</text>
+
+  <!-- vLLM Local GPU -->
+  <rect x="610" y="512" width="240" height="70" rx="8" fill="#FFFFFF" stroke="#00ff88" stroke-width="2"/>
+  <text x="630" y="534" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">vLLM Local GPU</text>
+  <text x="630" y="554" font-family="Inter,sans-serif" font-size="8" fill="#374151">EC2 g5.xlarge · Meta Llama 3.3 70B</text>
+  <text x="630" y="570" font-family="Inter,sans-serif" font-size="8" fill="#374151">PCI/PII only · sem rede externa · efemero</text>
+
+  <!-- Bedrock (non-CDE — allowed via VPC endpoint) -->
+  <rect x="880" y="512" width="240" height="70" rx="8" fill="#FFFFFF" stroke="#7b42bc" stroke-width="2"/>
+  <text x="900" y="534" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="700" fill="#0A0A0A">Amazon Bedrock</text>
+  <text x="900" y="554" font-family="Inter,sans-serif" font-size="8" fill="#374151">Claude 3.5 Haiku + Sonnet</text>
+  <text x="900" y="570" font-family="Inter,sans-serif" font-size="8" fill="#374151">NON-PCI only · via VPC Endpoint</text>
+
+  <!-- VPC Endpoints row at bottom of CDE -->
+  <rect x="88" y="596" width="1032" height="46" rx="6" fill="#F3F4F6" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="108" y="617" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="600" fill="#6B7280">VPC Endpoints (PrivateLink):</text>
+  <rect x="320" y="606" width="120" height="22" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="340" y="621" font-family="Inter,sans-serif" font-size="8" fill="#374151">DynamoDB GW</text>
+  <rect x="450" y="606" width="90" height="22" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="465" y="621" font-family="Inter,sans-serif" font-size="8" fill="#374151">S3 GW</text>
+  <rect x="550" y="606" width="100" height="22" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="565" y="621" font-family="Inter,sans-serif" font-size="8" fill="#374151">SQS Interface</text>
+  <rect x="660" y="606" width="110" height="22" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="675" y="621" font-family="Inter,sans-serif" font-size="8" fill="#374151">Bedrock Interface</text>
+  <rect x="780" y="606" width="100" height="22" rx="4" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+  <text x="795" y="621" font-family="Inter,sans-serif" font-size="8" fill="#374151">KMS Interface</text>
+
+  <!-- ═══════════ CI/CD PIPELINE ═══════════ -->
+  <g transform="translate(68 676)">
+    <rect x="0" y="0" width="1068" height="36" rx="6" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="20" y="18" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="700" fill="#0A0A0A">CI/CD</text>
+    <rect x="72" y="6" width="65" height="16" rx="3" fill="#E8F4FD"/>
+    <text x="80" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0095CC">Lint</text>
+    <text x="142" y="18" font-family="Inter,sans-serif" font-size="10" fill="#D1D5DB">→</text>
+    <rect x="155" y="6" width="65" height="16" rx="3" fill="#E8F4FD"/>
+    <text x="163" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0095CC">Types</text>
+    <text x="225" y="18" font-family="Inter,sans-serif" font-size="10" fill="#D1D5DB">→</text>
+    <rect x="238" y="6" width="65" height="16" rx="3" fill="#E6F9F0"/>
+    <text x="246" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#00A650">Tests</text>
+    <text x="308" y="18" font-family="Inter,sans-serif" font-size="10" fill="#D1D5DB">→</text>
+    <rect x="321" y="6" width="65" height="16" rx="3" fill="#FFF3E0"/>
+    <text x="329" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#E65100">SAST</text>
+    <text x="391" y="18" font-family="Inter,sans-serif" font-size="10" fill="#D1D5DB">→</text>
+    <rect x="404" y="6" width="65" height="16" rx="3" fill="#FDE8E8"/>
+    <text x="412" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#C62828">Secrets</text>
+    <text x="474" y="18" font-family="Inter,sans-serif" font-size="10" fill="#D1D5DB">→</text>
+    <rect x="487" y="6" width="65" height="16" rx="3" fill="#F3E8FF"/>
+    <text x="495" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#6B21A8">OPA</text>
+    <text x="557" y="18" font-family="Inter,sans-serif" font-size="10" fill="#D1D5DB">→</text>
+    <rect x="570" y="6" width="65" height="16" rx="3" fill="#E8F4FD"/>
+    <text x="578" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0095CC">TF</text>
+    <text x="640" y="18" font-family="Inter,sans-serif" font-size="10" fill="#D1D5DB">→</text>
+    <rect x="653" y="6" width="80" height="16" rx="3" fill="#E6F9F0"/>
+    <text x="661" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#00A650">Deploy ⏎</text>
+    <text x="745" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">| CAB Approval Gate</text>
   </g>
 
-  <!-- ====== CI/CD Column ====== -->
-  <g transform="translate(60 630)">
-    <rect x="0" y="0" width="1080" height="38" rx="8" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="0.5"/>
-    <text x="20" y="16" font-family="IBM Plex Mono,monospace" font-size="8" font-weight="700" fill="#0A0A0A">CI/CD Pipeline</text>
-    <rect x="180" y="6" width="70" height="16" rx="3" fill="#E8F4FD"/>
-    <text x="192" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0095CC">Lint</text>
-    <text x="258" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">→</text>
-    <rect x="270" y="6" width="70" height="16" rx="3" fill="#E8F4FD"/>
-    <text x="282" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0095CC">Types</text>
-    <text x="348" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">→</text>
-    <rect x="360" y="6" width="70" height="16" rx="3" fill="#E6F9F0"/>
-    <text x="372" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#00A650">Tests</text>
-    <text x="438" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">→</text>
-    <rect x="450" y="6" width="70" height="16" rx="3" fill="#FFF3E0"/>
-    <text x="462" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#E65100">SAST</text>
-    <text x="528" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">→</text>
-    <rect x="540" y="6" width="70" height="16" rx="3" fill="#FDE8E8"/>
-    <text x="552" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#C62828">Secrets</text>
-    <text x="618" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">→</text>
-    <rect x="630" y="6" width="70" height="16" rx="3" fill="#F3E8FF"/>
-    <text x="642" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#6B21A8">OPA</text>
-    <text x="708" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">→</text>
-    <rect x="720" y="6" width="70" height="16" rx="3" fill="#E8F4FD"/>
-    <text x="732" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0095CC">Terraform</text>
-    <text x="798" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">→</text>
-    <rect x="810" y="6" width="80" height="16" rx="3" fill="#E6F9F0"/>
-    <text x="822" y="18" font-family="IBM Plex Mono,monospace" font-size="7" fill="#00A650">Deploy</text>
-    <text x="898" y="16" font-family="Inter,sans-serif" font-size="7" fill="#9CA3AF">| Gate: CAB Approval</text>
+  <!-- External Source -->
+  <g transform="translate(0 180)">
+    <rect x="0" y="0" width="40" height="60" rx="6" fill="#E8F4FD" stroke="#00d4ff" stroke-width="1"/>
+    <text x="20" y="26" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0A0A0A" text-anchor="middle">GIT</text>
+    <text x="20" y="40" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0A0A0A" text-anchor="middle">REPO</text>
+    <text x="20" y="54" font-family="IBM Plex Mono,monospace" font-size="8" fill="#00d4ff" text-anchor="middle">→</text>
   </g>
 
-  <!-- Data flow arrows -->
-  <g>
-    <!-- Lambda → SQS -->
-    <line x1="200" y1="358" x2="560" y2="340" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
-    <!-- SQS → Lambda -->
-    <line x1="650" y1="340" x2="300" y2="358" stroke="#ff6b35" stroke-width="1" opacity="0.4"/>
-    <!-- Lambda → DynamoDB -->
-    <line x1="200" y1="358" x2="890" y2="480" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
-    <!-- Lambda → Bedrock -->
-    <line x1="250" y1="358" x2="600" y2="480" stroke="#7b42bc" stroke-width="1" opacity="0.4"/>
-    <!-- Lambda → vLLM -->
-    <line x1="180" y1="358" x2="300" y2="480" stroke="#00ff88" stroke-width="1" opacity="0.4"/>
-    <!-- Lambda → S3 -->
-    <line x1="300" y1="358" x2="1070" y2="480" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
-  </g>
-
-  <!-- Trust Boundary: PCI DSS -->
-  <g transform="translate(1160 460)">
-    <text x="0" y="0" font-family="IBM Plex Mono,monospace" font-size="7" font-weight="700" fill="#C62828" transform="rotate(90)">TRUST BOUNDARY — PCI DSS 1.3</text>
-  </g>
-
-  <!-- ====== LEGEND / KEY (UML + AWS standard) ====== -->
-  <g transform="translate(60 672)">
-    <rect x="0" y="0" width="1080" height="30" rx="6" fill="#FAFAFA" stroke="#E5E7EB" stroke-width="0.5"/>
-    <text x="12" y="20" font-family="IBM Plex Mono,monospace" font-size="7" font-weight="600" fill="#9CA3AF">LEGEND</text>
-    <rect x="80" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#00d4ff" stroke-width="1.5"/>
-    <text x="94" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">Compute (Lambda/ECS)</text>
-    <rect x="228" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#ff6b35" stroke-width="1.5"/>
-    <text x="242" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">Messaging (SQS)</text>
-    <rect x="355" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#00d4ff" stroke-width="2"/>
-    <text x="369" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">Storage (DynamoDB/S3)</text>
-    <rect x="515" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#00ff88" stroke-width="2"/>
-    <text x="529" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">GPU (vLLM local)</text>
-    <rect x="645" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#7b42bc" stroke-width="2"/>
-    <text x="659" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">AI (Bedrock)</text>
-    <rect x="750" y="8" width="10" height="10" rx="2" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
-    <text x="764" y="17" font-family="Inter,sans-serif" font-size="7" fill="#C62828">CDE Zone (PCI DSS)</text>
-    <rect x="892" y="8" width="10" height="10" rx="2" fill="#F3F4F6"/>
-    <text x="906" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">VPC Endpoint</text>
-    <text x="1002" y="17" font-family="IBM Plex Mono,monospace" font-size="6" fill="#9CA3AF">C4 Container Diagram · v1.0</text>
+  <!-- Output -->
+  <g transform="translate(1140 200)">
+    <rect x="0" y="0" width="40" height="80" rx="6" fill="#E6F9F0" stroke="#00ff88" stroke-width="1"/>
+    <text x="20" y="22" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0A0A0A" text-anchor="middle">WAF</text>
+    <text x="20" y="36" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0A0A0A" text-anchor="middle">RULE</text>
+    <text x="20" y="54" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0A0A0A" text-anchor="middle">PR</text>
+    <text x="20" y="68" font-family="IBM Plex Mono,monospace" font-size="7" fill="#0A0A0A" text-anchor="middle">AUDIT</text>
   </g>
 </svg>
