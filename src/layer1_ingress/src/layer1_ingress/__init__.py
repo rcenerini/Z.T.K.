@@ -1,1 +1,1 @@
-# ZTK — layer1_ingress
+"""L1 — Layer 1: Entrada & Triagem."""
