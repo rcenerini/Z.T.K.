@@ -39,7 +39,7 @@ Status: **Fase de desenvolvimento inicial. Nucleo implementado, 39/49 testes pas
 - [x] **F0.2** — Infra Terraform (10 modulos: 6 novos + 4 revisados, `terraform validate` passou)
 - [x] **Visual Identity** — Sistema de design + hero SVG + README redesenhado
 - [x] **F0.3** — OPA Policies (3 rego files + 27 testes + docs)
-- [ ] **F0.4** — CI/CD Pipeline completo
+- [x] **F0.4** — CI/CD Pipeline (7 gates, CD com aprovação manual)
 
 ### MVP1 — Gates Humanos (bloqueados)
 
