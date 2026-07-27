@@ -4,10 +4,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.12%2B-00d4ff?logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/AWS-Serverless-ff6b35?logo=amazonaws&logoColor=white" alt="AWS">
-  <img src="https://img.shields.io/badge/PCI_DSS-4.0-00ff88?logo=pcidss&logoColor=white" alt="PCI DSS">
-  <img src="https://img.shields.io/badge/Terraform-1.7%2B-7b42bc?logo=terraform&logoColor=white" alt="Terraform">
+  <img src="https://img.shields.io/badge/license-MIT-00ff88" alt="License">
   <img src="https://img.shields.io/badge/status-COMPLETO-00ff88" alt="Status">
   <img src="https://img.shields.io/badge/camadas-8%2F8-00d4ff" alt="Layers">
   <img src="https://img.shields.io/badge/testes-297%2F297-00ff88" alt="Tests">
@@ -129,23 +126,30 @@ ZTK/
 ## Quick Start
 
 ```bash
-# 1. Clonar
+# 1. Clone
 git clone https://github.com/rcenerini/Z.T.K..git
 cd Z.T.K.
 
 # 2. Dependências
-python -m venv .venv && source .venv/bin/activate
-pip install -e .
+python -m venv .venv && source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate                           # Windows
+pip install -e ".[dev]"
 
-# 3. Testes (MVP2 Copilot)
-PYTHONPATH=mvp2/copilot/src pytest mvp2/copilot/tests/ -v
+# 3. Testes — todos os módulos
+bash scripts/run_all_tests.sh      # Linux/macOS
+# powershell scripts/run_all_tests.ps1  # Windows
 
-# 4. Testes (Shared Schemas)
-PYTHONPATH=src pytest tests/unit/shared/ -v
-
-# 5. Quality Gates
-make lint typecheck test security-sast security-secrets
+# 4. Pre-commit hooks (recomendado)
+cp scripts/pre-commit/pre-commit-hook.sh .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
 ```
+
+### Pré-requisitos
+
+- Python 3.12+
+- Git
+- (Opcional) OPA CLI — para testes de políticas
+- (Opcional) AWS CLI + Terraform — para deploy da infraestrutura
 
 ---
 
@@ -187,3 +191,10 @@ make lint typecheck test security-sast security-secrets
 | **API** | [Copilot API](./docs/api/copilot-api.md) |
 | **Infra** | [Arquitetura de Infra](./docs/infra/README.md) |
 | **Design** | [Identidade Visual](./docs/visual-identity/VISUAL_IDENTITY.md) |
+
+---
+
+## Licença
+
+MIT — veja [LICENSE](LICENSE).
+

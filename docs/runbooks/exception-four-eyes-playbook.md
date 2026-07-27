@@ -37,7 +37,7 @@ O mecanismo de exceção four-eyes permite que um finding com severidade elevada
 ```yaml
 exception_request:
   finding_id: "uuid"
-  requested_by: "email@empresa.com.br"
+  requested_by: "email@example.com"
   reason_category: "FALSE_POSITIVE | RISK_ACCEPTED | COMPENSATING_CONTROL | DEFERRED_FIX"
   justification: "Detalhamento técnico do motivo (min 100 chars)"
   current_severity: "P1"
@@ -111,8 +111,8 @@ validations:
 {
   "event_type": "EXCEPTION_APPROVED",
   "finding_id": "uuid",
-  "requested_by": "eng-owner@empresa.com.br",
-  "approved_by": ["gerente@empresa.com.br", "super-seg@empresa.com.br"],
+  "requested_by": "eng-owner@example.com",
+  "approved_by": ["gerente@example.com", "super-seg@example.com"],
   "category": "COMPENSATING_CONTROL",
   "original_severity": "P1",
   "exception_severity": "P3",

@@ -1,8 +1,21 @@
 [project]
 name = "ztk"
-version = "0.1.0"
-description = "Zero Trust Kill — Sistema multiagente de analise e autocorrecao de seguranca de codigo"
+version = "1.0.0"
+description = "Zero Trust Kill — Sistema multiagente deterministico de analise e autocorrecao de seguranca de codigo"
 requires-python = ">=3.12"
+license = {text = "MIT"}
+readme = "README.md"
+keywords = ["security", "devsecops", "sast", "multi-agent", "pci-dss", "vulnerability-management"]
+classifiers = [
+    "Development Status :: 5 — Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
+urls = {Repository = "https://github.com/rcenerini/Z.T.K."}
 
 dependencies = [
     "boto3>=1.34.0",

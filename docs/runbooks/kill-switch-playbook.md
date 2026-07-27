@@ -77,7 +77,7 @@ curl -X POST https://api.ztk.empresa.internal/v1/kill-switch \
   -d '{
     "scope": "full",
     "reason": "Mass false positive detection — WAF blocking legitimate traffic on /api/payments",
-    "operator": "soc-analyst@empresa.com.br"
+    "operator": "soc-analyst@example.com"
   }'
 ```
 
@@ -130,7 +130,7 @@ Todo acionamento de kill switch gera:
   "event_id": "sha256...",
   "event_type": "KILL_SWITCH_ACTIVATED",
   "scope": "full",
-  "operator": "soc-analyst@empresa.com.br",
+  "operator": "soc-analyst@example.com",
   "reason": "...",
   "timestamp": "2026-07-27T14:30:00Z",
   "active_rules_at_kill": 12,

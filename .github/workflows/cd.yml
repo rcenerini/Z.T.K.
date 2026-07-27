@@ -114,7 +114,6 @@ jobs:
         run: |
           echo "Health check: verifying deployment..."
           echo "✅ CD pipeline completed successfully"
-          echo "📊 Check Grafana: https://grafana.ztk.internal/d/ztk-producao"
 
   # ═══════════════════════════════════════════════════════════════════
   # Rollback (manual dispatch)
