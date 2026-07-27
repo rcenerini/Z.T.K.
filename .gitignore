@@ -52,3 +52,6 @@ secrets/
 node_modules/
 .next/
 out/
+
+# Pasta de brainstorming — material interno, nao versionado
+Brainstorming/
