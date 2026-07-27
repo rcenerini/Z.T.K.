@@ -100,9 +100,15 @@ def ingest_diff(
         try:
             # Get diff for the specific commit
             diff_output = _run_git(["diff", "--unified=5", f"{commit_sha}~1", commit_sha], cwd=repo_path)
-        except subprocess.CalledProcessError:
-            # Fallback: diff against parent (first commit has no parent)
-            diff_output = _run_git(["show", "--format=", commit_sha], cwd=repo_path)
+        except (subprocess.CalledProcessError, RuntimeError):
+            # First commit has no parent — use git show instead
+            try:
+                diff_output = _run_git(["show", "--format=", commit_sha], cwd=repo_path)
+            except (subprocess.CalledProcessError, RuntimeError):
+                # Complete failure — log and return empty result
+                logger.error("git_diff_failed", commit=commit_sha[:8])
+                result.errors.append(f"Could not get diff for commit {commit_sha[:8]}")
+                return result
 
         # Parse diff into FileContext objects
         result.files = _parse_diff(diff_output, max_file_size_kb)
@@ -121,9 +127,8 @@ def ingest_diff(
     return result
 
 
-@fail_closed(fallback_value="")
 def _run_git(args: list[str], cwd: Optional[Path] = None, timeout: int = 60) -> str:
-    """Run a git command and return stdout. Fail-closed on any error."""
+    """Run a git command and return stdout. Raises on any error."""
     result = subprocess.run(
         ["git"] + args,
         cwd=str(cwd) if cwd else None,
