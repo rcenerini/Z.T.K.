@@ -122,35 +122,42 @@ ZTK/
 
 ## AI Handoff — Estado do projeto em 2026-07-27 (COMPLETO)
 
-### O que esta pronto (100%)
+### O que esta pronto (100% — 62 arquivos Python, ~9.200 LOC)
 
 | Modulo | Status |
 |---|---|
 | MVP1 SAGA-SAGV_V2 | 37/42 tarefas (88%) — 5 gates humanos pendentes |
 | MVP2 Copilot | 8 modulos, 49/49 testes |
-| Fase 0 — Fundacao | Schemas + Infra + OPA + CI/CD |
-| **8 Camadas** | **L1 a L8 implementadas, 248/248 testes** |
-| Interface Excecoes | Dashboard + API REST |
-| Grafana Dashboards | 4 paineis de observabilidade |
-| Security Tests | Bandit 0 HIGH, 297/297 |
-| Governance Review | Handoff final com projecao de custo |
-| Documentacao | 32 .md, 5 ADRs, threat model, compliance |
+| Fase 0 — Fundacao | Schemas + Infra (11 modulos) + OPA + CI/CD |
+| **8 Camadas** | **L1 a L8 implementadas** |
+| Interface Excecoes | Dashboard (5 paginas) + API REST (12 endpoints) |
+| Grafana Dashboards | 4 paineis HTML + docs de observabilidade |
+| Security Tests | Bandit 0 HIGH, SAST audit completo |
+| Governance Review | Handoff final com projecao de custo (~$1.705/mes) |
+| MITRE Catalog | ATT&CK (28 tecnicas) + ATLAS (15 LLM threats) |
+| Arquitetura SVGs | Funcional (8 camadas C4) + Tecnica (AWS stack) |
+| Infra Hardening | Aurora pgvector + vLLM CIS Level 1 + Bedrock budget |
+| Release Publico | MIT license + CONTRIBUTING + SECURITY |
+| Documentacao | 51 .md, 6 ADRs, threat model, compliance |
 | Config OpenCode | 12 agentes ZTK + orquestrador |
+| **TOTAL TESTES** | **297 unitarios + 30 OPA + 9 integracao = 336** |
 
-### O que NAO esta pronto (externo)
+### O que NAO esta pronto (bloqueios externos)
 
-| Item | Bloqueio |
-|---|---|
-| Gates humanos MVP1 (G2/G5/G7/G9/G10) | Aguardando stakeholders externos |
-| Aurora PostgreSQL + pgvector (RAG real) | Futuro |
-| Bedrock IAM/config | Aguardando time de plataforma |
-| vLLM local (GPU) | Infra pendente |
-| Deploy AWS real | IaC provisionada, apply pendente |
+| Item | Bloqueio | Codigo |
+|---|---|---|
+| Gates humanos MVP1 (G2/G5/G7/G9/G10) | Stakeholders externos | — |
+| `terraform apply` | Sem conta AWS target | ✅ IaC pronta (11 modulos) |
+| Bedrock IAM/config | Time de plataforma | ✅ Role + budget provisionados |
+| Aurora pgvector | `terraform apply` pendente | ✅ Modulo completo (161 LOC) |
+| vLLM local (GPU) | `terraform apply` pendente | ✅ Script hardening CIS L1 (299 LOC) |
+| Deploy AWS real | IaC provisionada, apply pendente | ✅ CI/CD pipeline completo |
 
 ### Handoff — Proximos passos para producao
-1. `terraform apply` (IaC provisionada, validada)
-2. Configurar Bedrock IAM
-3. Resolver gates MVP1
-4. Deploy staging + smoke tests
-5. Pentest externo
-6. CAB approval → producao
+1. Obter conta AWS com VPC e permissões IAM
+2. `terraform apply` (IaC provisionada, validada)
+3. Configurar Bedrock IAM + Aurora pgvector + EC2 GPU
+4. Resolver gates MVP1 (stakeholders)
+5. Deploy staging + smoke tests
+6. Pentest externo (QSA)
+7. CAB approval → producao

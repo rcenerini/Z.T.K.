@@ -2,9 +2,10 @@
 ## Zero Trust Kill: Sistema Multiagente de Análise e Autocorreção de Segurança de Código
 
 ![Progress](https://img.shields.io/badge/progress-100%25-00ff88)
-![Tests](https://img.shields.io/badge/tests-297%2F297-00ff88)
+![Tests](https://img.shields.io/badge/tests-336%2F336-00ff88)
 ![Layers](https://img.shields.io/badge/camadas-8%2F8-00d4ff)
-![Commits](https://img.shields.io/badge/commits-21-7b42bc)
+![Commits](https://img.shields.io/badge/commits-54-7b42bc)
+![License](https://img.shields.io/badge/license-MIT-00ff88)
 
 > **Versão:** 1.0 | **Data:** 2026-07-25
 > **Princípio:** Cada task ataca UM único módulo/componente. NUNCA agrupa múltiplas camadas.
