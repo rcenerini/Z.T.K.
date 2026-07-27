@@ -129,7 +129,8 @@
     <rect x="12" y="192" width="166" height="16" rx="3" fill="#F3F4F6"/>
     <text x="18" y="204" font-family="Inter,sans-serif" font-size="7" fill="#6B7280">+10 CWEs (Deserializ, Path Trav, CSRF...)</text>
 
-    <text x="14" y="226" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">Sandbox: Firecracker microVM · timeout 30s · sem rede</text>
+    <text x="14" y="222" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">Sandbox: Firecracker microVM</text>
+    <text x="14" y="234" font-family="IBM Plex Mono,monospace" font-size="7" fill="#9CA3AF">timeout 30s · sem rede</text>
   </g>
 
   <!-- Arrow L3→L4 -->
