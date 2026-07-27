@@ -32,6 +32,7 @@ Status: **Fase de desenvolvimento inicial. Nucleo implementado, 39/49 testes pas
 
 - [x] **F0.1** — Shared Schemas & Core Library (5 schemas Pydantic + 3 utils, 40/40 testes)
 - [x] **F0.2** — Infra Terraform (10 modulos: 6 novos + 4 revisados, `terraform validate` passou)
+- [x] **Visual Identity** — Sistema de design + hero SVG + README redesenhado
 - [ ] **F0.3** — OPA Policies (deny_by_default + testes)
 - [ ] **F0.4** — CI/CD Pipeline completo
 

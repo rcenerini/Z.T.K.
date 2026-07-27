@@ -1,201 +1,187 @@
-# Z.T.K. — Zero Trust Kill
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%"
+       alt="Z.T.K. — Zero Trust Kill: Sistema multiagente deterministico de analise e autocorrecao de seguranca de codigo para ambiente de adquirencia e PCI DSS">
+</p>
 
-> Sistema multiagente deterministico de analise e autocorrecao de seguranca de codigo
-> para ambiente de adquirência / PCI DSS 4.0
-
----
-
-## Visao Geral
-
-O **Z.T.K.** (Zero Trust Kill) e um sistema multiagente que automatiza o ciclo completo
-de deteccao, triagem, validacao, priorizacao e remediacao de vulnerabilidades em codigo,
-infraestrutura e dependencias. Opera em ambiente de adquirência com requisitos rigorosos de
-**PCI DSS 4.0**, **LGPD** e resolucoes do **Bacen**.
-
-### Merge MVP1 + MVP2
-
-Este repositorio unifica dois projetos:
-
-| Componente | Descricao | Status |
-|-----------|-----------|--------|
-| **MVP1** (SAGA-SAGV_V2) | Pipeline SSVC de priorizacao: ingestion, normalization, enrichment, decision engine | 37/42 tarefas (88%) |
-| **MVP2** (Z.T.K.) | Modulo M4: Copiloto LLM para analise de achados tier ATTEND | Em desenvolvimento |
-
-### Principio Central
-
-> **"Sempre que existir uma ferramenta determinística capaz de resolver a tarefa,
-> o LLM nao decide — ele apenas interpreta a saida da ferramenta."**
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.12%2B-00d4ff?logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/AWS-Serverless-ff6b35?logo=amazonaws&logoColor=white" alt="AWS">
+  <img src="https://img.shields.io/badge/PCI_DSS-4.0-00ff88?logo=pcidss&logoColor=white" alt="PCI DSS">
+  <img src="https://img.shields.io/badge/Terraform-1.7%2B-7b42bc?logo=terraform&logoColor=white" alt="Terraform">
+  <img src="https://img.shields.io/badge/tests-89%2F89-00ff88" alt="Tests">
+  <img src="https://img.shields.io/badge/agents-12-00d4ff" alt="Agents">
+</p>
 
 ---
 
-## Arquitetura (8 Camadas)
+## Visão Geral
 
-| Camada | Nome | Funcao | LLM? |
-|--------|------|--------|------|
-| **L1** | Entrada & Triagem | Ingestao de codigo, classificacao de linguagem, prompt-injection guard | Nao |
-| **L2** | Especialistas | 30+ agentes SAST, SCA, Hardening, Secrets (por linguagem/ferramenta) | Parcial (L2.16) |
-| **L3** | Validacao | Reachability, PoC sandboxed, fuzzing (HITL), motor de score | Nao (score) |
-| **L4** | Consenso/Debate | CVSS+EPSS+SSVC, piso nao-negociavel, debate adversarial | Sim (debate) |
-| **L5** | Remediacao | Trilha A (patch codigo) + Trilha B (contencao WAF/Firewall) | Sim (patch) |
-| **L6** | Governanca | Policy engine (OPA/Rego), auditoria unificada, HITL gateway, four-eyes | Nao |
-| **L7** | Model Ensemble | Roteamento LLM (local vs Bedrock), ensemble, circuit breaker de custo | Sim (roteamento) |
-| **L8** | Escala | Ativacao condicional, onboarding de agentes, multi-tenancy | Nao |
+O **Z.T.K.** (Zero Trust Kill) é um sistema multiagente que automatiza o ciclo
+completo de detecção, triagem, validação, priorização e remediação de
+vulnerabilidades em código, infraestrutura e dependências — para ambiente de
+adquirência com requisitos **PCI DSS 4.0**, **LGPD** e **BACEN**.
 
----
+### Princípio Central
 
-## Stack Tecnologica
+> **"Sempre que existir uma ferramenta determinística capaz de resolver a
+> tarefa, o LLM não decide — ele apenas interpreta a saída da ferramenta."**
 
-- **Linguagem:** Python 3.12+ (type hints obrigatorios, mypy --strict)
-- **Schemas:** Pydantic v2 para todos os modelos de dados
-- **Infra:** AWS (Lambda, ECS Fargate, Bedrock, DynamoDB, S3, SQS, EventBridge)
-- **IaC:** Terraform 1.7+ com modulos provisionados
-- **Politicas:** OPA/Rego
-- **Observabilidade:** structlog JSON + Grafana
-- **Testes:** pytest (cobertura minima 85%), bandit, truffleHog
+O sistema combina **8 camadas de processamento**, **133 agentes especializados**,
+e um **pipeline SSVC determinístico** que substitui a priorização manual por CVSS.
 
 ---
 
-## Modulo MVP2 — Copiloto LLM (M4)
+## Arquitetura
 
-O módulo `/mvp2/copilot/` e o **Copiloto LLM para achados tier ATTEND**, um consumidor
-READ-ONLY da saida do Decision Engine do MVP1.
+```mermaid
+graph LR
+    subgraph "L1 — Entrada & Triagem"
+        A[Git Repo] --> B[Classifier]
+        B --> C[Prompt Guard]
+    end
+    subgraph "L2 — Especialistas"
+        D[30+ SAST Agents]
+    end
+    subgraph "L3 — Validação"
+        E[PoC Sandbox]
+    end
+    subgraph "L4 — Consenso"
+        F[Debate Adversarial]
+    end
+    subgraph "L5 — Remediação"
+        G[Patch Generator]
+        H[WAF Containment]
+    end
+    subgraph "L6 — Governança"
+        I[Policy Engine]
+        J[HITL Gateway]
+    end
 
-### Componentes
-
-| Arquivo | Funcao |
-|---------|--------|
-| `models.py` | Schemas Pydantic: CopilotAnalysis, AmbiguitySignal, FindingContext |
-| `config.py` | Settings via env vars (Bedrock region, model IDs, thresholds) |
-| `prompt_builder.py` | Montagem de prompts com contexto fixo (SSVC tree) + RAG |
-| `rag_retriever.py` | Recuperacao de contexto via indice JSON local (futuro: pgvector) |
-| `claude_client.py` | Cliente Bedrock para Claude 3.5 (Haiku rotina, Sonnet escalacao) |
-| `handler.py` | SQS consumer — orquestra RAG → prompt → Claude → parse |
-| `observability.py` | Logging JSON estruturado + metricas de desempenho |
-
-### Fluxo do Copiloto
-
-```
-SQS (DecisionRecord) → CopilotHandler
-  ├── RAG retrieval (CWE matching)
-  ├── Prompt build (fixed context + RAG + finding)
-  ├── Claude Haiku (routine analysis)
-  ├── [ambiguity ≥ threshold] → Claude Sonnet (escalation)
-  └── CopilotResponse (CopilotAnalysis + AmbiguitySignals)
+    C --> D --> E --> F --> G
+    F --> H
+    G --> I
+    H --> I --> J
 ```
 
-### Modo Shadow
+### Camadas
 
-Por padrao, o copiloto opera em **modo shadow**: analisa mas nao produz efeitos colaterais.
-Isso permite validacao antes da ativacao em producao.
-
-### Modelos Claude via Bedrock
-
-| Modelo | Uso | Tier |
-|--------|-----|------|
-| Claude 3.5 Haiku | Analise de rotina (alta velocidade) | Volume |
-| Claude 3.5 Sonnet | Escalacao em ambiguidade (raciocinio profundo) | Reasoning |
-
----
-
-## Configuracao OpenCode
-
-O projeto usa **12 agentes especializados** configurados via `opencode.json`:
-
-| Agente | LLM | Funcao |
-|--------|-----|--------|
-| `@ztk-orchestrator` | Kimi | Orquestrador de workflows multi-agente |
-| `@ztk-build` | Kimi | Builder principal — implementacao |
-| `@ztk-backend` | Kimi | Backend Python/AWS |
-| `@ztk-infra` | Kimi | Terraform/Infra |
-| `@ztk-qa` | Kimi | Quality gates e testes |
-| `@ztk-strategist` | DeepSeek | Arquitetura e threat modeling |
-| `@ztk-reviewer` | DeepSeek | Revisao de seguranca |
-| `@ztk-governance` | DeepSeek | GRC e compliance |
-| `@ztk-security-ops` | DeepSeek | SOC e hardening PCI |
-| `@ztk-regulatory` | DeepSeek | Auditoria e evidencias |
-| `@ztk-po` | DeepSeek | Product Owner |
-| `@ztk-pm` | DeepSeek | Project Manager |
+| # | Camada | Função | LLM? |
+|---|--------|--------|------|
+| **L1** | Entrada & Triagem | Ingestão, classificação, prompt-injection guard | ❌ |
+| **L2** | Especialistas | 30+ agentes SAST, SCA, Hardening, Secrets | Parcial |
+| **L3** | Validação | Reachability, PoC sandboxed, fuzzing, score engine | ❌ |
+| **L4** | Consenso/Debate | CVSS+EPSS+SSVC, piso não-negociável, debate adversarial | ✅ |
+| **L5** | Remediação | Trilha A (patch) + Trilha B (contenção WAF) | ✅ |
+| **L6** | Governança | Policy Engine OPA, auditoria, HITL, four-eyes | ❌ |
+| **L7** | Model Ensemble | Roteamento LLM (vLLM local vs Bedrock), circuit breaker | ✅ |
+| **L8** | Escala | Ativação condicional, onboarding, multi-tenancy | ❌ |
 
 ---
 
-## Quality Gates (Obrigatorios)
+## Stack Tecnológica
 
-Todo codigo deve passar:
+| Categoria | Tecnologia |
+|-----------|-----------|
+| **Linguagem** | Python 3.12+ (type hints, mypy strict) |
+| **Schemas** | Pydantic v2 |
+| **Infra** | AWS Lambda, ECS Fargate, Bedrock, DynamoDB, S3, SQS |
+| **IaC** | Terraform 1.7+ (10 módulos) |
+| **Políticas** | OPA/Rego |
+| **Logging** | structlog JSON (CloudWatch) |
+| **Testes** | pytest (85%+ cobertura), bandit, truffleHog |
+| **CI/CD** | GitHub Actions |
+
+---
+
+## Estrutura do Repositório
+
+```
+ZTK/
+├── assets/readme/              ← Identidade visual (SVG hero)
+├── mvp2/copilot/               ← MVP2: Copiloto LLM (M4)
+│   ├── src/copilot/            ← 8 módulos Python
+│   ├── tests/                  ← 49 testes
+│   └── data/                   ← RAG index + prompt schema
+├── src/                        ← 8 camadas (Fase 0 em andamento)
+│   └── shared/                 ← Schemas + Utils (F0.1 ✅)
+├── infra/terraform/            ← IaC — 10 módulos (F0.2 ✅)
+├── docs/                       ← ADRs, runbooks, compliance, threat model
+│   ├── architecture/           ← 5 ADRs
+│   ├── runbooks/               ← Contenção, kill-switch, four-eyes
+│   ├── compliance/             ← PCI DSS 4.0 + LGPD
+│   ├── ssdlc/                  ← S-SDLC + Threat Model STRIDE
+│   ├── infra/                  ← Documentação de infraestrutura
+│   ├── api/                    ← API docs (Copilot)
+│   ├── operacoes/              ← Deploy + Resposta a Incidente
+│   └── visual-identity/        ← Guia de design
+├── tests/                      ← Testes unitários
+├── .opencode/                  ← 12 agentes especializados
+├── opencode.json               ← Configuração do workspace
+├── AGENTS.md                   ← Regras do agente
+├── README.md                   ← Você está aqui
+└── TASKS_ZTK.md                ← Backlog 12 fases, 120+ tasks
+```
+
+---
+
+## Quick Start
 
 ```bash
-# Testes unitarios
-python -m pytest mvp2/copilot/tests/ -v
+# 1. Clonar
+git clone https://github.com/rcenerini/Z.T.K..git
+cd Z.T.K.
 
-# Type checking
-python -m mypy mvp2/copilot/src/copilot/ --strict
-
-# Lint
-python -m ruff check mvp2/copilot/
-
-# Security SAST
-python -m bandit -r mvp2/copilot/
-
-# Secret scan
-grep -r "verify=False" --include="*.py" mvp2/
-grep -r "api_key\s*=\s*['\"]" --include="*.py" mvp2/
-grep -r "password\s*=\s*['\"]" --include="*.py" mvp2/
-
-# Infra scan
-terraform validate infra/terraform/
-```
-
----
-
-## Roadmap (52 semanas)
-
-| Milestone | Semanas | Entregavel |
-|-----------|---------|------------|
-| M0 | 1-4 | Fundacao (schemas, infra, CI/CD) |
-| M1 | 5-6 | Camada 1 — Entrada & Triagem |
-| M2 | 7-10 | Camada 6 — Governanca transversal |
-| M3 | 11-18 | Camada 2 — Especialistas (30+ agentes) |
-| M4 | 19-24 | Camada 3 — Validacao (PoC, fuzzing) |
-| M5 | 25-28 | Camada 4 — Consenso/Debate |
-| M6 | 29-34 | Camada 5 — Remediacao (patch + contencao) |
-| M7 | 35-38 | Camada 7 — Model Ensemble |
-| M8 | 39-42 | Camada 8 — Escala |
-| M9-M12 | 43-52 | Interface, Docs, SecTests, Governance Review |
-
-Detalhes completos em `TASKS_ZTK.md` e `.opencode/steering/ZTK_LAYER_ROADMAP.md`.
-
----
-
-## Quick Start (Desenvolvimento Local)
-
-```bash
-# 1. Criar venv e instalar dependencias
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# .venv\Scripts\activate   # Windows
+# 2. Dependências
+python -m venv .venv && source .venv/bin/activate
 pip install -e .
 
-# 2. Configurar env vars (NUNCA hardcode credenciais)
-export COPILOT_BEDROCK_REGION=us-east-1
-export AWS_ACCESS_KEY_ID=...
-export AWS_SECRET_ACCESS_KEY=...
+# 3. Testes (MVP2 Copilot)
+PYTHONPATH=mvp2/copilot/src pytest mvp2/copilot/tests/ -v
 
-# 3. Rodar testes
-python -m pytest mvp2/copilot/tests/test_copilot.py -v
+# 4. Testes (Shared Schemas)
+PYTHONPATH=src pytest tests/unit/shared/ -v
 
-# 4. Quality gates completos
-make test lint typecheck security-sast security-secrets
+# 5. Quality Gates
+make lint typecheck test security-sast security-secrets
 ```
+
+---
+
+## Roadmap
+
+| Milestone | Semanas | Entregável | Status |
+|-----------|---------|------------|--------|
+| **M0** | 1-4 | Fundação (schemas, infra, CI/CD) | 🟢 50% |
+| **M1** | 5-6 | Camada 1 — Entrada & Triagem | ⬜ |
+| **M2** | 7-10 | Camada 6 — Governança | ⬜ |
+| **M3** | 11-18 | Camada 2 — Especialistas | ⬜ |
+| **M4** | 19-24 | Camada 3 — Validação | ⬜ |
+| **M5** | 25-28 | Camada 4 — Consenso/Debate | ⬜ |
+| **M6** | 29-34 | Camada 5 — Remediação | ⬜ |
+| **M7** | 35-38 | Camada 7 — Model Ensemble | ⬜ |
+| **M8** | 39-42 | Camada 8 — Escala | ⬜ |
+| **M9-M12** | 43-52 | Interface, Docs, SecTests, Governance | ⬜ |
 
 ---
 
 ## Compliance
 
-- **PCI DSS 4.0**: requisitos 6 (desenvolvimento seguro), 10 (logging), 11 (testes), 12 (IR)
-- **LGPD**: minimizacao de dados, criptografia, direito a exclusao
-- **Bacen**: Resolucoes 4658, 4893, 85, 3909
+| Framework | Cobertura | Evidência |
+|-----------|-----------|-----------|
+| **PCI DSS 4.0** | 45% (controles projetados, IaC provisionada) | [Matriz](./docs/compliance/pci-dss-matrix.md) |
+| **LGPD** | 84% (3 itens dependem de DPO externo) | [Matriz](./docs/compliance/lgpd-matrix.md) |
+| **ISO 27001** | Mapeado via Threat Model STRIDE | [Threat Model](./docs/ssdlc/threat-model-ztk.md) |
+| **BACEN 4658** | Alinhado (4 pilares) | [S-SDLC](./docs/ssdlc/S-SDLC.md) |
 
 ---
 
-## Licenca
+## Documentação
 
-Uso restrito ao ambiente de adquirência. Distribuição sob autorização.
+| Área | Documentos |
+|------|-----------|
+| **Decisões** | [ADR-001](./docs/architecture/ADR-001-ecs-vs-eks.md) · [ADR-002](./docs/architecture/ADR-002-model-routing.md) · [ADR-003](./docs/architecture/ADR-003-prompt-injection-guard.md) · [ADR-004](./docs/architecture/ADR-004-sandbox-isolation.md) · [ADR-005](./docs/architecture/ADR-005-cwe-template-library.md) |
+| **Operação** | [Contenção](./docs/runbooks/containment-playbook.md) · [Kill Switch](./docs/runbooks/kill-switch-playbook.md) · [Four-Eyes](./docs/runbooks/exception-four-eyes-playbook.md) · [Deploy](./docs/operacoes/runbook-deploy.md) · [Incidente](./docs/operacoes/runbook-incidente.md) |
+| **Segurança** | [Threat Model](./docs/ssdlc/threat-model-ztk.md) · [S-SDLC](./docs/ssdlc/S-SDLC.md) · [PCI Matrix](./docs/compliance/pci-dss-matrix.md) · [LGPD Matrix](./docs/compliance/lgpd-matrix.md) |
+| **API** | [Copilot API](./docs/api/copilot-api.md) |
+| **Infra** | [Arquitetura de Infra](./docs/infra/README.md) |
+| **Design** | [Identidade Visual](./docs/visual-identity/VISUAL_IDENTITY.md) |

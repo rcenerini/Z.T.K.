@@ -2,6 +2,11 @@
 
 > **Versão:** 1.0 | **Fase:** F0.2 | **Terraform:** 1.7+ | **Provider AWS:** 5.35+
 
+![Terraform](https://img.shields.io/badge/Terraform-1.7%2B-7b42bc?logo=terraform)
+![AWS](https://img.shields.io/badge/AWS-Serverless-ff6b35?logo=amazonaws)
+![PCI DSS](https://img.shields.io/badge/PCI_DSS-4.0-00ff88)
+![Status](https://img.shields.io/badge/validate-passing-00ff88)
+
 ---
 
 ## 1. Visão Geral
