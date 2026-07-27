@@ -118,10 +118,14 @@ module "grafana" {
   tags        = local.common_tags
 }
 
-# Bedrock — Configuracao de modelos (nao cria recursos, so configura IAM)
-module "bedrock" {
-  source        = "./modules/bedrock"
-  name_prefix   = local.name_prefix
-  allowed_roles = [module.iam.bedrock_invoke_role_arn]
-  tags          = local.common_tags
+# Aurora PostgreSQL + pgvector — RAG Knowledge Base (CDE, PCI DSS)
+module "aurora_rag" {
+  source                    = "./modules/aurora"
+  name_prefix               = local.name_prefix
+  kms_key_arn               = module.iam.kms_key_arn
+  vpc_id                    = module.vpc.vpc_id
+  subnet_ids                = module.vpc.cde_subnet_ids
+  availability_zones        = var.availability_zones
+  allowed_security_groups   = []
+  tags                      = local.common_tags
 }
