@@ -1,4 +1,4 @@
-# Arquitetura de Segurança Cielo: SAGA-SAGV_V2 (MVP1) + Z.T.K. (MVP2)
+# Arquitetura de Seguranca: SAGA-SAGV_V2 (MVP1) + Z.T.K. (MVP2)
 
 **Documento técnico-executivo consolidado**
 
@@ -11,7 +11,7 @@ Este documento consolida dois projetos irmãos que compartilham a mesma filosofi
 - **SAGA-SAGV_V2 (MVP1):** um motor de **priorização e resposta** a vulnerabilidades já conhecidas, vindas de scanners comerciais (Veracode, Orca, Tenable) e feeds públicos (CISA KEV, FIRST EPSS). Não escaneia nada por conta própria — orquestra o que já existe, decide com uma árvore SSVC auditável, e aciona ticket (Jira) ou mitigação de borda (Akamai).
 - **Z.T.K. (MVP2 — evolução):** uma plataforma de **detecção e autocorreção próprias**, com mais de 100 agentes especializados (SAST por linguagem/ferramenta, validação de exploit via PoC/fuzzing, debate adversarial de severidade, geração de patch e contenção automática em WAF/firewall).
 
-A ordem MVP1 → MVP2 não é arbitrária: o SAGA-SAGV_V2 entrega valor imediato orquestrando ferramentas que a Cielo já possui (Veracode, Orca, Tenable), com investimento de engenharia relativamente baixo. O Z.T.K. é o passo seguinte — um investimento maior, que constrói capacidade de detecção e remediação próprias em vez de depender apenas de scanners de terceiros. Ao final, os dois se conectam: o Z.T.K. se torna **mais uma fonte de conector** dentro do SAGA-SAGV_V2, e ambos compartilham a mesma camada de contenção de borda.
+A ordem MVP1 → MVP2 não é arbitrária: o SAGA-SAGV_V2 entrega valor imediato orquestrando ferramentas que a organizacao já possui (Veracode, Orca, Tenable), com investimento de engenharia relativamente baixo. O Z.T.K. é o passo seguinte — um investimento maior, que constrói capacidade de detecção e remediação próprias em vez de depender apenas de scanners de terceiros. Ao final, os dois se conectam: o Z.T.K. se torna **mais uma fonte de conector** dentro do SAGA-SAGV_V2, e ambos compartilham a mesma camada de contenção de borda.
 
 ---
 
@@ -331,7 +331,7 @@ Z.T.K. (achado + PoC confirmado + patch candidato)
 
 - **Cobertura em duas frentes complementares:** o Z.T.K. reduz o tempo entre "vulnerabilidade introduzida" e "vulnerabilidade corrigida" (shift-left, antes do merge); o SAGA-SAGV_V2 reduz o tempo entre "vulnerabilidade conhecida publicamente" e "resposta organizada" (shift-right, em produção).
 - **Evidência de exploit real substituindo proxy estatístico** para achados de código — o PoC do Z.T.K. é uma confirmação, não uma inferência de probabilidade.
-- **Eliminação do CVSS isolado como critério único de priorização** em ambos os projetos — SSVC (SAGA-SAGV_V2) e o motor de score multi-evidência + debate adversarial (Z.T.K.) substituem a prática que a Cielo está deixando para trás.
+- **Eliminação do CVSS isolado como critério único de priorização** em ambos os projetos — SSVC (SAGA-SAGV_V2) e o motor de score multi-evidência + debate adversarial (Z.T.K.) substituem a prática que a organizacao está deixando para trás.
 - **Fail-closed consistente ponta a ponta:** dado ausente nunca vira suposição otimista em nenhum dos dois sistemas — vira "crítico" ou "desconhecido" por padrão.
 - **Redução de janela de exposição:** contenção automática de borda (ambos os projetos) compra tempo entre detecção e correção definitiva, em vez de deixar o risco ativo enquanto o time de engenharia revisa com calma.
 - **Governança de exceção nomeada e auditável:** CAB (SAGA-SAGV_V2) e four-eyes executivo (Z.T.K.) garantem que nenhuma decisão de rebaixar risco crítico aconteça sem responsabilidade nomeada.
@@ -343,7 +343,7 @@ Z.T.K. (achado + PoC confirmado + patch candidato)
 - **Redução de ruído/fadiga de alerta:** SSVC (MVP1) e o motor de score com eliminação de falso positivo (MVP2) reduzem o volume de achados que chegam a um humano, concentrando esforço de engenharia apenas no que é `ACT_3`/`ACT_14`/P0/P1 real.
 - **Custo de LLM controlado por desenho, não por sorte:** roteamento por ambiguidade (não por volume) em ambos os projetos, com modelo barato (Haiku, Bedrock distilled) absorvendo o volume de rotina e modelo caro reservado para o resíduo genuinamente ambíguo — circuit breaker de custo evita surpresa de fatura.
 - **Menor tempo de remediação = menor custo de exposição:** cada dia que uma vulnerabilidade crítica fica aberta é custo de risco acumulado (potencial multa, incidente, retrabalho); a automação de patch (Z.T.K.) e mitigação (ambos) comprime esse tempo de forma mensurável via SLA por decisão.
-- **Aproveitamento do investimento já feito em scanners comerciais** (Veracode/Orca/Tenable) em vez de substituí-los — o MVP1 monetiza ferramentas que a Cielo já paga, adiando o investimento maior (MVP2) até que o valor do MVP1 esteja provado.
+- **Aproveitamento do investimento já feito em scanners comerciais** (Veracode/Orca/Tenable) em vez de substituí-los — o MVP1 monetiza ferramentas que a organizacao já paga, adiando o investimento maior (MVP2) até que o valor do MVP1 esteja provado.
 - **Shadow mode como redutor de risco de implantação:** nenhum agente ou motor entra em produção decidindo sozinho — reduz custo de incidente causado pelo próprio sistema de segurança.
 
 ## 3.4 Ganhos de Redução de Risco

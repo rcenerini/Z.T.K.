@@ -1,14 +1,14 @@
 # Runbook: Deploy em Produção
 
-> **Versão:** 1.0 | **Data:** 2026-07-27 | **Ambiente:** AWS Production (`cielo-ztk-prod`)
+> **Versão:** 1.0 | **Data:** 2026-07-27 | **Ambiente:** AWS Production (`ztk-prod`)
 
 ---
 
 ## 1. Pré-requisitos
 
-- [ ] Acesso à conta AWS `cielo-ztk-prod` (IAM role `ZTKDeployRole`)
+- [ ] Acesso à conta AWS `ztk-prod` (IAM role `ZTKDeployRole`)
 - [ ] Terraform 1.7+ instalado
-- [ ] AWS CLI configurado (`aws sso login --profile cielo-ztk-prod`)
+- [ ] AWS CLI configurado (`aws sso login --profile ztk-prod`)
 - [ ] Aprovação CAB para deploy em produção
 - [ ] Todos os quality gates passando no commit de release:
   - `make test` — 100% pass
@@ -87,7 +87,7 @@ aws cloudwatch get-metric-statistics \
   --statistics Sum
 
 # 4. Verificar dashboard Grafana
-open https://grafana.cielo.internal/d/ztk-producao
+open https://grafana.ztk.internal/d/ztk-producao
 ```
 
 ### Passo 6: Smoke Test (10 min)

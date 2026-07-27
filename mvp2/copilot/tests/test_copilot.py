@@ -47,7 +47,7 @@ from copilot.handler import CopilotHandler  # type: ignore[import-untyped]
 def valid_finding() -> FindingContext:
     return FindingContext(
         finding_id=uuid.uuid4(),
-        tenant_id="cielo-ztk",
+        tenant_id="ztk-proj",
         source="Semgrep",
         severity=Severity.P1,
         cwe_ids=["CWE-89"],

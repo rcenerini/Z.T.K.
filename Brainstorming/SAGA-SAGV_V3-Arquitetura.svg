@@ -24,7 +24,7 @@
     SAGA-SAGV — Arquitetura de Gestão de Vulnerabilidades
   </text>
   <text x="760" y="53" text-anchor="middle" font-size="13" fill="#8b949e">
-    Motor SSVC Determinístico + Pesos NRM_134 · AWS Serverless · PCI-DSS 4.0 + BACEN · Cielo
+    Motor SSVC Determinístico + Pesos NRM_134 · AWS Serverless · PCI-DSS 4.0 + BACEN · organizacao
   </text>
   <!-- badges -->
   <rect x="1340" y="14" width="110" height="22" rx="11" fill="#1d4ed8"/>

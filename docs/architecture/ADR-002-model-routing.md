@@ -14,7 +14,7 @@ O Z.T.K. usa LLMs em 4 cenarios:
 4. **Copiloto de excecoes** (interface web, interativo)
 
 Constraints regulatórios:
-- **Dados PCI/CHD/PAN nunca podem sair da VPC da Cielo**
+- **Dados PCI/CHD/PAN nunca podem sair da VPC da organizacao**
 - **Auditoria PCI DSS req. 10 exige logging de toda decisao**
 
 ## Opcoes Consideradas

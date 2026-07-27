@@ -30,9 +30,9 @@ Status: **Fase de desenvolvimento inicial. Nucleo implementado, 39/49 testes pas
 
 ### MVP1 — Gates Humanos (bloqueados)
 
-- [~] **G2** — Jira Assets schema (aguardando Cielo)
-- [~] **G5** — CAB runbook approval (aguardando Cielo)
-- [~] **G7** — AWS deploy real (aguardando Cielo)
+- [~] **G2** — Jira Assets schema (aguardando stakeholders externos)
+- [~] **G5** — CAB runbook approval (aguardando stakeholders externos)
+- [~] **G7** — AWS deploy real (aguardando stakeholders externos)
 - [~] **G9** — Shadow validation (depende de G7)
 - [~] **G10** — Pos-shadow tuning (depende de G9)
 
@@ -783,5 +783,5 @@ F12 (Governance Review) → depende de TUDO                    │
 ### Bloqueado (aguardando externos)
 5. **M4.13** — Aurora PostgreSQL + pgvector → Future (sem previsao)
 6. **M4.14** — Bedrock IAM/config → Aguardando time de plataforma
-7. **G2, G5, G7, G9, G10** — Gates humanos MVP1 → Aguardando Cielo
+7. **G2, G5, G7, G9, G10** — Gates humanos MVP1 → Aguardando stakeholders externos
 ```

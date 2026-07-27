@@ -65,7 +65,7 @@ from shared.utils.fail_closed import Defaults, fail_closed
 @pytest.fixture
 def finding_dict() -> dict[str, Any]:
     return {
-        "tenant_id": "cielo-ztk",
+        "tenant_id": "ztk-proj",
         "source": FindingSource.SEMGREP,
         "severity": FindingSeverity.P1,
         "cwe_ids": ["CWE-89"],
@@ -100,7 +100,7 @@ def dry_run_pass() -> DryRunResult:
 class TestFinding:
     def test_create_valid_finding(self, valid_finding: Finding) -> None:
         assert valid_finding.finding_id is not None
-        assert valid_finding.tenant_id == "cielo-ztk"
+        assert valid_finding.tenant_id == "ztk-proj"
         assert valid_finding.severity == FindingSeverity.P1
         assert valid_finding.status == FindingStatus.RAW
         assert valid_finding.audit_trail == []
@@ -132,9 +132,9 @@ class TestFinding:
             Finding(**finding_dict)
 
     def test_tenant_id_lowercase(self, finding_dict: dict[str, Any]) -> None:
-        finding_dict["tenant_id"] = "CIELO-ZTK"
+        finding_dict["tenant_id"] = "ZTK-PROJ"
         finding = Finding(**finding_dict)
-        assert finding.tenant_id == "cielo-ztk"
+        assert finding.tenant_id == "ztk-proj"
 
     def test_add_audit_entry(self, valid_finding: Finding) -> None:
         valid_finding.add_audit_entry(
@@ -280,7 +280,7 @@ class TestAuditEvent:
             stage=AuditStage.SCORING,
             action=AuditAction.SCORED,
             agent_id="L4.01",
-            tenant_id="cielo-ztk",
+            tenant_id="ztk-proj",
             payload=payload,
             payload_hash=ph,
         )
@@ -352,7 +352,7 @@ class TestContainmentRule:
     def test_create_with_dry_run(self, valid_finding: Finding, dry_run_pass: DryRunResult) -> None:
         rule = ContainmentRule(
             finding_id=valid_finding.finding_id,
-            tenant_id="cielo-ztk",
+            tenant_id="ztk-proj",
             rule_type=ContainmentType.WAF_RULE,
             cwe_ids=["CWE-89"],
             description="Block SQL injection patterns in login endpoint",
@@ -368,7 +368,7 @@ class TestContainmentRule:
         with pytest.raises(ValidationError):
             ContainmentRule(
                 finding_id=valid_finding.finding_id,
-                tenant_id="cielo-ztk",
+                tenant_id="ztk-proj",
                 rule_type=ContainmentType.WAF_RULE,
                 cwe_ids=["CWE-89"],
                 description="Test rule that is long enough to pass validation",
@@ -388,7 +388,7 @@ class TestContainmentRule:
         with pytest.raises(ValidationError):
             ContainmentRule(
                 finding_id=valid_finding.finding_id,
-                tenant_id="cielo-ztk",
+                tenant_id="ztk-proj",
                 rule_type=ContainmentType.WAF_RULE,
                 cwe_ids=["CWE-89"],
                 description="Test rule",
@@ -401,7 +401,7 @@ class TestContainmentRule:
     def test_remaining_hours(self, valid_finding: Finding, dry_run_pass: DryRunResult) -> None:
         rule = ContainmentRule(
             finding_id=valid_finding.finding_id,
-            tenant_id="cielo-ztk",
+            tenant_id="ztk-proj",
             rule_type=ContainmentType.WAF_RULE,
             cwe_ids=["CWE-89"],
             description="Test rule for remaining hours validation",
@@ -415,7 +415,7 @@ class TestContainmentRule:
     def test_is_expired(self, valid_finding: Finding, dry_run_pass: DryRunResult) -> None:
         rule = ContainmentRule(
             finding_id=valid_finding.finding_id,
-            tenant_id="cielo-ztk",
+            tenant_id="ztk-proj",
             rule_type=ContainmentType.WAF_RULE,
             cwe_ids=["CWE-89"],
             description="Test rule for expiry check validation",

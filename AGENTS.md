@@ -140,7 +140,7 @@ ZTK/
 
 | Item | Bloqueio |
 |---|---|
-| Gates humanos MVP1 (G2/G5/G7/G9/G10) | Aguardando Cielo |
+| Gates humanos MVP1 (G2/G5/G7/G9/G10) | Aguardando stakeholders externos |
 | Aurora PostgreSQL + pgvector (RAG real) | Futuro |
 | Bedrock IAM/config | Aguardando time de plataforma |
 | 10 testes falhando no copilot (bugs de runtime) | Em correcao |

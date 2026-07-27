@@ -3,7 +3,7 @@
 
 > **Data:** 2026-07-21 (atualizado com análise NRM_134 e Convergência Agêntica MDASH)
 > **Fontes base:**
-> - `SAGA-SAGV_V2/vuln-mgmt-cielo` — projeto em execução (PRD, ARCHITECTURE, DECISION_ENGINE_SPEC, INTEGRATIONS, TASKS)
+> - `SAGA-SAGV_V2/vuln-mgmt-project` — projeto em execução (PRD, ARCHITECTURE, DECISION_ENGINE_SPEC, INTEGRATIONS, TASKS)
 > - `SAGA-SAGV_V3/relatorio_vulnerabilidades.md` — pesquisa de estado da arte global
 > - `SAGA-SAGV_V3/mapeamento_projetos_gestao_vulnerabilidades.md` — mapeamento de projetos por horizonte
 > - `vma-veracode/_Agents-GVul/skills/avaliacao-classificacao-vulnerabilidades/SKILL.md` — modelo de pesos atual (NRM_134)

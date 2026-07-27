@@ -51,7 +51,7 @@ O kill switch é o mecanismo de emergência que **desativa todo o pipeline de re
 ### Via Interface Web (recomendado)
 
 ```
-1. Acessar: https://ztk.cielo.internal/kill-switch
+1. Acessar: https://ztk.empresa.internal/kill-switch
 2. Autenticar com MFA (Cognito + hardware token)
 3. Selecionar escopo:
    [ ] Pipeline completo (todas as camadas)
@@ -66,13 +66,13 @@ O kill switch é o mecanismo de emergência que **desativa todo o pipeline de re
 ### Via API (emergência)
 
 ```bash
-curl -X POST https://api.ztk.cielo.internal/v1/kill-switch \
+curl -X POST https://api.ztk.empresa.internal/v1/kill-switch \
   -H "Authorization: Bearer ${SOC_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "scope": "full",
     "reason": "Mass false positive detection — WAF blocking legitimate traffic on /api/payments",
-    "operator": "soc-analyst@cielo.com.br"
+    "operator": "soc-analyst@empresa.com.br"
   }'
 ```
 
@@ -125,7 +125,7 @@ Todo acionamento de kill switch gera:
   "event_id": "sha256...",
   "event_type": "KILL_SWITCH_ACTIVATED",
   "scope": "full",
-  "operator": "soc-analyst@cielo.com.br",
+  "operator": "soc-analyst@empresa.com.br",
   "reason": "...",
   "timestamp": "2026-07-27T14:30:00Z",
   "active_rules_at_kill": 12,

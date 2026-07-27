@@ -198,4 +198,4 @@ make test lint typecheck security-sast security-secrets
 
 ## Licenca
 
-Proprietario — Cielo S.A. Uso restrito ao ambiente de adquirência.
+Uso restrito ao ambiente de adquirência. Distribuição sob autorização.

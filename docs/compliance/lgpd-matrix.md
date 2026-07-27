@@ -2,7 +2,7 @@
 
 > **Versão:** 1.0 | **Data:** 2026-07-27
 > **Escopo:** Requisitos da LGPD aplicáveis ao tratamento de dados pessoais pelo Z.T.K.
-> **Encarregado (DPO):** A definir pela Cielo
+> **Encarregado (DPO):** A definir pela organizacao
 
 ---
 
@@ -37,7 +37,7 @@
 | Seção | Requisito | Controle Z.T.K. | Status |
 |-------|----------|-----------------|--------|
 | **Art. 37** — Registro de operações de tratamento | AuditEvent registra toda operação de tratamento (stage, agent, payload_hash) | ✅ |
-| **Art. 38** — Encarregado (DPO) | A definir pela Cielo — Z.T.K. fornece evidências para DPO | 🟡 Externo |
+| **Art. 38** — Encarregado (DPO) | A definir pela organizacao — Z.T.K. fornece evidências para DPO | 🟡 Externo |
 | **Art. 39** — Atribuições do encarregado | Matriz de rastreabilidade (este documento) como evidência para DPO | ✅ |
 
 ---
@@ -64,7 +64,7 @@
 |--------|----------|-----------------|--------|
 | **Art. 46** — Medidas de segurança técnicas e administrativas | Criptografia, IAM, logging, sandbox, fail-closed, least privilege | ✅ |
 | **Art. 47** — Comunicação de incidente | Runbook de incidente; notificação para DPO em <24h | ✅ |
-| **Art. 48** — Comunicação ao titular (se risco relevante) | Fora do escopo do Z.T.K. (responsabilidade do DPO/Cielo) | 🟡 Externo |
+| **Art. 48** — Comunicação ao titular (se risco relevante) | Fora do escopo do Z.T.K. (responsabilidade do DPO/organizacao) | 🟡 Externo |
 | **Art. 49** — Sistemas seguros por padrão (security by design) | S-SDLC.md documenta security-by-design; threat model STRIDE completo | ✅ |
 | **Art. 50** — Boas práticas de governança | AGENTS.md, políticas, runbooks, matriz RACI | ✅ |
 
@@ -87,4 +87,4 @@
 | 🟡 Pendente (externo) | 3 | 16% |
 | 🔴 Não conforme | 0 | 0% |
 
-**Nota:** Os 3 itens pendentes (DPO, comunicação ao titular, fiscalização) são responsabilidade da Cielo, não do sistema Z.T.K. O sistema está projetado para **fornecer todas as evidências necessárias** para que a Cielo atenda esses requisitos.
+**Nota:** Os 3 itens pendentes (DPO, comunicação ao titular, fiscalização) sao responsabilidade da organizacao, nao do sistema Z.T.K. O sistema está projetado para **fornecer todas as evidências necessárias** para que a organizacao atenda esses requisitos.

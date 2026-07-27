@@ -3,7 +3,7 @@
 
 > **Data:** 2026-07-21 (atualizado com análise NRM_134)
 > **Fontes base:**
-> - `SAGA-SAGV_V2/vuln-mgmt-cielo` — projeto em execução (PRD, ARCHITECTURE, DECISION_ENGINE_SPEC, INTEGRATIONS, TASKS)
+> - `SAGA-SAGV_V2/vuln-mgmt-project` — projeto em execução (PRD, ARCHITECTURE, DECISION_ENGINE_SPEC, INTEGRATIONS, TASKS)
 > - `SAGA-SAGV_V3/relatorio_vulnerabilidades.md` — pesquisa de estado da arte global
 > - `SAGA-SAGV_V3/mapeamento_projetos_gestao_vulnerabilidades.md` — mapeamento de projetos por horizonte
 > - `vma-veracode/_Agents-GVul/skills/avaliacao-classificacao-vulnerabilidades/SKILL.md` — **modelo de pesos atual (NRM_134)**
@@ -14,7 +14,7 @@
 
 ## Sumário Executivo
 
-O projeto SAGA-SAGV V2 representa a **primeira geração** de defesa à velocidade de máquina para gestão de vulnerabilidades na Cielo. Ele resolve os problemas corretos — triagem manual inviável, CVSS puro sem contexto, ausência de rastreabilidade para PCI-DSS/BACEN — com as ferramentas corretas, sem introduzir riscos de IA generativa antes da fundação estar estável.
+O projeto SAGA-SAGV V2 representa a **primeira geração** de defesa à velocidade de máquina para gestão de vulnerabilidades na organizacao. Ele resolve os problemas corretos — triagem manual inviável, CVSS puro sem contexto, ausência de rastreabilidade para PCI-DSS/BACEN — com as ferramentas corretas, sem introduzir riscos de IA generativa antes da fundação estar estável.
 
 Este documento descreve:
 1. O **modelo de pesos atual (NRM_134)** da empresa e o gap em relação ao motor V2
@@ -505,7 +505,7 @@ NÓ 1 — Exposição pública?
 
 ### 1.7 Marcos de Sincronização e Gates Humanos
 
-O progresso não é por calendário fixo — depende de **gates humanos** (decisões de pessoas/áreas da Cielo):
+O progresso não é por calendário fixo — depende de **gates humanos** (decisões de pessoas/áreas da organizacao):
 
 | Gate | O que bloqueia | Ação necessária |
 |---|---|---|
@@ -540,7 +540,7 @@ O progresso não é por calendário fixo — depende de **gates humanos** (decis
 
 **O que o V2 não cobre:** o `RemediationOrchestrator` consume `MitigationRecord` persistido como fonte de verdade (correto), mas não há garantia de que os dados de entrada que geraram o `MitigationRecord` foram sanitizados. Um relatório de bug malicioso no GitHub Issues pode envenenar o pipeline upstream.
 
-**Impacto para a Cielo:** uma adquirência que processa transações financeiras tem superfície de ataque de altíssimo valor — o risco de um agente injetar código malicioso em um repositório de produção de pagamentos é inaceitável.
+**Impacto para a organizacao:** uma adquirência que processa transações financeiras tem superfície de ataque de altíssimo valor — o risco de um agente injetar código malicioso em um repositório de produção de pagamentos é inaceitável.
 
 ---
 
@@ -827,7 +827,7 @@ Modelo de pesos abertos hospedado internamente, isolado da rede, dedicado exclus
 
 **Uso:** restrito à equipe de IR, com controles de acesso rígidos. **Não integra ao fluxo de detecção do dia a dia** — é ferramenta de exceção para incidentes graves, análoga ao Projeto 11 do mapeamento V3.
 
-**Plataformas candidatas:** Llama, Mistral, DeepSeek ou equivalente em GPU on-premise ou cloud isolada da Cielo.
+**Plataformas candidatas:** Llama, Mistral, DeepSeek ou equivalente em GPU on-premise ou cloud isolada da organizacao.
 
 **Métricas de sucesso:**
 - Disponibilidade comprovada em simulações de incidente (tabletop exercises)
