@@ -32,35 +32,19 @@ e um **pipeline SSVC determinístico** que substitui a priorização manual por 
 
 ## Arquitetura
 
-```mermaid
-graph LR
-    subgraph "L1 — Entrada & Triagem"
-        A[Git Repo] --> B[Classifier]
-        B --> C[Prompt Guard]
-    end
-    subgraph "L2 — Especialistas"
-        D[30+ SAST Agents]
-    end
-    subgraph "L3 — Validação"
-        E[PoC Sandbox]
-    end
-    subgraph "L4 — Consenso"
-        F[Debate Adversarial]
-    end
-    subgraph "L5 — Remediação"
-        G[Patch Generator]
-        H[WAF Containment]
-    end
-    subgraph "L6 — Governança"
-        I[Policy Engine]
-        J[HITL Gateway]
-    end
+### Arquitetura Funcional — 8 Camadas
 
-    C --> D --> E --> F --> G
-    F --> H
-    G --> I
-    H --> I --> J
-```
+<p align="center">
+  <img src="./assets/readme/architecture-functional.svg" width="100%"
+       alt="Arquitetura funcional das 8 camadas do Z.T.K. — fluxo Git Repo → L1 Entrada → L2 Especialistas → L3 Validacao → L4 Consenso → L5 Remediacao → Output (PR/WAF). Camadas L6, L7, L8 transversais.">
+</p>
+
+### Arquitetura Técnica — Stack AWS + vLLM Local
+
+<p align="center">
+  <img src="./assets/readme/architecture-technical.svg" width="100%"
+       alt="Arquitetura tecnica profunda: VPC com DMZ/APP/CDE, AWS Lambda, ECS Fargate, DynamoDB SSE-KMS, S3, SQS, Bedrock, vLLM local GPU, VPC Endpoints, CI/CD Pipeline.">
+</p>
 
 ### Camadas
 
