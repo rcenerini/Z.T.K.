@@ -6,6 +6,11 @@
 
 ---
 
+
+![Compliance](https://img.shields.io/badge/type-Compliance-00d4ff)
+![Audit](https://img.shields.io/badge/audit-ready-00ff88)
+
+
 ## Requisito 1: Instalar e Manter Controle de Segurança de Rede
 
 | Sub-Req | Descrição PCI DSS | Controle Z.T.K. | Camada | Status |

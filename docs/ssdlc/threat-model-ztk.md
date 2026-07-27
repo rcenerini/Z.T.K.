@@ -6,6 +6,11 @@
 
 ---
 
+
+![Security](https://img.shields.io/badge/type-SSDL-ff6b35)
+![Review](https://img.shields.io/badge/review-anual-00d4ff)
+
+
 ## 1. Diagrama de Fluxo de Dados (DFD) — Resumo Executivo
 
 ```

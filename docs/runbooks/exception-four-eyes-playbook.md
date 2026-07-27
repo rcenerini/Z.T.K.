@@ -4,6 +4,11 @@
 
 ---
 
+
+![Runbook](https://img.shields.io/badge/type-Runbook-ff6b35)
+![SLA](https://img.shields.io/badge/SLA-documentado-00ff88)
+
+
 ## 1. Visão Geral
 
 O mecanismo de exceção four-eyes permite que um finding com severidade elevada seja temporariamente reduzido ou aceito como risco residual, mediante **aprovação de duas pessoas diferentes** com autoridade adequada.

@@ -7,6 +7,11 @@
 
 ---
 
+
+![Steering](https://img.shields.io/badge/type-Steering_Doc-00d4ff)
+![Version](https://img.shields.io/badge/version-1.0-00ff88)
+
+
 ## Visao Geral das Fases
 
 ```

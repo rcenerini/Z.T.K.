@@ -9,6 +9,11 @@
 
 ---
 
+
+![ADR](https://img.shields.io/badge/type-ADR-00d4ff)
+![Status](https://img.shields.io/badge/status-proposto-ff6b35)
+
+
 ## Contexto
 
 A Camada 5 (Remediação), Trilha B, aplica regras de contenção runtime (WAF, Firewall, IAM) quando uma vulnerabilidade confirmada não pode ser corrigida imediatamente. Cada tipo de vulnerabilidade (CWE) exige um padrão de contenção diferente. Sem templates padronizados:

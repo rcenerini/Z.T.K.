@@ -4,6 +4,11 @@
 
 ---
 
+
+![Runbook](https://img.shields.io/badge/type-Runbook-ff6b35)
+![SLA](https://img.shields.io/badge/SLA-documentado-00ff88)
+
+
 ## 1. Visão Geral
 
 Este runbook descreve o procedimento declarativo para contenção runtime de vulnerabilidades confirmadas que não podem ser corrigidas imediatamente (patch indisponível, janela de manutenção, dependência externa).

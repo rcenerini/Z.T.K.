@@ -1,8 +1,11 @@
 # AGENTS.md — Z.T.K. (Zero Trust Kill)
 
-**Versao:** 1.0 | **Atualizacao:** 2026-07-26
-**Escopo:** Todos os agentes OpenCode trabalhando neste repositorio
-**Mandamento:** Leia este guia ANTES de qualquer implementacao
+![Version](https://img.shields.io/badge/version-1.1-00d4ff)
+![Agents](https://img.shields.io/badge/agents-12-ff6b35)
+![DeepSeek](https://img.shields.io/badge/LLM-DeepSeek_v4--pro-7b42bc)
+![Status](https://img.shields.io/badge/status-active-00ff88)
+
+> **Versão:** 1.1 | **Atualização:** 2026-07-27
 
 ---
 

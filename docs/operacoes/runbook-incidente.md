@@ -4,6 +4,11 @@
 
 ---
 
+
+![Ops](https://img.shields.io/badge/type-Operacoes-ff6b35)
+![Environment](https://img.shields.io/badge/env-AWS_Production-00d4ff)
+
+
 ## 1. Classificação de Severidade
 
 | Severidade | Definição | Exemplos | SLA de Resposta |

@@ -11,6 +11,11 @@
 
 ---
 
+
+![ADR](https://img.shields.io/badge/type-ADR-00d4ff)
+![Status](https://img.shields.io/badge/status-proposto-ff6b35)
+
+
 ## Contexto
 
 O sistema Z.T.K. recebe código-fonte arbitrário de repositórios (Layer 1) e o envia para modelos LLM em camadas downstream (Layers 2, 3, 4, 7). Código-fonte pode conter strings maliciosas projetadas para manipular o comportamento do LLM (prompt injection). Sem um guard na Layer 1, um atacante poderia:

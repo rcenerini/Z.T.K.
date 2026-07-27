@@ -4,6 +4,11 @@
 
 ---
 
+
+![Runbook](https://img.shields.io/badge/type-Runbook-ff6b35)
+![SLA](https://img.shields.io/badge/SLA-documentado-00ff88)
+
+
 ## 1. Visão Geral
 
 O kill switch é o mecanismo de emergência que **desativa todo o pipeline de remediação automática do Z.T.K.** em caso de comportamento anômalo ou incidente de segurança causado pelo próprio sistema.

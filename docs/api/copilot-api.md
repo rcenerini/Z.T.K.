@@ -4,6 +4,11 @@
 
 ---
 
+
+![API](https://img.shields.io/badge/type-API_Docs-00d4ff)
+![Protocol](https://img.shields.io/badge/protocol-SQS_%2B_Lambda-ff6b35)
+
+
 ## 1. Visão Geral
 
 O Copilot é um consumidor SQS que processa `DecisionRecord` do Decision Engine (MVP1) para achados tier ATTEND. Análise via Claude 3.5 (Bedrock) com contexto RAG.

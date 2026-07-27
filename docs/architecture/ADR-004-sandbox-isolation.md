@@ -9,6 +9,11 @@
 
 ---
 
+
+![ADR](https://img.shields.io/badge/type-ADR-00d4ff)
+![Status](https://img.shields.io/badge/status-proposto-ff6b35)
+
+
 ## Contexto
 
 A Camada 3 (Validação) executa Provas de Conceito (PoC) para confirmar se uma vulnerabilidade é explorável. Essas PoCs envolvem executar código potencialmente malicioso (exploits, payloads) em ambiente controlado. O sandbox deve garantir:
