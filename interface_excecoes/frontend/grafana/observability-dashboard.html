@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZTK — Grafana Observability Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ztk-cyan: #00d4ff; --ztk-amber: #ff6b35; --ztk-green: #00ff88;
+            --ztk-purple: #7b42bc; --ztk-red: #e10600; --ztk-gray: #5A646E;
+            --bg-primary: #FFFFFF; --bg-secondary: #F8F9FA; --bg-tertiary: #F3F4F6;
+            --border-default: #E5E7EB; --border-light: #F0F0F0;
+            --text-primary: #0A0A0A; --text-secondary: #374151; --text-tertiary: #9CA3AF;
+            --font-brand: 'Montserrat', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-body);font-size:13px;line-height:1.5;color:var(--text-primary);background:var(--bg-primary);-webkit-font-smoothing:antialiased}
+        .topbar{background:var(--bg-primary);border-bottom:1px solid var(--border-default);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+        .topbar-brand{display:flex;align-items:center;gap:12px}
+        .topbar-brand h1{font-family:var(--font-brand);font-size:18px;font-weight:700;letter-spacing:-0.3px}
+        .topbar-brand h1 span{color:var(--ztk-cyan)}.topbar-brand .dot{width:8px;height:8px;border-radius:50%;background:var(--ztk-green);animation:pulse 2s infinite}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+        .topbar-meta{display:flex;align-items:center;gap:20px}
+        .topbar-meta .item{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary)}.topbar-meta .item b{color:var(--text-primary)}
+        /* Layout */
+        .container{padding:24px 32px;max-width:1600px;margin:0 auto}
+        .section-header{margin-bottom:24px}.section-header h2{font-family:var(--font-brand);font-size:20px;font-weight:600;letter-spacing:-0.3px;margin-bottom:4px}.section-header p{color:var(--text-tertiary);font-size:12px}
+        /* Stat Row */
+        .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+        .stat-box{background:var(--bg-secondary);border:1px solid var(--border-default);border-radius:8px;padding:16px 20px;position:relative;overflow:hidden}.stat-box::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%}.stat-box.cyan::before{background:var(--ztk-cyan)}.stat-box.amber::before{background:var(--ztk-amber)}.stat-box.green::before{background:var(--ztk-green)}.stat-box.purple::before{background:var(--ztk-purple)}.stat-box.red::before{background:var(--ztk-red)}
+        .stat-label{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-tertiary);margin-bottom:6px}.stat-value{font-family:var(--font-brand);font-size:28px;font-weight:700;letter-spacing:-0.5px}.stat-sub{font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);margin-top:4px}
+        /* Panels */
+        .panel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:32px}
+        .panel-full{grid-column:1/-1}.panel{background:var(--bg-secondary);border:1px solid var(--border-default);border-radius:10px;overflow:hidden}
+        .panel-header{padding:14px 20px;border-bottom:1px solid var(--border-default);display:flex;justify-content:space-between;align-items:center}
+        .panel-header h3{font-family:var(--font-brand);font-size:13px;font-weight:600}.panel-header .tag{font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:0.08em;padding:2px 8px;border-radius:3px}
+        .tag-ops{background:#E8F4FD;color:var(--ztk-cyan)}.tag-sec{background:#FFF3E0;color:var(--ztk-amber)}.tag-cost{background:#F3E8FF;color:var(--ztk-purple)}.tag-comp{background:#E6F9F0;color:#00A650}
+        .panel-body{padding:20px}
+        /* Metric Bar */
+        .metric-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}.metric-row:last-child{margin-bottom:0}
+        .metric-label{width:140px;font-size:11px;color:var(--text-secondary);flex-shrink:0}.metric-bar-bg{flex:1;height:8px;background:var(--bg-tertiary);border-radius:4px;overflow:hidden}.metric-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+        .metric-value{width:48px;text-align:right;font-family:var(--font-mono);font-size:11px;font-weight:500;flex-shrink:0}
+        /* Table Mini */
+        .mini-table{width:100%}.mini-table td{padding:6px 0;font-size:11px;border-bottom:1px solid var(--border-light)}.mini-table td:last-child{text-align:right;font-family:var(--font-mono);font-size:10px}
+        /* Chart Simple */
+        .bar-chart{display:flex;align-items:flex-end;gap:8px;height:100px;padding-top:8px}
+        .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+        .bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .3s}
+        .bar-label{font-family:var(--font-mono);font-size:8px;color:var(--text-tertiary)}
+        /* Severity colors */
+        .sev-P0{background:var(--ztk-red)}.sev-P1{background:var(--ztk-amber)}.sev-P2{background:#FFB800}.sev-P3{background:var(--ztk-cyan)}.sev-P4{background:var(--text-tertiary)}
+        /* Status dots */
+        .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+        .agent-item{display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--font-mono);color:var(--text-secondary)}
+        .agent-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}.agent-dot.on{background:var(--ztk-green)}.agent-dot.off{background:var(--text-tertiary)}.agent-dot.warn{background:var(--ztk-amber)}
+        /* Timeline */
+        .timeline-item{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-light);font-size:11px}
+        .timeline-time{font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);width:50px;flex-shrink:0}
+        .timeline-event{flex:1}.timeline-badge{font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;display:inline-block}
+        /* Footer */
+        .footer{padding:24px 32px;border-top:1px solid var(--border-default);text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary)}
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <header class="topbar">
+        <div class="topbar-brand">
+            <div class="dot"></div>
+            <h1>Z.<span>T</span>.K. Observability</h1>
+        </div>
+        <div class="topbar-meta">
+            <div class="item">Ambiente: <b>PRODUCTION</b></div>
+            <div class="item">Pipeline: <b style="color:var(--ztk-green)">HEALTHY</b></div>
+            <div class="item">Uptime: <b>99.97%</b></div>
+            <div class="item">Updated: <b id="live-time">--</b></div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ═════════════ OPERATIONS ═════════════ -->
+        <div class="section-header"><h2 style="color:var(--ztk-cyan)">01 — Operations</h2><p>Pipeline health, throughput, latency — Core metrics</p></div>
+        <div class="stat-row">
+            <div class="stat-box cyan"><div class="stat-label">Findings Processed (24h)</div><div class="stat-value">1,247</div><div class="stat-sub">+12% vs yesterday</div></div>
+            <div class="stat-box green"><div class="stat-label">Pipeline Success Rate</div><div class="stat-value">99.2%</div><div class="stat-sub">Target: 99.0%</div></div>
+            <div class="stat-box amber"><div class="stat-label">Avg Processing Time</div><div class="stat-value">1.8s</div><div class="stat-sub">P99: 4.2s</div></div>
+            <div class="stat-box purple"><div class="stat-label">HITL Queue Depth</div><div class="stat-value">7</div><div class="stat-sub">SLA breached: 1</div></div>
+        </div>
+
+        <div class="panel-grid">
+            <div class="panel">
+                <div class="panel-header"><h3>Layer Processing Time (ms)</h3><span class="tag tag-ops">LATENCY</span></div>
+                <div class="panel-body">
+                    <div class="metric-row"><span class="metric-label">L1 — Ingestão</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:15%;background:var(--ztk-cyan)"></div></div><span class="metric-value">320ms</span></div>
+                    <div class="metric-row"><span class="metric-label">L2 — SAST Agents</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:65%;background:var(--ztk-cyan)"></div></div><span class="metric-value">1,420ms</span></div>
+                    <div class="metric-row"><span class="metric-label">L3 — Validação</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:40%;background:var(--ztk-amber)"></div></div><span class="metric-value">890ms</span></div>
+                    <div class="metric-row"><span class="metric-label">L4 — Consenso</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:8%;background:var(--ztk-amber)"></div></div><span class="metric-value">180ms</span></div>
+                    <div class="metric-row"><span class="metric-label">L5 — Remediação</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:12%;background:var(--ztk-green)"></div></div><span class="metric-value">260ms</span></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><h3>Queue Health (SQS)</h3><span class="tag tag-ops">QUEUES</span></div>
+                <div class="panel-body">
+                    <div class="metric-row"><span class="metric-label">Ingestion Queue</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:8%;background:var(--ztk-green)"></div></div><span class="metric-value">12</span></div>
+                    <div class="metric-row"><span class="metric-label">Decision Queue</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:25%;background:var(--ztk-cyan)"></div></div><span class="metric-value">47</span></div>
+                    <div class="metric-row"><span class="metric-label">Copilot Queue</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:15%;background:var(--ztk-cyan)"></div></div><span class="metric-value">23</span></div>
+                    <div class="metric-row"><span class="metric-label">HITL Queue</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:5%;background:var(--ztk-amber)"></div></div><span class="metric-value">7</span></div>
+                    <div class="metric-row"><span class="metric-label">DLQ (Dead Letters)</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:2%;background:var(--ztk-red)"></div></div><span class="metric-value">3</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════════ SECURITY ═════════════ -->
+        <div class="section-header"><h2 style="color:var(--ztk-amber)">02 — Security</h2><p>Findings by severity, SAST agent status, prompt guard metrics</p></div>
+        <div class="stat-row">
+            <div class="stat-box red"><div class="stat-label">Critical (P0)</div><div class="stat-value">3</div><div class="stat-sub">Active exploitation</div></div>
+            <div class="stat-box amber"><div class="stat-label">High (P1)</div><div class="stat-value">28</div><div class="stat-sub">Requires attention</div></div>
+            <div class="stat-box cyan"><div class="stat-label">Medium (P2)</div><div class="stat-value">156</div><div class="stat-sub">In remediation pipeline</div></div>
+            <div class="stat-box green"><div class="stat-label">Patched (24h)</div><div class="stat-value">42</div><div class="stat-sub">Auto-remediated</div></div>
+        </div>
+        <div class="panel-grid">
+            <div class="panel">
+                <div class="panel-header"><h3>Findings by Severity (30 days)</h3><span class="tag tag-sec">SEVERITY</span></div>
+                <div class="panel-body">
+                    <div class="bar-chart">
+                        <div class="bar-col"><div class="bar sev-P0" style="height:15%"></div><span class="bar-label">P0</span></div>
+                        <div class="bar-col"><div class="bar sev-P1" style="height:40%"></div><span class="bar-label">P1</span></div>
+                        <div class="bar-col"><div class="bar sev-P2" style="height:85%"></div><span class="bar-label">P2</span></div>
+                        <div class="bar-col"><div class="bar sev-P3" style="height:100%"></div><span class="bar-label">P3</span></div>
+                        <div class="bar-col"><div class="bar sev-P4" style="height:60%"></div><span class="bar-label">P4</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><h3>SAST Agent Status</h3><span class="tag tag-sec">AGENTS</span></div>
+                <div class="panel-body">
+                    <div class="agent-grid">
+                        <div class="agent-item"><span class="agent-dot on"></span>Bandit</div><div class="agent-item"><span class="agent-dot on"></span>Semgrep</div><div class="agent-item"><span class="agent-dot on"></span>CodeQL</div><div class="agent-item"><span class="agent-dot on"></span>SpotBugs</div>
+                        <div class="agent-item"><span class="agent-dot on"></span>gosec</div><div class="agent-item"><span class="agent-dot on"></span>ESLint</div><div class="agent-item"><span class="agent-dot on"></span>Checkov</div><div class="agent-item"><span class="agent-dot on"></span>tfsec</div>
+                        <div class="agent-item"><span class="agent-dot on"></span>Hadolint</div><div class="agent-item"><span class="agent-dot on"></span>Kubesec</div><div class="agent-item"><span class="agent-dot warn"></span>Gitleaks</div><div class="agent-item"><span class="agent-dot on"></span>TruffleHog</div>
+                        <div class="agent-item"><span class="agent-dot on"></span>cppcheck</div><div class="agent-item"><span class="agent-dot on"></span>Clippy</div><div class="agent-item"><span class="agent-dot on"></span>Brakeman</div><div class="agent-item"><span class="agent-dot off"></span>Detekt</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><h3>Prompt Injection Guard</h3><span class="tag tag-sec">L1.03</span></div>
+                <div class="panel-body">
+                    <div class="metric-row"><span class="metric-label">Content Scanned</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:100%;background:var(--ztk-cyan)"></div></div><span class="metric-value">15.2K</span></div>
+                    <div class="metric-row"><span class="metric-label">Blocked (Patterns)</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:3%;background:var(--ztk-red)"></div></div><span class="metric-value">47</span></div>
+                    <div class="metric-row"><span class="metric-label">Warned (Suspicious)</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:8%;background:var(--ztk-amber)"></div></div><span class="metric-value">128</span></div>
+                    <div class="metric-row"><span class="metric-label">Allowed (Clean)</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:89%;background:var(--ztk-green)"></div></div><span class="metric-value">13.5K</span></div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header"><h3>Top CWE Detected</h3><span class="tag tag-sec">CWE</span></div>
+                <div class="panel-body">
+                    <div class="metric-row"><span class="metric-label">CWE-89 SQL Injection</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:85%;background:var(--ztk-red)"></div></div><span class="metric-value">127</span></div>
+                    <div class="metric-row"><span class="metric-label">CWE-79 XSS</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:60%;background:var(--ztk-amber)"></div></div><span class="metric-value">89</span></div>
+                    <div class="metric-row"><span class="metric-label">CWE-327 Weak Crypto</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:40%;background:var(--ztk-amber)"></div></div><span class="metric-value">54</span></div>
+                    <div class="metric-row"><span class="metric-label">CWE-22 Path Traversal</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:25%;background:var(--ztk-cyan)"></div></div><span class="metric-value">31</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════════ COST ═════════════ -->
+        <div class="section-header"><h2 style="color:var(--ztk-purple)">03 — Cost &amp; LLM</h2><p>Bedrock usage, token consumption, circuit breaker status</p></div>
+        <div class="stat-row">
+            <div class="stat-box purple"><div class="stat-label">Monthly Cost (Bedrock)</div><div class="stat-value">$847</div><div class="stat-sub">Budget: $1,500 (56%)</div></div>
+            <div class="stat-box cyan"><div class="stat-label">Total Tokens (30d)</div><div class="stat-value">2.8M</div><div class="stat-sub">Input: 2.1M / Output: 0.7M</div></div>
+            <div class="stat-box green"><div class="stat-label">Haiku Requests</div><div class="stat-value">3,412</div><div class="stat-sub">86% of total</div></div>
+            <div class="stat-box amber"><div class="stat-label">Sonnet Escalations</div><div class="stat-value">547</div><div class="stat-sub">14% — Avg cost: $0.004</div></div>
+        </div>
+        <div class="panel-grid">
+            <div class="panel panel-full">
+                <div class="panel-header"><h3>Cost Breakdown by Layer</h3><span class="tag tag-cost">BUDGET</span></div>
+                <div class="panel-body">
+                    <div class="metric-row"><span class="metric-label">L2 — SAST Correlator</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:40%;background:var(--ztk-purple)"></div></div><span class="metric-value">$340</span></div>
+                    <div class="metric-row"><span class="metric-label">L4 — Debate Engine</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:20%;background:var(--ztk-amber)"></div></div><span class="metric-value">$172</span></div>
+                    <div class="metric-row"><span class="metric-label">L5 — Patch Generator</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:15%;background:var(--ztk-cyan)"></div></div><span class="metric-value">$125</span></div>
+                    <div class="metric-row"><span class="metric-label">M4 — Copilot (ATTEND)</span><div class="metric-bar-bg"><div class="metric-bar-fill" style="width:25%;background:var(--ztk-green)"></div></div><span class="metric-value">$210</span></div>
+                    <div style="margin-top:14px;display:flex;align-items:center;gap:8px;font-size:11px">
+                        <span style="font-family:var(--font-mono);color:var(--text-secondary)">Circuit Breaker:</span>
+                        <span style="color:var(--ztk-green);font-weight:600">INACTIVE</span>
+                        <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary)">(56% of $1,500 budget — triggers at 80%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═════════════ COMPLIANCE ═════════════ -->
+        <div class="section-header"><h2 style="color:#00A650">04 — Compliance</h2><p>PCI DSS coverage, exceptions timeline, audit event volume</p></div>
+        <div class="stat-row">
+            <div class="stat-box green"><div class="stat-label">PCI DSS Coverage</div><div class="stat-value">45%</div><div class="stat-sub">Controls designed (IaC pending)</div></div>
+            <div class="stat-box cyan"><div class="stat-label">Active Exceptions</div><div class="stat-value">5</div><div class="stat-sub">2 expiring within 7 days</div></div>
+            <div class="stat-box amber"><div class="stat-label">Audit Events (24h)</div><div class="stat-value">8,421</div><div class="stat-sub">+3% vs yesterday</div></div>
+            <div class="stat-box purple"><div class="stat-label">Retention Compliance</div><div class="stat-value">100%</div><div class="stat-sub">PCI 5-year policy enforced</div></div>
+        </div>
+        <div class="panel-grid">
+            <div class="panel panel-full">
+                <div class="panel-header"><h3>Audit Event Timeline (Last 2 hours)</h3><span class="tag tag-comp">AUDIT</span></div>
+                <div class="panel-body">
+                    <div class="timeline-item"><span class="timeline-time">14:58</span><span class="timeline-event"><span class="timeline-badge" style="background:#E6F9F0;color:#00A650">PATCHED</span> CWE-89 in src/auth/login.py — PR #4892 merged</span></div>
+                    <div class="timeline-item"><span class="timeline-time">14:52</span><span class="timeline-event"><span class="timeline-badge" style="background:#FFF3E0;color:#E65100">CONTAINED</span> WAF rule WAF-8842 applied for CWE-78 — TTL: 24h</span></div>
+                    <div class="timeline-item"><span class="timeline-time">14:47</span><span class="timeline-event"><span class="timeline-badge" style="background:#E8F4FD;color:var(--ztk-cyan)">SCORED</span> Finding F-8841 scored 7.5 — tier: ATTEND</span></div>
+                    <div class="timeline-item"><span class="timeline-time">14:41</span><span class="timeline-event"><span class="timeline-badge" style="background:#FDE8E8;color:var(--ztk-red)">BLOCKED</span> Prompt injection detected in repo acme/api — HITL queued</span></div>
+                    <div class="timeline-item"><span class="timeline-time">14:38</span><span class="timeline-event"><span class="timeline-badge" style="background:#F3E8FF;color:var(--ztk-purple)">SHADOW</span> Agent L2.30-phpstan started shadow mode — 30 days</span></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        Z.T.K. Observability v1.0 · Auto-refresh: 30s · Data freshness: &lt;30s · Grafana Enterprise
+    </footer>
+
+    <script>
+        function updateTime() { document.getElementById('live-time').textContent = new Date().toLocaleTimeString('pt-BR'); }
+        updateTime(); setInterval(updateTime, 30000);
+    </script>
+</body>
+</html>
