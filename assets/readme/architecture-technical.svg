@@ -176,4 +176,30 @@
     <!-- Lambda → S3 -->
     <line x1="300" y1="358" x2="1070" y2="480" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
   </g>
+
+  <!-- Trust Boundary: PCI DSS -->
+  <g transform="translate(1160 460)">
+    <text x="0" y="0" font-family="IBM Plex Mono,monospace" font-size="7" font-weight="700" fill="#C62828" transform="rotate(90)">TRUST BOUNDARY — PCI DSS 1.3</text>
+  </g>
+
+  <!-- ====== LEGEND / KEY (UML + AWS standard) ====== -->
+  <g transform="translate(60 672)">
+    <rect x="0" y="0" width="1080" height="30" rx="6" fill="#FAFAFA" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="12" y="20" font-family="IBM Plex Mono,monospace" font-size="7" font-weight="600" fill="#9CA3AF">LEGEND</text>
+    <rect x="80" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#00d4ff" stroke-width="1.5"/>
+    <text x="94" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">Compute (Lambda/ECS)</text>
+    <rect x="228" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#ff6b35" stroke-width="1.5"/>
+    <text x="242" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">Messaging (SQS)</text>
+    <rect x="355" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#00d4ff" stroke-width="2"/>
+    <text x="369" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">Storage (DynamoDB/S3)</text>
+    <rect x="515" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#00ff88" stroke-width="2"/>
+    <text x="529" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">GPU (vLLM local)</text>
+    <rect x="645" y="8" width="10" height="10" rx="2" fill="#FFFFFF" stroke="#7b42bc" stroke-width="2"/>
+    <text x="659" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">AI (Bedrock)</text>
+    <rect x="750" y="8" width="10" height="10" rx="2" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1"/>
+    <text x="764" y="17" font-family="Inter,sans-serif" font-size="7" fill="#C62828">CDE Zone (PCI DSS)</text>
+    <rect x="892" y="8" width="10" height="10" rx="2" fill="#F3F4F6"/>
+    <text x="906" y="17" font-family="Inter,sans-serif" font-size="7" fill="#374151">VPC Endpoint</text>
+    <text x="1002" y="17" font-family="IBM Plex Mono,monospace" font-size="6" fill="#9CA3AF">C4 Container Diagram · v1.0</text>
+  </g>
 </svg>

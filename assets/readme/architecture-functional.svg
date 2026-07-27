@@ -287,4 +287,20 @@
     <text x="19" y="50" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0A0A0A" text-anchor="middle">REPO</text>
     <text x="19" y="65" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0A0A0A" text-anchor="middle">→</text>
   </g>
+
+  <!-- ====== LEGEND / KEY (C4 + UML standard) ====== -->
+  <g transform="translate(320 690)">
+    <rect x="0" y="0" width="560" height="28" rx="6" fill="#FAFAFA" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="12" y="18" font-family="IBM Plex Mono,monospace" font-size="7" font-weight="600" fill="#9CA3AF">LEGEND</text>
+    <rect x="72" y="6" width="10" height="10" rx="2" fill="#E8F4FD" stroke="#00d4ff" stroke-width="0.5"/>
+    <text x="86" y="15" font-family="Inter,sans-serif" font-size="7" fill="#374151">Deterministic</text>
+    <rect x="165" y="6" width="10" height="10" rx="2" fill="#FFF3E0" stroke="#ff6b35" stroke-width="0.5"/>
+    <text x="179" y="15" font-family="Inter,sans-serif" font-size="7" fill="#374151">Security-critical</text>
+    <rect x="268" y="6" width="10" height="10" rx="2" fill="#E6F9F0" stroke="#00ff88" stroke-width="0.5"/>
+    <text x="282" y="15" font-family="Inter,sans-serif" font-size="7" fill="#374151">Remediation</text>
+    <rect x="368" y="6" width="10" height="10" rx="2" fill="#F3E8FF" stroke="#7b42bc" stroke-width="0.5"/>
+    <text x="382" y="15" font-family="Inter,sans-serif" font-size="7" fill="#374151">LLM/Consensus</text>
+    <rect x="478" y="6" width="10" height="10" rx="2" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="0.5" stroke-dasharray="3,2"/>
+    <text x="492" y="15" font-family="Inter,sans-serif" font-size="7" fill="#374151">Cross-cutting</text>
+  </g>
 </svg>
