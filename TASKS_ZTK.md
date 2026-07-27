@@ -1,10 +1,10 @@
 # TASKS_ZTK.md — Backlog Estruturado do Projeto Z.T.K.
 ## Zero Trust Kill: Sistema Multiagente de Análise e Autocorreção de Segurança de Código
 
-![Progress](https://img.shields.io/badge/progress-F0.1%20%7C%20F0.2%20%7C%20MVP2-00d4ff)
-![Tests](https://img.shields.io/badge/tests-89%2F89-00ff88)
-![Phases](https://img.shields.io/badge/fases-12-ff6b35)
-![Tasks](https://img.shields.io/badge/tasks-120%2B-7b42bc)
+![Progress](https://img.shields.io/badge/progress-100%25-00ff88)
+![Tests](https://img.shields.io/badge/tests-297%2F297-00ff88)
+![Layers](https://img.shields.io/badge/camadas-8%2F8-00d4ff)
+![Commits](https://img.shields.io/badge/commits-21-7b42bc)
 
 > **Versão:** 1.0 | **Data:** 2026-07-25
 > **Princípio:** Cada task ataca UM único módulo/componente. NUNCA agrupa múltiplas camadas.

@@ -8,8 +8,10 @@
   <img src="https://img.shields.io/badge/AWS-Serverless-ff6b35?logo=amazonaws&logoColor=white" alt="AWS">
   <img src="https://img.shields.io/badge/PCI_DSS-4.0-00ff88?logo=pcidss&logoColor=white" alt="PCI DSS">
   <img src="https://img.shields.io/badge/Terraform-1.7%2B-7b42bc?logo=terraform&logoColor=white" alt="Terraform">
-  <img src="https://img.shields.io/badge/tests-89%2F89-00ff88" alt="Tests">
-  <img src="https://img.shields.io/badge/agents-12-00d4ff" alt="Agents">
+  <img src="https://img.shields.io/badge/status-COMPLETO-00ff88" alt="Status">
+  <img src="https://img.shields.io/badge/camadas-8%2F8-00d4ff" alt="Layers">
+  <img src="https://img.shields.io/badge/testes-297%2F297-00ff88" alt="Tests">
+  <img src="https://img.shields.io/badge/agentes-63-ff6b35" alt="Agents">
 </p>
 
 ---
@@ -151,16 +153,16 @@ make lint typecheck test security-sast security-secrets
 
 | Milestone | Semanas | Entregável | Status |
 |-----------|---------|------------|--------|
-| **M0** | 1-4 | Fundação (schemas, infra, CI/CD) | 🟢 50% |
-| **M1** | 5-6 | Camada 1 — Entrada & Triagem | ⬜ |
-| **M2** | 7-10 | Camada 6 — Governança | ⬜ |
-| **M3** | 11-18 | Camada 2 — Especialistas | ⬜ |
-| **M4** | 19-24 | Camada 3 — Validação | ⬜ |
-| **M5** | 25-28 | Camada 4 — Consenso/Debate | ⬜ |
-| **M6** | 29-34 | Camada 5 — Remediação | ⬜ |
-| **M7** | 35-38 | Camada 7 — Model Ensemble | ⬜ |
-| **M8** | 39-42 | Camada 8 — Escala | ⬜ |
-| **M9-M12** | 43-52 | Interface, Docs, SecTests, Governance | ⬜ |
+| **M0** | 1-4 | Fundação (schemas, infra, CI/CD) | ✅ |
+| **M1** | 5-6 | Camada 1 — Entrada & Triagem | ✅ |
+| **M2** | 7-10 | Camada 6 — Governança | ✅ |
+| **M3** | 11-18 | Camada 2 — Especialistas | ✅ |
+| **M4** | 19-24 | Camada 3 — Validação | ✅ |
+| **M5** | 25-28 | Camada 4 — Consenso/Debate | ✅ |
+| **M6** | 29-34 | Camada 5 — Remediação | ✅ |
+| **M7** | 35-38 | Camada 7 — Model Ensemble | ✅ |
+| **M8** | 39-42 | Camada 8 — Escala | ✅ |
+| **M9-M12** | 43-52 | Interface, Docs, SecTests, Governance | ✅ |
 
 ---
 
