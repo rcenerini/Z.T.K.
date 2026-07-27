@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZTK — Exception Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ztk-cyan: #00d4ff; --ztk-amber: #ff6b35; --ztk-green: #00ff88;
+            --ztk-purple: #7b42bc; --ztk-red: #e10600;
+            --bg-primary: #FFFFFF; --bg-secondary: #F8F9FA; --bg-tertiary: #F3F4F6;
+            --border-default: #E5E7EB; --border-light: #F0F0F0;
+            --text-primary: #0A0A0A; --text-secondary: #374151; --text-tertiary: #9CA3AF;
+            --font-brand: 'Montserrat', sans-serif; --font-body: 'Inter', sans-serif; --font-mono: 'IBM Plex Mono', monospace;
+        }
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--font-body);font-size:14px;line-height:1.5;color:var(--text-primary);background:var(--bg-primary)}
+        .app{display:flex;min-height:100vh}
+        /* Sidebar */
+        .sidebar{width:240px;background:var(--bg-secondary);border-right:1px solid var(--border-default);padding:24px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:10}
+        .sidebar-brand{padding:0 20px 24px;border-bottom:1px solid var(--border-default);margin-bottom:16px}
+        .sidebar-brand h1{font-family:var(--font-brand);font-size:20px;font-weight:700;letter-spacing:-0.5px}
+        .sidebar-brand h1 span{color:var(--ztk-cyan)}
+        .sidebar-brand p{font-family:var(--font-mono);font-size:10px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
+        .sidebar-nav{flex:1;padding:0 12px}
+        .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:6px;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all .15s;margin-bottom:2px;text-decoration:none}
+        .nav-item:hover{background:var(--bg-tertiary)}
+        .nav-item.active{background:#E8F4FD;color:var(--ztk-cyan);font-weight:600}
+        .nav-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center}
+        .sidebar-footer{padding:16px 20px;border-top:1px solid var(--border-default);margin-top:auto}
+        .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+        .status-dot.green{background:var(--ztk-green)}
+        .status-dot.red{background:var(--ztk-red)}
+        .status-dot.amber{background:var(--ztk-amber)}
+        /* Main */
+        .main{margin-left:240px;flex:1;padding:32px 40px}
+        .page-header{margin-bottom:32px}
+        .page-header h2{font-family:var(--font-brand);font-size:24px;font-weight:600;letter-spacing:-0.3px;margin-bottom:4px}
+        .page-header p{color:var(--text-tertiary);font-size:13px}
+        /* Stats */
+        .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+        .stat-card{background:var(--bg-secondary);border:1px solid var(--border-default);border-radius:8px;padding:20px}
+        .stat-label{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);margin-bottom:8px}
+        .stat-value{font-family:var(--font-brand);font-size:32px;font-weight:700;letter-spacing:-1px}
+        .stat-value.critical{color:var(--ztk-red)}.stat-value.warning{color:var(--ztk-amber)}.stat-value.ok{color:var(--ztk-green)}.stat-value.info{color:var(--ztk-cyan)}
+        /* Tables */
+        .table-container{background:var(--bg-secondary);border:1px solid var(--border-default);border-radius:8px;overflow:hidden;margin-bottom:24px}
+        .table-header{padding:16px 20px;border-bottom:1px solid var(--border-default);display:flex;justify-content:space-between;align-items:center}
+        .table-header h3{font-family:var(--font-brand);font-size:14px;font-weight:600}
+        table{width:100%;border-collapse:collapse}
+        th{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-tertiary);text-align:left;padding:10px 20px;border-bottom:1px solid var(--border-default);background:var(--bg-tertiary)}
+        td{padding:12px 20px;border-bottom:1px solid var(--border-light);font-size:13px}
+        tr:last-child td{border-bottom:none}
+        .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:var(--font-mono);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
+        .badge-active{background:#E6F9F0;color:#00A650}.badge-pending{background:#FFF3E0;color:#E65100}
+        .badge-approved{background:#E8F4FD;color:#0095CC}.badge-rejected{background:#FDE8E8;color:#C62828}
+        .badge-critical{background:#FDE8E8;color:#C62828}.badge-high{background:#FFF3E0;color:#E65100}
+        .badge-medium{background:#E8F4FD;color:#0095CC}.badge-low{background:#F3F4F6;color:#6B7280}
+        /* Empty */
+        .empty-state{text-align:center;padding:48px 20px;color:var(--text-tertiary)}
+        .empty-state .icon{font-size:32px;margin-bottom:12px}
+        /* Kill Switch Banner */
+        .kill-switch-banner{background:#FDE8E8;border:1px solid #FCA5A5;border-radius:8px;padding:16px 20px;margin-bottom:24px;display:none;align-items:center;gap:12px}
+        .kill-switch-banner.active{display:flex}
+        .kill-switch-banner .icon{font-size:20px}
+        .kill-switch-banner .text{flex:1;font-size:13px;font-weight:500}
+        .kill-switch-banner .text span{font-family:var(--font-mono);font-size:11px;color:var(--text-secondary)}
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <h1>Z.<span>T</span>.K.</h1>
+            <p>Exception Dashboard</p>
+        </div>
+        <div class="sidebar-nav">
+            <a class="nav-item active" href="#" data-page="dashboard">
+                <span class="nav-icon">📊</span> Dashboard
+            </a>
+            <a class="nav-item" href="#" data-page="exceptions">
+                <span class="nav-icon">⚠️</span> Exceções
+            </a>
+            <a class="nav-item" href="#" data-page="hitl">
+                <span class="nav-icon">👤</span> Fila HITL
+            </a>
+            <a class="nav-item" href="#" data-page="audit">
+                <span class="nav-icon">📋</span> Auditoria
+            </a>
+            <a class="nav-item" href="#" data-page="killswitch">
+                <span class="nav-icon">🛑</span> Kill Switch
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <span class="status-dot green"></span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-tertiary)">v1.0.0</span>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main" id="main-content">
+        <!-- Dynamic content loaded here -->
+    </main>
+</div>
+
+<script>
+const API = '';
+let currentPage = 'dashboard';
+
+async function fetchJSON(url, opts = {}) {
+    const res = await fetch(API + url, opts);
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
+}
+
+// Navigation
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        currentPage = item.dataset.page;
+        loadPage(currentPage);
+    });
+});
+
+async function loadPage(page) {
+    const main = document.getElementById('main-content');
+    try {
+        const data = await fetchJSON('/api/dashboard/summary');
+        switch(page) {
+            case 'dashboard': renderDashboard(main, data); break;
+            case 'exceptions': renderExceptions(main); break;
+            case 'hitl': renderHITL(main); break;
+            case 'audit': renderAudit(main); break;
+            case 'killswitch': renderKillSwitch(main, data.kill_switch); break;
+        }
+    } catch(e) { main.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><p>Backend indisponível</p></div>`; }
+}
+
+function renderDashboard(main, data) {
+    const e = data.exceptions, h = data.hitl, ks = data.kill_switch;
+    main.innerHTML = `
+        <div class="page-header"><h2>Dashboard</h2><p>Visão geral do sistema de exceções</p></div>
+        <div class="kill-switch-banner ${ks.active ? 'active' : ''}" id="ks-banner">
+            <span class="icon">🚨</span>
+            <div class="text"><strong>KILL SWITCH ATIVO</strong><br><span>Escopo: ${ks.scope} · Por: ${ks.activated_by} · ${ks.activated_at ? new Date(ks.activated_at).toLocaleString('pt-BR') : ''}</span></div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Exceções Ativas</div><div class="stat-value warning">${e.active}</div></div>
+            <div class="stat-card"><div class="stat-label">Pendentes Aprovação</div><div class="stat-value info">${e.pending}</div></div>
+            <div class="stat-card"><div class="stat-label">Fila HITL</div><div class="stat-value ${h.pending > 5 ? 'critical' : 'ok'}">${h.pending}</div></div>
+            <div class="stat-card"><div class="stat-label">Total Processado</div><div class="stat-value info">${e.total + h.total}</div></div>
+        </div>`;
+}
+
+async function renderExceptions(main) {
+    const data = await fetchJSON('/api/exceptions');
+    const rows = data.exceptions.map(e => `
+        <tr>
+            <td><span style="font-family:var(--font-mono);font-size:11px">${e.exception_id}</span></td>
+            <td><span style="font-family:var(--font-mono);font-size:11px">${e.finding_id.substring(0,8)}</span></td>
+            <td>${e.category}</td>
+            <td>${e.current_severity} → ${e.requested_severity}</td>
+            <td><span class="badge badge-${e.status === 'ACTIVE' ? 'active' : e.status === 'APPROVED' ? 'approved' : e.status === 'REJECTED' ? 'rejected' : 'pending'}">${e.status}</span></td>
+            <td>${e.requested_by}</td>
+            <td>${new Date(e.created_at).toLocaleDateString('pt-BR')}</td>
+        </tr>`).join('');
+    main.innerHTML = `
+        <div class="page-header"><h2>Exceções</h2><p>Gerenciamento de exceções four-eyes</p></div>
+        <div class="table-container">
+            <div class="table-header"><h3>${data.total} exceções</h3></div>
+            <table><thead><tr><th>ID</th><th>Finding</th><th>Categoria</th><th>Severidade</th><th>Status</th><th>Solicitante</th><th>Data</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="7"><div class="empty-state"><p>Nenhuma exceção registrada</p></div></td></tr>'}</tbody></table>
+        </div>`;
+}
+
+async function renderHITL(main) {
+    const data = await fetchJSON('/api/hitl');
+    const rows = data.items.map(i => `
+        <tr>
+            <td><span style="font-family:var(--font-mono);font-size:11px">${i.item_id}</span></td>
+            <td>${i.title}</td>
+            <td><span class="badge badge-${i.priority === 'CRITICAL' ? 'critical' : i.priority === 'HIGH' ? 'high' : i.priority === 'MEDIUM' ? 'medium' : 'low'}">${i.priority}</span></td>
+            <td><span class="badge badge-${i.status === 'PENDING' ? 'pending' : 'active'}">${i.status}</span></td>
+            <td>${new Date(i.created_at).toLocaleDateString('pt-BR')}</td>
+        </tr>`).join('');
+    main.innerHTML = `
+        <div class="page-header"><h2>Fila HITL</h2><p>Itens que requerem revisão humana</p></div>
+        <div class="table-container">
+            <div class="table-header"><h3>${data.total} itens</h3></div>
+            <table><thead><tr><th>ID</th><th>Título</th><th>Prioridade</th><th>Status</th><th>Data</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="5"><div class="empty-state"><p>Fila HITL vazia</p></div></td></tr>'}</tbody></table>
+        </div>`;
+}
+
+async function renderAudit(main) {
+    const data = await fetchJSON('/api/audit?limit=50');
+    const rows = data.events.map(e => `
+        <tr>
+            <td><span style="font-family:var(--font-mono);font-size:10px">${new Date(e.timestamp).toLocaleString('pt-BR')}</span></td>
+            <td><span class="badge badge-${e.event.includes('kill') ? 'critical' : 'info'}">${e.event}</span></td>
+            <td><span style="font-family:var(--font-mono);font-size:11px">${e.exception_id || e.item_id || '-'}</span></td>
+            <td>${e.by || e.scope || '-'}</td>
+        </tr>`).join('');
+    main.innerHTML = `
+        <div class="page-header"><h2>Auditoria</h2><p>Timeline de eventos do sistema</p></div>
+        <div class="table-container">
+            <div class="table-header"><h3>${data.total} eventos</h3></div>
+            <table><thead><tr><th>Timestamp</th><th>Evento</th><th>ID</th><th>Detalhes</th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="4"><div class="empty-state"><p>Nenhum evento de auditoria</p></div></td></tr>'}</tbody></table>
+        </div>`;
+}
+
+async function renderKillSwitch(main, ks) {
+    main.innerHTML = `
+        <div class="page-header"><h2>Kill Switch</h2><p>Controle de emergência — autoridade SOC</p></div>
+        <div class="kill-switch-banner ${ks.active ? 'active' : ''}" style="${ks.active ? '' : 'display:none'}">
+            <span class="icon">🚨</span>
+            <div class="text"><strong>KILL SWITCH ATIVO</strong><br><span>Escopo: ${ks.scope} · Por: ${ks.activated_by}</span></div>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">Status</div><div class="stat-value ${ks.active ? 'critical' : 'ok'}">${ks.active ? 'ATIVO' : 'INATIVO'}</div></div>
+            <div class="stat-card"><div class="stat-label">Escopo</div><div class="stat-value info" style="font-size:20px">${ks.scope.toUpperCase()}</div></div>
+        </div>`;
+}
+
+// Init
+loadPage('dashboard');
+</script>
+</body>
+</html>
