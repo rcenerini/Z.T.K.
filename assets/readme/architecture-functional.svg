@@ -1,0 +1,290 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="760" viewBox="0 0 1200 760"
+     role="img" aria-labelledby="arch-title arch-desc">
+  <title id="arch-title">Z.T.K. Arquitetura Funcional — 8 Camadas</title>
+  <desc id="arch-desc">Diagrama funcional do pipeline multiagente Z.T.K. Fluxo de dados da esquerda (Git Repo) para a direita (WAF/PR) passando por 8 camadas de processamento. Camadas 6, 7 e 8 sao transversais.</desc>
+
+  <defs>
+    <linearGradient id="cyan-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00d4ff"/><stop offset="100%" stop-color="#0099cc"/>
+    </linearGradient>
+    <linearGradient id="amber-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff6b35"/><stop offset="100%" stop-color="#cc4422"/>
+    </linearGradient>
+    <linearGradient id="green-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00ff88"/><stop offset="100%" stop-color="#00cc66"/>
+    </linearGradient>
+    <linearGradient id="purple-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7b42bc"/><stop offset="100%" stop-color="#5522aa"/>
+    </linearGradient>
+    <marker id="arrow-cyan" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0,0 8,3 0,6" fill="#00d4ff"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0,0 8,3 0,6" fill="#ff6b35"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+      <polygon points="0,0 8,3 0,6" fill="#00ff88"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="760" rx="18" fill="#FFFFFF"/>
+  <rect x="0" y="0" width="1200" height="760" rx="18" fill="#F8F9FA" opacity="0.4"/>
+
+  <!-- Title -->
+  <text x="60" y="48" font-family="Montserrat,-apple-system,sans-serif" font-size="22" font-weight="700" fill="#0A0A0A" letter-spacing="-0.3">Arquitetura Funcional — Pipeline de 8 Camadas</text>
+  <text x="60" y="72" font-family="Inter,-apple-system,sans-serif" font-size="12" fill="#9CA3AF">Fluxo deterministico de analise de codigo seguro — Git Repo ate Remediacao</text>
+  <rect x="60" y="84" width="60" height="2" rx="1" fill="url(#cyan-grad)"/>
+
+  <!-- ====== L1: Entrada & Triagem ====== -->
+  <g transform="translate(36 110)">
+    <rect x="0" y="0" width="190" height="240" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="190" height="34" rx="10" fill="#E8F4FD"/>
+    <rect x="0" y="24" width="190" height="10" fill="#E8F4FD"/>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L1 — Entrada &amp; Triagem</text>
+    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#00d4ff" text-anchor="end">7 agents</text>
+
+    <!-- Agents -->
+    <rect x="12" y="46" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="61" font-family="Inter,sans-serif" font-size="9" fill="#374151">1.01 Repo Ingestion</text>
+    <rect x="12" y="72" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="87" font-family="Inter,sans-serif" font-size="9" fill="#374151">1.02 Language Classifier</text>
+    <rect x="12" y="98" width="166" height="22" rx="4" fill="#FFF3E0"/>
+    <text x="20" y="113" font-family="Inter,sans-serif" font-size="9" fill="#E65100">1.03 Prompt-Injection Guard</text>
+    <rect x="12" y="124" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="139" font-family="Inter,sans-serif" font-size="9" fill="#374151">1.04 Criticality Tagger</text>
+    <rect x="12" y="150" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="165" font-family="Inter,sans-serif" font-size="9" fill="#374151">1.05 Pipeline Router</text>
+    <rect x="12" y="176" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="191" font-family="Inter,sans-serif" font-size="9" fill="#374151">1.06 Scope &amp; Budget</text>
+    <rect x="12" y="202" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="217" font-family="Inter,sans-serif" font-size="9" fill="#374151">1.07 Dedup Generator</text>
+  </g>
+
+  <!-- Arrow L1→L2 -->
+  <line x1="228" y1="230" x2="268" y2="230" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+  <!-- ====== L2: Especialistas ====== -->
+  <g transform="translate(274 110)">
+    <rect x="0" y="0" width="190" height="240" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="190" height="34" rx="10" fill="#E8F4FD"/>
+    <rect x="0" y="24" width="190" height="10" fill="#E8F4FD"/>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L2 — Especialistas</text>
+    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#00d4ff" text-anchor="end">24 agents</text>
+
+    <text x="14" y="58" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF" text-transform="uppercase">Python</text>
+    <rect x="12" y="64" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="18" y="77" font-family="Inter,sans-serif" font-size="8" fill="#374151">Bandit</text>
+    <rect x="96" y="64" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="102" y="77" font-family="Inter,sans-serif" font-size="8" fill="#374151">Semgrep</text>
+
+    <text x="14" y="97" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">Java / JS / Go / C++</text>
+    <rect x="12" y="103" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="18" y="116" font-family="Inter,sans-serif" font-size="8" fill="#374151">SpotBugs</text>
+    <rect x="96" y="103" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="102" y="116" font-family="Inter,sans-serif" font-size="8" fill="#374151">CodeQL</text>
+    <rect x="12" y="125" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="18" y="138" font-family="Inter,sans-serif" font-size="8" fill="#374151">ESLint</text>
+    <rect x="96" y="125" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="102" y="138" font-family="Inter,sans-serif" font-size="8" fill="#374151">gosec</text>
+
+    <text x="14" y="160" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">IaC / SCA / Secrets</text>
+    <rect x="12" y="166" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="18" y="179" font-family="Inter,sans-serif" font-size="8" fill="#374151">Checkov</text>
+    <rect x="96" y="166" width="80" height="18" rx="3" fill="#F8F9FA"/>
+    <text x="102" y="179" font-family="Inter,sans-serif" font-size="8" fill="#374151">tfsec</text>
+    <rect x="12" y="188" width="80" height="18" rx="3" fill="#FFF3E0"/>
+    <text x="18" y="201" font-family="Inter,sans-serif" font-size="8" fill="#E65100">Gitleaks</text>
+    <rect x="96" y="188" width="80" height="18" rx="3" fill="#FFF3E0"/>
+    <text x="102" y="201" font-family="Inter,sans-serif" font-size="8" fill="#E65100">TruffleHog</text>
+
+    <text x="14" y="226" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF" opacity="0.5">+ Rust, C#, PHP, Ruby, Kotlin, Swift...</text>
+  </g>
+
+  <!-- Arrow L2→L3 -->
+  <line x1="466" y1="230" x2="506" y2="230" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+  <!-- ====== L3: Validacao ====== -->
+  <g transform="translate(512 110)">
+    <rect x="0" y="0" width="190" height="240" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="190" height="34" rx="10" fill="#FFF3E0"/>
+    <rect x="0" y="24" width="190" height="10" fill="#FFF3E0"/>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L3 — Validação</text>
+    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#ff6b35" text-anchor="end">3 agents</text>
+
+    <rect x="12" y="48" width="166" height="22" rx="4" fill="#FFF3E0"/>
+    <text x="20" y="63" font-family="Inter,sans-serif" font-size="9" fill="#E65100">3.01 Sandbox Executor</text>
+    <rect x="12" y="74" width="166" height="22" rx="4" fill="#FFF3E0"/>
+    <text x="20" y="89" font-family="Inter,sans-serif" font-size="9" fill="#E65100">3.02 PoC Framework</text>
+    <rect x="12" y="100" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="115" font-family="Inter,sans-serif" font-size="9" fill="#374151">3.03 Score Engine</text>
+
+    <text x="14" y="145" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF" text-transform="uppercase">PoC Templates (14 CWEs)</text>
+    <rect x="12" y="152" width="80" height="16" rx="3" fill="#FDE8E8"/>
+    <text x="18" y="164" font-family="Inter,sans-serif" font-size="7" fill="#C62828">CWE-89 SQLi</text>
+    <rect x="96" y="152" width="80" height="16" rx="3" fill="#FDE8E8"/>
+    <text x="102" y="164" font-family="Inter,sans-serif" font-size="7" fill="#C62828">CWE-78 CMDi</text>
+    <rect x="12" y="172" width="80" height="16" rx="3" fill="#FFF3E0"/>
+    <text x="18" y="184" font-family="Inter,sans-serif" font-size="7" fill="#E65100">CWE-79 XSS</text>
+    <rect x="96" y="172" width="80" height="16" rx="3" fill="#FFF3E0"/>
+    <text x="102" y="184" font-family="Inter,sans-serif" font-size="7" fill="#E65100">CWE-918 SSRF</text>
+    <rect x="12" y="192" width="166" height="16" rx="3" fill="#F3F4F6"/>
+    <text x="18" y="204" font-family="Inter,sans-serif" font-size="7" fill="#6B7280">+10 CWEs (Deserializ, Path Trav, CSRF...)</text>
+
+    <text x="14" y="226" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">Sandbox: Firecracker microVM · timeout 30s · sem rede</text>
+  </g>
+
+  <!-- Arrow L3→L4 -->
+  <line x1="704" y1="230" x2="744" y2="230" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+  <!-- ====== L4: Consenso ====== -->
+  <g transform="translate(750 110)">
+    <rect x="0" y="0" width="190" height="240" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="190" height="34" rx="10" fill="#F3E8FF"/>
+    <rect x="0" y="24" width="190" height="10" fill="#F3E8FF"/>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L4 — Consenso</text>
+    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#7b42bc" text-anchor="end">3 agents</text>
+
+    <rect x="12" y="46" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="61" font-family="Inter,sans-serif" font-size="9" fill="#374151">4.01 CVSS v4.0 Calc</text>
+    <rect x="12" y="72" width="166" height="22" rx="4" fill="#F8F9FA"/>
+    <text x="20" y="87" font-family="Inter,sans-serif" font-size="9" fill="#374151">4.02 SSVC Decision Tree</text>
+    <rect x="12" y="98" width="166" height="22" rx="4" fill="#F3E8FF"/>
+    <text x="20" y="113" font-family="Inter,sans-serif" font-size="9" fill="#6B21A8">4.03 Debate Adversarial</text>
+
+    <!-- Debate roles -->
+    <text x="14" y="148" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">Debate: 3 papéis</text>
+    <rect x="12" y="155" width="78" height="18" rx="3" fill="#FDE8E8"/>
+    <text x="18" y="168" font-family="Inter,sans-serif" font-size="8" fill="#C62828">Prosecutor</text>
+    <rect x="96" y="155" width="78" height="18" rx="3" fill="#E6F9F0"/>
+    <text x="102" y="168" font-family="Inter,sans-serif" font-size="8" fill="#00A650">Defender</text>
+    <rect x="56" y="178" width="78" height="18" rx="3" fill="#F3E8FF"/>
+    <text x="62" y="191" font-family="Inter,sans-serif" font-size="8" fill="#6B21A8">Judge</text>
+
+    <text x="14" y="218" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">Pisos: PCI=P1 · LGPD=P1 · Antifraude=P0</text>
+  </g>
+
+  <!-- Arrow L4→L5 -->
+  <line x1="942" y1="230" x2="982" y2="230" stroke="#00d4ff" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+  <!-- ====== L5: Remediacaoo ====== -->
+  <g transform="translate(988 110)">
+    <rect x="0" y="0" width="176" height="240" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
+    <rect x="0" y="0" width="176" height="34" rx="10" fill="#E6F9F0"/>
+    <rect x="0" y="24" width="176" height="10" fill="#E6F9F0"/>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L5 — Remediação</text>
+    <text x="116" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#00ff88" text-anchor="end">3 agents</text>
+
+    <text x="14" y="54" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">TRILHA A</text>
+    <rect x="12" y="60" width="150" height="22" rx="4" fill="#E6F9F0"/>
+    <text x="20" y="75" font-family="Inter,sans-serif" font-size="9" fill="#00A650">Patch Generator</text>
+    <rect x="12" y="86" width="150" height="18" rx="3" fill="#F3F4F6"/>
+    <text x="20" y="99" font-family="Inter,sans-serif" font-size="8" fill="#6B7280">Sandbox → Regression → PR</text>
+
+    <text x="14" y="128" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">TRILHA B</text>
+    <rect x="12" y="134" width="150" height="22" rx="4" fill="#FFF3E0"/>
+    <text x="20" y="149" font-family="Inter,sans-serif" font-size="9" fill="#E65100">Containment Manager</text>
+    <rect x="12" y="160" width="150" height="18" rx="3" fill="#F3F4F6"/>
+    <text x="20" y="173" font-family="Inter,sans-serif" font-size="8" fill="#6B7280">Template → Dry-Run → WAF/FW</text>
+
+    <rect x="12" y="190" width="150" height="18" rx="3" fill="#F3F4F6"/>
+    <text x="20" y="203" font-family="Inter,sans-serif" font-size="8" fill="#374151">TTL obrigatório · Kill Switch</text>
+  </g>
+
+  <!-- ====== Cross-cutting: L6, L7, L8 ====== -->
+  <!-- L6 Governance -->
+  <g transform="translate(36 380)">
+    <rect x="0" y="0" width="1128" height="60" rx="10" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="20" y="22" font-family="Montserrat,sans-serif" font-size="11" font-weight="700" fill="#0A0A0A">L6 — Governança (transversal)</text>
+    <text x="250" y="22" font-family="IBM Plex Mono,monospace" font-size="8" fill="#00d4ff">Policy Engine (OPA) · Auditoria Unificada · HITL Gateway · Four-Eyes Exceções</text>
+
+    <rect x="20" y="34" width="200" height="16" rx="3" fill="#E8F4FD"/>
+    <text x="28" y="46" font-family="Inter,sans-serif" font-size="7" fill="#0095CC">30 OPA Policies (deny-by-default)</text>
+    <rect x="228" y="34" width="180" height="16" rx="3" fill="#E6F9F0"/>
+    <text x="236" y="46" font-family="Inter,sans-serif" font-size="7" fill="#00A650">Audit Trail (hash chain, 5 anos)</text>
+    <rect x="416" y="34" width="180" height="16" rx="3" fill="#FFF3E0"/>
+    <text x="424" y="46" font-family="Inter,sans-serif" font-size="7" fill="#E65100">HITL (4 níveis de escalação)</text>
+  </g>
+
+  <!-- L7 LLM -->
+  <g transform="translate(36 452)">
+    <rect x="0" y="0" width="1128" height="60" rx="10" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="20" y="22" font-family="Montserrat,sans-serif" font-size="11" font-weight="700" fill="#0A0A0A">L7 — Model Ensemble (transversal)</text>
+    <text x="250" y="22" font-family="IBM Plex Mono,monospace" font-size="8" fill="#7b42bc">Data Scope Classifier · LLM Router (vLLM local ∥ Bedrock) · Cost Monitor + Circuit Breaker</text>
+
+    <rect x="20" y="34" width="220" height="16" rx="3" fill="#FDE8E8"/>
+    <text x="28" y="46" font-family="Inter,sans-serif" font-size="7" fill="#C62828">PCI/PII → vLLM local (NUNCA Bedrock)</text>
+    <rect x="248" y="34" width="180" height="16" rx="3" fill="#F3E8FF"/>
+    <text x="256" y="46" font-family="Inter,sans-serif" font-size="7" fill="#6B21A8">Bedrock: Haiku (volume) + Sonnet (reasoning)</text>
+    <rect x="436" y="34" width="180" height="16" rx="3" fill="#FFF3E0"/>
+    <text x="444" y="46" font-family="Inter,sans-serif" font-size="7" fill="#E65100">Circuit Breaker: 80% alerta · 100% pausa</text>
+  </g>
+
+  <!-- L8 Scale -->
+  <g transform="translate(36 524)">
+    <rect x="0" y="0" width="1128" height="60" rx="10" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="20" y="22" font-family="Montserrat,sans-serif" font-size="11" font-weight="700" fill="#0A0A0A">L8 — Escala (transversal)</text>
+    <text x="250" y="22" font-family="IBM Plex Mono,monospace" font-size="8" fill="#00d4ff">Activation Engine · Shadow Mode (30 dias) · Tool Lifecycle · Multi-Tenancy Guard</text>
+
+    <rect x="20" y="34" width="200" height="16" rx="3" fill="#E8F4FD"/>
+    <text x="28" y="46" font-family="Inter,sans-serif" font-size="7" fill="#0095CC">Shadow: 30d · 100 runs · &lt;5% FPR</text>
+    <rect x="228" y="34" width="180" height="16" rx="3" fill="#E6F9F0"/>
+    <text x="236" y="46" font-family="Inter,sans-serif" font-size="7" fill="#00A650">Tenant Isolation (allowlist)</text>
+    <rect x="416" y="34" width="180" height="16" rx="3" fill="#F3F4F6"/>
+    <text x="424" y="46" font-family="Inter,sans-serif" font-size="7" fill="#6B7280">Tool Update Monitor + PR</text>
+  </g>
+
+  <!-- ====== Output ====== -->
+  <g transform="translate(988 380)">
+    <rect x="0" y="0" width="176" height="90" rx="10" fill="#FFFFFF" stroke="#00ff88" stroke-width="1.5"/>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="11" font-weight="700" fill="#0A0A0A">Output</text>
+    <text x="14" y="46" font-family="Inter,sans-serif" font-size="9" fill="#374151">→ PR (GitHub) com patch</text>
+    <text x="14" y="64" font-family="Inter,sans-serif" font-size="9" fill="#374151">→ WAF/Firewall Rule</text>
+    <text x="14" y="82" font-family="Inter,sans-serif" font-size="9" fill="#374151">→ Audit Event (S3)</text>
+  </g>
+
+  <!-- Arrow L5→Output -->
+  <line x1="1076" y1="352" x2="1076" y2="376" stroke="#00ff88" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+
+  <!-- MITRE Catalog reference -->
+  <g transform="translate(36 610)">
+    <rect x="0" y="0" width="270" height="70" rx="8" fill="#F8F9FA" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="14" y="20" font-family="IBM Plex Mono,monospace" font-size="9" font-weight="600" fill="#0A0A0A">MITRE Catalogs</text>
+    <text x="14" y="38" font-family="Inter,sans-serif" font-size="8" fill="#374151">ATT&amp;CK Enterprise: 28 techniques, 38 CWEs</text>
+    <text x="14" y="54" font-family="Inter,sans-serif" font-size="8" fill="#374151">ATLAS v5: 15 LLM/ML threats, OWASP LLM</text>
+  </g>
+
+  <!-- Stats -->
+  <g transform="translate(330 610)">
+    <rect x="0" y="0" width="180" height="70" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="14" y="20" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Agentes</text>
+    <text x="14" y="44" font-family="Montserrat,sans-serif" font-size="24" font-weight="700" fill="#0A0A0A">63</text>
+    <text x="70" y="44" font-family="Inter,sans-serif" font-size="10" fill="#9CA3AF">especializados</text>
+  </g>
+  <g transform="translate(530 610)">
+    <rect x="0" y="0" width="160" height="70" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="14" y="20" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Testes</text>
+    <text x="14" y="44" font-family="Montserrat,sans-serif" font-size="24" font-weight="700" fill="#00ff88">297</text>
+    <text x="70" y="44" font-family="Inter,sans-serif" font-size="10" fill="#9CA3AF">passando</text>
+  </g>
+  <g transform="translate(710 610)">
+    <rect x="0" y="0" width="160" height="70" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="14" y="20" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">PoC Templates</text>
+    <text x="14" y="44" font-family="Montserrat,sans-serif" font-size="24" font-weight="700" fill="#ff6b35">14</text>
+    <text x="65" y="44" font-family="Inter,sans-serif" font-size="10" fill="#9CA3AF">CWEs</text>
+  </g>
+  <g transform="translate(890 610)">
+    <rect x="0" y="0" width="274" height="70" rx="8" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+    <text x="14" y="20" font-family="Inter,sans-serif" font-size="8" fill="#9CA3AF">Determinístico</text>
+    <text x="14" y="44" font-family="Montserrat,sans-serif" font-size="14" font-weight="700" fill="#00d4ff">LLM só decide quando não há ferramenta determinística</text>
+  </g>
+
+  <!-- Input -->
+  <g transform="translate(-10 160)">
+    <rect x="0" y="0" width="38" height="80" rx="6" fill="#E8F4FD" stroke="#00d4ff" stroke-width="1"/>
+    <text x="19" y="35" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0A0A0A" text-anchor="middle">GIT</text>
+    <text x="19" y="50" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0A0A0A" text-anchor="middle">REPO</text>
+    <text x="19" y="65" font-family="IBM Plex Mono,monospace" font-size="8" fill="#0A0A0A" text-anchor="middle">→</text>
+  </g>
+</svg>
