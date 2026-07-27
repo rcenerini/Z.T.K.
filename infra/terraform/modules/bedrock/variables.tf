@@ -1,16 +1,23 @@
 variable "name_prefix" {
-  description = "Prefixo para nomes de recursos"
-  type        = string
+  type = string
 }
-
 variable "allowed_roles" {
-  description = "IAM Roles autorizadas a invocar Bedrock"
-  type        = list(string)
-  default     = []
+  type    = list(string)
+  default = []
 }
-
+variable "kms_key_arn" {
+  type    = string
+  default = ""
+}
+variable "bedrock_monthly_budget_usd" {
+  type    = number
+  default = 1500
+}
+variable "budget_alert_emails" {
+  type    = list(string)
+  default = []
+}
 variable "tags" {
-  description = "Tags comuns"
-  type        = map(string)
-  default     = {}
+  type    = map(string)
+  default = {}
 }
