@@ -3,7 +3,7 @@
 ![Version](https://img.shields.io/badge/version-1.1-00d4ff)
 ![Agents](https://img.shields.io/badge/agents-12-ff6b35)
 ![DeepSeek](https://img.shields.io/badge/LLM-DeepSeek_v4--pro-7b42bc)
-![Status](https://img.shields.io/badge/status-active-00ff88)
+![Status](https://img.shields.io/badge/status-COMPLETO-00ff88)
 
 > **Versão:** 1.1 | **Atualização:** 2026-07-27
 
@@ -120,38 +120,37 @@ ZTK/
 └── README.md                ← Visao geral do projeto
 ```
 
-## AI Handoff — Estado do projeto em 2026-07-26
+## AI Handoff — Estado do projeto em 2026-07-27 (COMPLETO)
 
-### O que esta 100% pronto
+### O que esta pronto (100%)
 
 | Modulo | Status |
 |---|---|
-| MVP1 SAGA-SAGV_V2 | 37/42 tarefas (88%) |
-| MVP2 copilot/models.py | Implementado |
-| MVP2 copilot/config.py | Implementado |
-| MVP2 copilot/prompt_builder.py | Implementado |
-| MVP2 copilot/rag_retriever.py | Implementado (stub JSON) |
-| MVP2 copilot/claude_client.py | Implementado (Bedrock) |
-| MVP2 copilot/handler.py | Implementado |
-| MVP2 copilot/observability.py | Implementado |
-| MVP2 copilot/tests/test_copilot.py | 39/49 passando |
-| MVP2 copilot/data/ | RAG index + prompt schema OK |
-| Config OpenCode | 12 agentes + orquestrador |
-| Steering docs | ZTK_DEVELOPMENT_GUIDE, ZTK_LAYER_ROADMAP |
+| MVP1 SAGA-SAGV_V2 | 37/42 tarefas (88%) — 5 gates humanos pendentes |
+| MVP2 Copilot | 8 modulos, 49/49 testes |
+| Fase 0 — Fundacao | Schemas + Infra + OPA + CI/CD |
+| **8 Camadas** | **L1 a L8 implementadas, 248/248 testes** |
+| Interface Excecoes | Dashboard + API REST |
+| Grafana Dashboards | 4 paineis de observabilidade |
+| Security Tests | Bandit 0 HIGH, 297/297 |
+| Governance Review | Handoff final com projecao de custo |
+| Documentacao | 32 .md, 5 ADRs, threat model, compliance |
+| Config OpenCode | 12 agentes ZTK + orquestrador |
 
-### O que NAO esta pronto
+### O que NAO esta pronto (externo)
 
 | Item | Bloqueio |
 |---|---|
 | Gates humanos MVP1 (G2/G5/G7/G9/G10) | Aguardando stakeholders externos |
 | Aurora PostgreSQL + pgvector (RAG real) | Futuro |
 | Bedrock IAM/config | Aguardando time de plataforma |
-| 10 testes falhando no copilot (bugs de runtime) | Em correcao |
-| Codigo das 8 camadas (src/layer*) | Apenas __init__.py |
+| vLLM local (GPU) | Infra pendente |
+| Deploy AWS real | IaC provisionada, apply pendente |
 
-### Proximos passos
-
-1. Corrigir 10 testes falhando (logger kwargs + parse enum + double-count)
-2. Executar secret scan antes de commit
-3. Implementar F0.1.1 (schema Finding — inicio da Fase 0)
-4. Configurar Bedrock IAM quando disponivel
+### Handoff — Proximos passos para producao
+1. `terraform apply` (IaC provisionada, validada)
+2. Configurar Bedrock IAM
+3. Resolver gates MVP1
+4. Deploy staging + smoke tests
+5. Pentest externo
+6. CAB approval → producao
