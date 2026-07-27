@@ -84,6 +84,46 @@ PATCH_TEMPLATES: dict[str, str] = {
 #         assert safe_path.startswith(base)
 #         open(safe_path)
 """,
+    "CWE-352": """
+# FIX: CSRF Protection — Add anti-CSRF token
+# BEFORE: def transfer(): process(request.form['amount'])
+# AFTER:  def transfer(): validate_csrf(request); process(request.form['amount'])
+""",
+    "CWE-287": """
+# FIX: Authentication Bypass — Enforce auth check
+# BEFORE: if user.is_admin: grant_access()
+# AFTER:  if session.authenticated and user.is_admin: grant_access()
+""",
+    "CWE-200": """
+# FIX: Information Exposure — Sanitize error messages
+# BEFORE: return f"Error: {str(e)}"
+# AFTER:  logger.error(str(e)); return "An error occurred"
+""",
+    "CWE-434": """
+# FIX: Unrestricted File Upload — Validate file type and extension
+# BEFORE: file.save("/uploads/" + filename)
+# AFTER:  validate_extension(filename); file.save("/uploads/" + safe_name)
+""",
+    "CWE-918": """
+# FIX: SSRF Protection — Block internal URLs
+# BEFORE: requests.get(user_url)
+# AFTER:  validate_url(user_url, allow_internal=False); requests.get(user_url)
+""",
+    "CWE-611": """
+# FIX: XXE Protection — Disable external entities
+# BEFORE: ET.fromstring(xml_input)
+# AFTER:  parser = ET.XMLParser(resolve_entities=False); ET.fromstring(xml_input, parser)
+""",
+    "CWE-362": """
+# FIX: Race Condition — Use atomic operations
+# BEFORE: if not exists: create_file()
+# AFTER:  try: os.open(path, os.O_CREAT | os.O_EXCL); ...
+""",
+    "CWE-862": """
+# FIX: Missing Authorization — Add access control check
+# BEFORE: def get_data(id): return db.query(id)
+# AFTER:  def get_data(id): verify_access(current_user, id); return db.query(id)
+""",
 }
 
 

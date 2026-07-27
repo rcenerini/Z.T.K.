@@ -101,6 +101,54 @@ CONTAINMENT_TEMPLATES: dict[str, dict] = {
         "target": "BODY",
         "ttl_hours": 72,
     },
+    "CWE-352": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block requests without valid CSRF token",
+        "target": "HEADERS|BODY",
+        "ttl_hours": 168,
+    },
+    "CWE-287": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block unauthenticated access to protected endpoints",
+        "target": "COOKIES|HEADERS",
+        "ttl_hours": 24,
+    },
+    "CWE-22": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block path traversal patterns in URL/file parameters",
+        "target": "ARGS|URI",
+        "ttl_hours": 72,
+    },
+    "CWE-200": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Strip error details from HTTP responses",
+        "target": "RESPONSE_BODY",
+        "ttl_hours": 168,
+    },
+    "CWE-434": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block file upload with dangerous extensions",
+        "target": "FILE_EXT|CONTENT_TYPE",
+        "ttl_hours": 72,
+    },
+    "CWE-611": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block XML with external entity declarations",
+        "target": "BODY|XML",
+        "ttl_hours": 168,
+    },
+    "CWE-862": {
+        "type": ContainmentType.IAM_REVOKE,
+        "description": "Revoke overly permissive IAM role temporarily",
+        "target": "IAM_ROLE_ARN",
+        "ttl_hours": 24,
+    },
+    "CWE-362": {
+        "type": ContainmentType.RATE_LIMIT,
+        "description": "Rate-limit concurrent requests to prevent race exploitation",
+        "target": "RPS",
+        "ttl_hours": 72,
+    },
 }
 
 

