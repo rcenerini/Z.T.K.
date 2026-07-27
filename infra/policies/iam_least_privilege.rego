@@ -14,7 +14,7 @@ import rego.v1
 # ── Violations ────────────────────────────────────────────────────
 
 # Violacao: Allow + Resource:* + Action:* (superadmin implicito)
-violation[msg] {
+violation contains msg if {
     policy := input.iam_policies[_]
     statement := policy.Statement[_]
     statement.Effect == "Allow"
@@ -24,7 +24,7 @@ violation[msg] {
 }
 
 # Violacao: Resource:* sem condicao restrictiva
-violation[msg] {
+violation contains msg if {
     policy := input.iam_policies[_]
     statement := policy.Statement[_]
     statement.Effect == "Allow"
@@ -48,7 +48,7 @@ dangerous_actions := {
     "dynamodb:DeleteTable",
 }
 
-violation[msg] {
+violation contains msg if {
     policy := input.iam_policies[_]
     statement := policy.Statement[_]
     statement.Effect == "Allow"
@@ -58,28 +58,28 @@ violation[msg] {
 }
 
 # Violacao: KMS key sem rotacao habilitada
-violation[msg] {
+violation contains msg if {
     key := input.kms_keys[_]
     not key.enable_key_rotation
     msg := sprintf("HIGH: KMS key '%s' does not have key rotation enabled", [key.key_id])
 }
 
 # Violacao: S3 bucket sem block public access
-violation[msg] {
+violation contains msg if {
     bucket := input.s3_buckets[_]
     not bucket.block_public_access
     msg := sprintf("CRITICAL: S3 bucket '%s' does not block public access", [bucket.name])
 }
 
 # Violacao: DynamoDB table sem PITR
-violation[msg] {
+violation contains msg if {
     table := input.dynamodb_tables[_]
     not table.point_in_time_recovery
     msg := sprintf("HIGH: DynamoDB table '%s' does not have PITR enabled (PCI DSS 10.7)", [table.name])
 }
 
 # Violacao: DynamoDB table sem encryption
-violation[msg] {
+violation contains msg if {
     table := input.dynamodb_tables[_]
     not table.encryption_enabled
     msg := sprintf("HIGH: DynamoDB table '%s' does not have encryption enabled (PCI DSS 3.4)", [table.name])

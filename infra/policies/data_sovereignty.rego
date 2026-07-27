@@ -12,7 +12,7 @@ import rego.v1
 # ── PCI / PII routing enforcement ─────────────────────────────────
 
 # Violacao: dados PCI roteados para Bedrock
-violation[msg] {
+violation contains msg if {
     request := input.llm_requests[_]
     request.data_scope == "PCI"
     request.provider == "bedrock"
@@ -20,7 +20,7 @@ violation[msg] {
 }
 
 # Violacao: dados PII roteados para Bedrock sem force_local
-violation[msg] {
+violation contains msg if {
     request := input.llm_requests[_]
     request.data_scope == "PII"
     request.provider == "bedrock"
@@ -29,7 +29,7 @@ violation[msg] {
 }
 
 # Violacao: force_local=false com data_scope=PCI (deveria ser impossivel)
-violation[msg] {
+violation contains msg if {
     request := input.llm_requests[_]
     request.data_scope == "PCI"
     request.force_local == false
@@ -42,7 +42,7 @@ pan_patterns := [
     "\\b\\d{4}[ -]\\d{6}[ -]\\d{5}\\b",                      # PAN com espacos
 ]
 
-violation[msg] {
+violation contains msg if {
     request := input.llm_requests[_]
     request.provider == "bedrock"
     pattern := pan_patterns[_]
@@ -53,14 +53,14 @@ violation[msg] {
 # ── vLLM local security ──────────────────────────────────────────
 
 # Violacao: vLLM local sem isolamento de rede
-violation[msg] {
+violation contains msg if {
     instance := input.vllm_instances[_]
     not instance.network_isolation
     msg := sprintf("HIGH: vLLM instance '%s' processing PCI data without network isolation", [instance.instance_id])
 }
 
 # Violacao: vLLM local com storage persistente (dados PCI podem vazar)
-violation[msg] {
+violation contains msg if {
     instance := input.vllm_instances[_]
     instance.persistent_storage
     msg := sprintf("HIGH: vLLM instance '%s' has persistent storage enabled (PCI data must be ephemeral)", [instance.instance_id])

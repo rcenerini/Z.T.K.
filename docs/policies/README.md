@@ -2,7 +2,7 @@
 
 ![OPA](https://img.shields.io/badge/engine-OPA%2FRego-00d4ff)
 ![Policies](https://img.shields.io/badge/policies-3-ff6b35)
-![Tests](https://img.shields.io/badge/tests-27-00ff88)
+![Tests](https://img.shields.io/badge/tests-30%2F30-00ff88)
 
 > **Versão:** 1.0 | **Fase:** F0.3 | **Princípio:** deny-by-default
 

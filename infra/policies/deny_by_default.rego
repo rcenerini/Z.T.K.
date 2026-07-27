@@ -76,7 +76,7 @@ allow if {
 # ── Regras de validacao auxiliares ────────────────────────────────
 
 # Nenhuma operacao de escrita deve ser permitida sem audit_event
-deny_audit_gap[msg] {
+deny_audit_gap contains msg if {
     input.operation != "write_audit_event"
     not input.audit_enabled
     msg := sprintf("operation '%s' requires audit_enabled=true", [input.operation])
