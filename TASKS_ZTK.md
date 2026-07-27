@@ -28,6 +28,13 @@ Status: **Fase de desenvolvimento inicial. Nucleo implementado, 39/49 testes pas
 - [~] **M4.13** — Substituir RAG JSON por Aurora PostgreSQL + pgvector (bloqueado: futuro)
 - [~] **M4.14** — Ativar Bedrock real (bloqueado: time de plataforma)
 
+### Fase 0 — Fundacao (progresso)
+
+- [x] **F0.1** — Shared Schemas & Core Library (5 schemas Pydantic + 3 utils, 40/40 testes)
+- [x] **F0.2** — Infra Terraform (10 modulos: 6 novos + 4 revisados, `terraform validate` passou)
+- [ ] **F0.3** — OPA Policies (deny_by_default + testes)
+- [ ] **F0.4** — CI/CD Pipeline completo
+
 ### MVP1 — Gates Humanos (bloqueados)
 
 - [~] **G2** — Jira Assets schema (aguardando stakeholders externos)

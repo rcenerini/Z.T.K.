@@ -4,13 +4,24 @@ output "vpc_id" {
 }
 
 output "dynamodb_tables" {
-  description = "Nomes das tabelas DynamoDB"
-  value       = module.dynamodb.table_names
+  description = "Tabelas DynamoDB provisionadas"
+  value = {
+    findings          = module.dynamodb.findings_table_name
+    decisions         = module.dynamodb.decisions_table_name
+    audit_events      = module.dynamodb.audit_events_table_name
+    containment_rules = module.dynamodb.containment_rules_table_name
+    exceptions        = module.dynamodb.exceptions_table_name
+  }
 }
 
-output "s3_audit_bucket" {
-  description = "Bucket S3 para audit trail"
-  value       = module.s3.audit_bucket
+output "s3_buckets" {
+  description = "Buckets S3 provisionados"
+  value = {
+    audit_trail      = module.s3.audit_trail_bucket_name
+    evidence         = module.s3.evidence_bucket_name
+    lambda_artifacts = module.s3.lambda_artifacts_bucket_name
+    terraform_state  = module.s3.terraform_state_bucket_name
+  }
 }
 
 output "sqs_queues" {

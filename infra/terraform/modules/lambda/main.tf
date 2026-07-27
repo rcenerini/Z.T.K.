@@ -43,8 +43,8 @@ resource "aws_iam_role" "lambda" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "lambda.amazonaws.com" }
     }]
   })
@@ -113,9 +113,11 @@ resource "aws_lambda_function" "this" {
   handler       = "handler.lambda_handler"
   memory_size   = var.memory_size
   timeout       = var.timeout
-  filename      = "dummy.zip"  # Atualizado via CI/CD
-  source_code_hash = filebase64sha256("dummy.zip")
-  
+  # Lambda sera implantada via CI/CD (GitHub Actions zip + update-function-code)
+  # Placeholder estatico para terraform validate (substituido no primeiro deploy)
+  filename         = "${path.module}/dummy.zip"
+  source_code_hash = filebase64sha256("${path.module}/dummy.zip")
+
   vpc_config {
     subnet_ids         = var.subnet_ids
     security_group_ids = [aws_security_group.lambda.id]
@@ -123,9 +125,9 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      STAGE       = var.name_prefix
-      LOG_LEVEL   = "INFO"
-      REGION      = data.aws_region.current.name
+      STAGE     = var.name_prefix
+      LOG_LEVEL = "INFO"
+      REGION    = data.aws_region.current.name
     }
   }
 

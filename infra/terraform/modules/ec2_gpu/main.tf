@@ -49,8 +49,8 @@ resource "aws_iam_role" "ec2_gpu" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "ec2.amazonaws.com" }
     }]
   })
@@ -105,6 +105,7 @@ resource "aws_instance" "gpu" {
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh", {
     model_name = "meta-llama/Llama-3.3-70B-Instruct"
+    api_key    = "" # Placeholder — substituir via Secrets Manager no bootstrap
   }))
 
   root_block_device {
@@ -126,7 +127,7 @@ resource "aws_instance" "gpu" {
   instance_market_options {
     market_type = var.use_spot ? "spot" : "on-demand"
     spot_options {
-      max_price                      = null  # Preco sob demanda
+      max_price                      = null # Preco sob demanda
       spot_instance_type             = "one-time"
       instance_interruption_behavior = "terminate"
     }

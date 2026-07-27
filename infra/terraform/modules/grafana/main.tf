@@ -34,7 +34,7 @@ resource "aws_security_group" "grafana" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]  # Restrito via WAF/ALB em prod
+    cidr_blocks = ["0.0.0.0/0"] # Restrito via WAF/ALB em prod
     description = "HTTPS publico (restrito via ALB rules)"
   }
 
@@ -64,8 +64,8 @@ resource "aws_ecs_task_definition" "grafana" {
 
   container_definitions = jsonencode([
     {
-      name  = "grafana"
-      image = "grafana/grafana-enterprise:11.0.0"
+      name      = "grafana"
+      image     = "grafana/grafana-enterprise:11.0.0"
       essential = true
       portMappings = [
         {
@@ -109,7 +109,7 @@ resource "aws_ecs_service" "grafana" {
   network_configuration {
     subnets          = var.subnet_ids
     security_groups  = [aws_security_group.grafana.id]
-    assign_public_ip = true  # Em prod, usar ALB + private subnets
+    assign_public_ip = true # Em prod, usar ALB + private subnets
   }
 
   tags = var.tags
@@ -131,8 +131,8 @@ resource "aws_iam_role" "ecs_execution" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "ecs-tasks.amazonaws.com" }
     }]
   })
@@ -149,8 +149,8 @@ resource "aws_iam_role" "ecs_task" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "ecs-tasks.amazonaws.com" }
     }]
   })
