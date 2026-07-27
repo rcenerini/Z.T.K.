@@ -43,7 +43,6 @@
     <rect x="0" y="0" width="190" height="34" rx="10" fill="#E8F4FD"/>
     <rect x="0" y="24" width="190" height="10" fill="#E8F4FD"/>
     <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L1 — Entrada &amp; Triagem</text>
-    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#00d4ff" text-anchor="end">7 agents</text>
 
     <!-- Agents -->
     <rect x="12" y="46" width="166" height="22" rx="4" fill="#F8F9FA"/>
@@ -71,7 +70,6 @@
     <rect x="0" y="0" width="190" height="34" rx="10" fill="#E8F4FD"/>
     <rect x="0" y="24" width="190" height="10" fill="#E8F4FD"/>
     <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L2 — Especialistas</text>
-    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#00d4ff" text-anchor="end">24 agents</text>
 
     <text x="14" y="58" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF" text-transform="uppercase">Python</text>
     <rect x="12" y="64" width="80" height="18" rx="3" fill="#F8F9FA"/>
@@ -110,8 +108,7 @@
     <rect x="0" y="0" width="190" height="240" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
     <rect x="0" y="0" width="190" height="34" rx="10" fill="#FFF3E0"/>
     <rect x="0" y="24" width="190" height="10" fill="#FFF3E0"/>
-    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L3 — Validação</text>
-    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#ff6b35" text-anchor="end">3 agents</text>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L3 — Validacao</text>
 
     <rect x="12" y="48" width="166" height="22" rx="4" fill="#FFF3E0"/>
     <text x="20" y="63" font-family="Inter,sans-serif" font-size="9" fill="#E65100">3.01 Sandbox Executor</text>
@@ -144,7 +141,6 @@
     <rect x="0" y="0" width="190" height="34" rx="10" fill="#F3E8FF"/>
     <rect x="0" y="24" width="190" height="10" fill="#F3E8FF"/>
     <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L4 — Consenso</text>
-    <text x="130" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#7b42bc" text-anchor="end">3 agents</text>
 
     <rect x="12" y="46" width="166" height="22" rx="4" fill="#F8F9FA"/>
     <text x="20" y="61" font-family="Inter,sans-serif" font-size="9" fill="#374151">4.01 CVSS v4.0 Calc</text>
@@ -173,8 +169,7 @@
     <rect x="0" y="0" width="176" height="240" rx="10" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1"/>
     <rect x="0" y="0" width="176" height="34" rx="10" fill="#E6F9F0"/>
     <rect x="0" y="24" width="176" height="10" fill="#E6F9F0"/>
-    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L5 — Remediação</text>
-    <text x="116" y="22" font-family="IBM Plex Mono,monospace" font-size="9" fill="#00ff88" text-anchor="end">3 agents</text>
+    <text x="14" y="22" font-family="Montserrat,sans-serif" font-size="12" font-weight="700" fill="#0A0A0A">L5 — Remediacao</text>
 
     <text x="14" y="54" font-family="IBM Plex Mono,monospace" font-size="8" fill="#9CA3AF">TRILHA A</text>
     <rect x="12" y="60" width="150" height="22" rx="4" fill="#E6F9F0"/>
