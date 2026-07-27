@@ -140,7 +140,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.COMPENSATING_CONTROL,
             justification="WAF rule blocks exploitation. Risk accepted for 90 days while patch is developed and tested in staging.",
             current_severity="P1",
@@ -156,7 +156,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.FALSE_POSITIVE,
             justification="Detailed justification explaining why this P0 finding is actually a false positive based on extensive manual code review.",
             current_severity="P0",
@@ -169,7 +169,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.FALSE_POSITIVE,
             justification="Short",
             current_severity="P1",
@@ -181,7 +181,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.COMPENSATING_CONTROL,
             justification="Detailed justification that meets the minimum length requirement for exception intake processing.",
             current_severity="P1",
@@ -194,7 +194,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.FALSE_POSITIVE,
             justification="Detailed justification for this finding exception request with sufficient length.",
             current_severity="P3",
@@ -206,7 +206,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.RISK_ACCEPTED,
             justification="Business accepts this risk due to compensating controls. Detailed analysis performed by security team.",
             current_severity="P2",
@@ -216,12 +216,12 @@ class TestExceptionFlow:
         assert exc is not None
 
         # First approval
-        ok1, msg1 = four_eyes_approve(exc, "gerente@empresa.com.br", "Gerente Executivo")
+        ok1, msg1 = four_eyes_approve(exc, "gerente@example.com", "Gerente Executivo")
         assert ok1 is False  # Still need second approval
         assert len(exc.approved_by) == 1
 
         # Second approval (different person)
-        ok2, msg2 = four_eyes_approve(exc, "super@empresa.com.br", "Superintendente")
+        ok2, msg2 = four_eyes_approve(exc, "super@example.com", "Superintendente")
         assert ok2 is True  # Four-eyes complete
         assert exc.status == ExceptionStatus.APPROVED
 
@@ -229,15 +229,15 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.FALSE_POSITIVE,
             justification="Extensive manual analysis confirms this is a false positive due to the specific configuration.",
             current_severity="P1",
             requested_severity="P4",
         )
         assert exc is not None
-        four_eyes_approve(exc, "gerente@empresa.com.br", "Gerente Executivo")
-        ok, msg = four_eyes_approve(exc, "gerente@empresa.com.br", "Gerente Executivo")
+        four_eyes_approve(exc, "gerente@example.com", "Gerente Executivo")
+        ok, msg = four_eyes_approve(exc, "gerente@example.com", "Gerente Executivo")
         assert ok is False
         assert "already approved" in msg
 
@@ -245,14 +245,14 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.FALSE_POSITIVE,
             justification="Detailed explanation of why this specific finding is a false positive in this context.",
             current_severity="P1",
             requested_severity="P4",
         )
         assert exc is not None
-        ok, msg = four_eyes_approve(exc, "eng@empresa.com.br", "Gerente Executivo")
+        ok, msg = four_eyes_approve(exc, "eng@example.com", "Gerente Executivo")
         assert ok is False
         assert "cannot approve" in msg.lower()
 
@@ -260,21 +260,21 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.DEFERRED_FIX,
             justification="Fix is deferred due to external dependency update cycle. Will be included in next sprint.",
             current_severity="P1",
             requested_severity="P3",
         )
         assert exc is not None
-        reject_exception(exc, "gerente@empresa.com.br", "Not enough justification")
+        reject_exception(exc, "gerente@example.com", "Not enough justification")
         assert exc.status == ExceptionStatus.REJECTED
 
     def test_apply_approved_exception(self) -> None:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.COMPENSATING_CONTROL,
             justification="Compensating WAF control deployed and verified in production for this specific vulnerability.",
             current_severity="P1",
@@ -282,8 +282,8 @@ class TestExceptionFlow:
             ttl_days=30,
         )
         assert exc is not None
-        four_eyes_approve(exc, "gerente@empresa.com.br", "Gerente Executivo")
-        four_eyes_approve(exc, "super@empresa.com.br", "Superintendente")
+        four_eyes_approve(exc, "gerente@example.com", "Gerente Executivo")
+        four_eyes_approve(exc, "super@example.com", "Superintendente")
         assert apply_exception(exc) is True
         assert exc.status == ExceptionStatus.ACTIVE
 
@@ -291,7 +291,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.FALSE_POSITIVE,
             justification="Repeated scans confirm no actual vulnerability present in this specific code path.",
             current_severity="P2",
@@ -304,7 +304,7 @@ class TestExceptionFlow:
         exc = intake_exception(
             finding_id=str(uuid.uuid4()),
             tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br",
+            requested_by="eng@example.com",
             category=ExceptionCategory.RISK_ACCEPTED,
             justification="Detailed risk acceptance justification with thorough analysis and documentation.",
             current_severity="P2",
@@ -389,7 +389,7 @@ class TestHITLGateway:
             priority=HITLPriority.MEDIUM,
         )
         assert item_id is not None
-        assert assign_item(item_id, "analyst@empresa.com.br") is True
+        assert assign_item(item_id, "analyst@example.com") is True
         assert resolve_item(item_id, "False positive confirmed") is True
 
     def test_sla_breach_detection(self) -> None:

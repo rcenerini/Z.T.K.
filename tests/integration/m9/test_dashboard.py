@@ -21,7 +21,7 @@ class TestDashboardAPI:
     def test_create_exception(self) -> None:
         r = client.post("/api/exceptions", json={
             "finding_id": "test-123", "tenant_id": "ztk-proj",
-            "requested_by": "eng@empresa.com.br",
+            "requested_by": "eng@example.com",
             "category": "COMPENSATING_CONTROL",
             "justification": "WAF rule blocks the exploit. This is a valid compensating control for the SQL injection vulnerability.",
             "current_severity": "P1", "requested_severity": "P3", "ttl_days": 90,

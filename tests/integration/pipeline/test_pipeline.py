@@ -89,16 +89,16 @@ class TestPipelineIntegration:
 
         exc = intake_exception(
             finding_id=str(uuid.uuid4()), tenant_id="ztk-proj",
-            requested_by="eng@empresa.com.br", category=ExceptionCategory.COMPENSATING_CONTROL,
+            requested_by="eng@example.com", category=ExceptionCategory.COMPENSATING_CONTROL,
             justification="WAF rule blocks exploitation. Valid compensating control for SQL injection vulnerability.",
             current_severity="P1", requested_severity="P3", ttl_days=90,
         )
         assert exc is not None
 
         # Four-eyes
-        ok1, _ = four_eyes_approve(exc, "gerente@empresa.com.br", "Gerente")
+        ok1, _ = four_eyes_approve(exc, "gerente@example.com", "Gerente")
         assert ok1 is False  # Waiting for second
-        ok2, _ = four_eyes_approve(exc, "super@empresa.com.br", "Superintendente")
+        ok2, _ = four_eyes_approve(exc, "super@example.com", "Superintendente")
         assert ok2 is True
 
         # Apply
