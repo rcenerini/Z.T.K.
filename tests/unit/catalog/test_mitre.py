@@ -11,6 +11,11 @@ from shared.catalog.mitre_atlas import (
     ATLAS_CATALOG, ATLASTactic, ATLASTechnique,
     get_atlas_mitigations, get_p0_atlas_threats,
 )
+from shared.catalog.mitre_capec import (
+    CAPEC_CATALOG, CAPECDomain, CAPECPattern,
+    get_patterns_for_cwe, get_patterns_by_domain, get_critical_patterns,
+    get_capec_severity_boost,
+)
 
 
 class TestATTACKCatalog:
@@ -77,3 +82,30 @@ class TestATLASCatalog:
         """Key ATLAS techniques should map to OWASP LLM Top 10."""
         owasp_mapped = [t for t in ATLAS_CATALOG.values() if t.owasp_llm_id]
         assert len(owasp_mapped) >= 4  # LLM01, LLM02, LLM03, LLM05, LLM06, LLM07, LLM08
+
+
+class TestCAPECCatalog:
+    def test_catalog_not_empty(self) -> None:
+        assert len(CAPEC_CATALOG) >= 20
+
+    def test_get_patterns_for_cwe(self) -> None:
+        patterns = get_patterns_for_cwe("CWE-89")
+        assert len(patterns) >= 1
+        assert any(p.capec_id == "CAPEC-66" for p in patterns)
+
+    def test_get_patterns_by_domain(self) -> None:
+        sw_patterns = get_patterns_by_domain(CAPECDomain.SOFTWARE)
+        assert len(sw_patterns) >= 10
+
+    def test_critical_patterns(self) -> None:
+        critical = get_critical_patterns()
+        assert len(critical) >= 5
+
+    def test_capec_severity_boost(self) -> None:
+        boost = get_capec_severity_boost(["CWE-89", "CWE-78"])
+        assert boost >= 0.5
+
+    def test_all_patterns_have_cwes(self) -> None:
+        for pid, pattern in CAPEC_CATALOG.items():
+            assert len(pattern.cwe_ids) > 0, f"{pid}: no CWEs mapped"
+            assert pattern.capec_id == pid

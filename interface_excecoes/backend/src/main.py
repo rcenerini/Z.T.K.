@@ -19,7 +19,20 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="ZTK — Exception Dashboard API", version="1.0.0")
+app = FastAPI(
+    title="ZTK — Exception Dashboard API",
+    version="1.0.0",
+    description="API REST para gestao de excecoes, kill switch, fila HITL e auditoria do sistema Z.T.K.",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_tags=[
+        {"name": "dashboard", "description": "Metricas agregadas"},
+        {"name": "exceptions", "description": "Gestao de excecoes four-eyes"},
+        {"name": "kill-switch", "description": "Controle de emergencia (SOC)"},
+        {"name": "hitl", "description": "Fila Human-in-the-Loop"},
+        {"name": "audit", "description": "Timeline de eventos"},
+    ],
+)
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
@@ -64,14 +77,14 @@ class HITLCreate(BaseModel):
 
 # ── API Endpoints ──────────────────────────────────────────────────
 
-@app.get("/api/health")
+@app.get("/api/health", tags=["dashboard"])
 def health() -> dict:
     return {"status": "ok", "service": "exception-dashboard", "version": "1.0.0"}
 
 
 # ── Exceptions ─────────────────────────────────────────────────────
 
-@app.get("/api/exceptions")
+@app.get("/api/exceptions", tags=["exceptions"])
 def list_exceptions(status: Optional[str] = None) -> dict:
     items = list(_exceptions.values())
     if status:
@@ -79,7 +92,7 @@ def list_exceptions(status: Optional[str] = None) -> dict:
     return {"total": len(items), "exceptions": sorted(items, key=lambda e: e.get("created_at", ""), reverse=True)}
 
 
-@app.post("/api/exceptions")
+@app.post("/api/exceptions", tags=["exceptions"])
 def create_exception(req: ExceptionCreate) -> dict:
     exc_id = str(uuid.uuid4())[:12]
     now = datetime.now(timezone.utc).isoformat()
@@ -93,7 +106,7 @@ def create_exception(req: ExceptionCreate) -> dict:
     return exc
 
 
-@app.post("/api/exceptions/{exc_id}/approve")
+@app.post("/api/exceptions/{exc_id}/approve", tags=["exceptions"])
 def approve_exception(exc_id: str, req: ApprovalRequest) -> dict:
     if exc_id not in _exceptions:
         raise HTTPException(404, "Exception not found")
@@ -196,7 +209,7 @@ def get_audit_timeline(limit: int = Query(default=50, le=200)) -> dict:
 
 # ── Dashboard Summary ──────────────────────────────────────────────
 
-@app.get("/api/dashboard/summary")
+@app.get("/api/dashboard/summary", tags=["dashboard"])
 def dashboard_summary() -> dict:
     return {
         "exceptions": {
