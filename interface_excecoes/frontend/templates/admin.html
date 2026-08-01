@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZTK — Admin, Governance & Observability</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--ztk-cyan:#00d4ff;--ztk-amber:#ff6b35;--ztk-green:#00ff88;--ztk-purple:#7b42bc;--ztk-red:#e10600;
+            --bg:#FFFFFF;--bg2:#F8F9FA;--bg3:#F3F4F6;--bd:#E5E7EB;--tx:#0A0A0A;--tx2:#374151;--tx3:#9CA3AF;
+            --f1:'Montserrat',sans-serif;--f2:'Inter',sans-serif;--f3:'IBM Plex Mono',monospace}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:var(--f2);font-size:13px;line-height:1.5;color:var(--tx);background:var(--bg)}
+        .topbar{background:var(--bg);border-bottom:1px solid var(--bd);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+        .topbar h1{font-family:var(--f1);font-size:17px;font-weight:700}.topbar h1 span{color:var(--ztk-cyan)}
+        .topbar-meta{display:flex;gap:16px;font-family:var(--f3);font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em}
+        .topbar-meta b{color:var(--tx)}
+        .main{padding:20px 24px;max-width:1400px;margin:0 auto}
+        .tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--bd);padding-bottom:12px}
+        .tab{padding:8px 16px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--tx2);font-family:var(--f2)}
+        .tab:hover{background:var(--bg3)}.tab.active{background:#E8F4FD;color:var(--ztk-cyan);border-color:#B8E0F8;font-weight:600}
+        .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+        .stat-card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:16px 20px;position:relative;overflow:hidden}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
+        .stat-card.cyan::before{background:var(--ztk-cyan)}.stat-card.amber::before{background:var(--ztk-amber)}.stat-card.green::before{background:var(--ztk-green)}.stat-card.purple::before{background:var(--ztk-purple)}.stat-card.red::before{background:var(--ztk-red)}
+        .stat-label{font-family:var(--f3);font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--tx3);margin-bottom:4px}.stat-value{font-family:var(--f1);font-size:26px;font-weight:700;letter-spacing:-.3px}.stat-sub{font-family:var(--f3);font-size:10px;color:var(--tx3);margin-top:2px}
+        .panel{background:var(--bg2);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:16px}
+        .panel-header{padding:12px 18px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+        .panel-header h3{font-family:var(--f1);font-size:13px;font-weight:600}
+        .panel-body{padding:16px 18px}
+        .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:var(--f3);font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+        .badge-high{background:#E6F9F0;color:#00A650}.badge-medium{background:#FFF3E0;color:#E65100}.badge-low{background:#FDE8E8;color:#C62828}.badge-critical{background:#FDE8E8;color:#C62828}.badge-active{background:#E8F4FD;color:#0095CC}.badge-blocked{background:#FDE8E8;color:#C62828}
+        .project-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
+        .project-row:last-child{border-bottom:none}.project-name{width:160px;font-weight:500;font-size:12px}.project-name small{display:block;font-family:var(--f3);font-size:9px;color:var(--tx3);font-weight:400}
+        .score-bar{flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden}.score-fill{height:100%;border-radius:4px;transition:width .3s}.score-fill.high{background:var(--ztk-green)}.score-fill.medium{background:var(--ztk-amber)}.score-fill.low{background:var(--ztk-red)}
+        .score-value{width:40px;text-align:right;font-family:var(--f3);font-size:11px;font-weight:600}
+        .score-detail{font-family:var(--f3);font-size:9px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
+        .failing-checks{font-size:10px;color:var(--tx2);margin-top:2px;padding-left:172px}
+        .failing-checks li{list-style:none;color:var(--ztk-red);font-family:var(--f3);font-size:9px;padding:1px 0}
+        .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+        .agent-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:4px;background:var(--bg3);font-size:10px;font-family:var(--f2)}
+        .agent-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.agent-dot.on{background:var(--ztk-green)}.agent-dot.warn{background:var(--ztk-amber)}.agent-dot.off{background:var(--tx3)}
+        .agent-ms{font-family:var(--f3);font-size:8px;color:var(--tx3);margin-left:auto}
+        .blocks-table{width:100%;font-size:11px}.blocks-table th{font-family:var(--f3);font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);text-align:left;padding:8px 12px;border-bottom:1px solid var(--bd);background:var(--bg3)}
+        .blocks-table td{padding:8px 12px;border-bottom:1px solid var(--bd)}.blocks-table tr:last-child td{border-bottom:none}
+        .bar-chart{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:8px}
+        .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}.bar{width:80%;border-radius:3px 3px 0 0;min-height:3px}
+        .bar-label{font-family:var(--f3);font-size:7px;color:var(--tx3)}
+        .comp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+        .comp-item{background:var(--bg3);padding:12px;border-radius:6px}.comp-item h4{font-size:11px;font-weight:600;margin-bottom:4px}.comp-bar{height:6px;background:var(--bg3);border-radius:3px;margin-top:6px;overflow:hidden}.comp-fill{height:100%;border-radius:3px}
+    </style>
+</head>
+<body>
+<div class="topbar">
+    <h1>Z.<span>T</span>.K. — Admin & Observability</h1>
+    <div class="topbar-meta"><span>Status: <b style="color:var(--ztk-green)">HEALTHY</b></span><span>Uptime: <b>99.97%</b></span><span>Updated: <b id="time">--</b></span></div>
+</div>
+
+<div class="main">
+    <div class="tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="projects">Projects & Scores</button>
+        <button class="tab" data-tab="blocks">Blocks & Failures</button>
+        <button class="tab" data-tab="agents">Agent Status</button>
+        <button class="tab" data-tab="compliance">Compliance</button>
+    </div>
+
+    <div id="content"></div>
+</div>
+
+<script>
+const API = '';
+let currentTab = 'overview';
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', function(){
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    this.classList.add('active'); currentTab = this.dataset.tab; loadTab(currentTab);
+}));
+
+async function fetchJSON(url){const r=await fetch(API+url);return r.json()}
+
+async function loadTab(tab){
+    const el = document.getElementById('content');
+    try{
+        const metrics = await fetchJSON('/api/admin/metrics');
+        const projects = await fetchJSON('/api/admin/projects');
+        const blocks = await fetchJSON('/api/admin/blocks');
+        const compliance = await fetchJSON('/api/admin/compliance');
+        const throughput = await fetchJSON('/api/admin/throughput');
+
+        switch(tab){
+            case 'overview': renderOverview(el, metrics, projects, blocks, throughput); break;
+            case 'projects': renderProjects(el, projects); break;
+            case 'blocks': renderBlocks(el, blocks); break;
+            case 'agents': renderAgents(el, metrics); break;
+            case 'compliance': renderCompliance(el, compliance); break;
+        }
+    } catch(e) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--tx3)">Backend indisponivel</div>'; }
+}
+
+function renderOverview(el, metrics, projects, blocks, throughput){
+    const proj = projects.projects;
+    const high = proj.filter(p=>p.compliance==='HIGH').length;
+    const med = proj.filter(p=>p.compliance==='MEDIUM').length;
+    const low = proj.filter(p=>p.compliance==='LOW').length;
+    const agents = Object.values(metrics.agents);
+    const healthy = agents.filter(a=>a.status==='healthy').length;
+    const bl = blocks.blocks.filter(b=>b.status==='BLOCKED').length;
+    const t24 = throughput.total_24h;
+
+    el.innerHTML = `
+        <div class="stat-row">
+            <div class="stat-card green"><div class="stat-label">Projects Healthy</div><div class="stat-value">${high}</div><div class="stat-sub">Score >= 80 (HIGH compliance)</div></div>
+            <div class="stat-card amber"><div class="stat-label">At Risk</div><div class="stat-value">${med}</div><div class="stat-sub">Score 60-79 (MEDIUM)</div></div>
+            <div class="stat-card red"><div class="stat-label">Failing</div><div class="stat-value">${low}</div><div class="stat-sub">Score < 60 (LOW compliance)</div></div>
+            <div class="stat-card purple"><div class="stat-label">Agents Healthy</div><div class="stat-value">${healthy}/${agents.length}</div><div class="stat-sub">${bl} blocked · ${t24.findings} findings/24h</div></div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><h3>Project Compliance Scores</h3><span style="font-family:var(--f3);font-size:10px;color:var(--tx3)">${proj.length} projects</span></div>
+            <div class="panel-body">${proj.map(p=>`
+                <div class="project-row">
+                    <div class="project-name">${p.name}<small>${p.id}</small></div>
+                    <div class="score-bar"><div class="score-fill ${p.score>=80?'high':p.score>=60?'medium':'low'}" style="width:${p.score}%"></div></div>
+                    <div class="score-value" style="color:${p.score>=80?'var(--ztk-green)':p.score>=60?'var(--ztk-amber)':'var(--ztk-red)'}">${p.score}</div>
+                    <span class="badge badge-${p.compliance==='HIGH'?'high':p.compliance==='MEDIUM'?'medium':'low'}">${p.compliance}</span>
+                    <div class="score-detail">${p.cwes_found.join(', ')}</div>
+                </div>
+                ${p.failing_checks.length?`<div class="failing-checks"><ul>${p.failing_checks.map(f=>`<li>${f}</li>`).join('')}</ul></div>`:''}
+            `).join('')}</div>
+        </div>
+        <div class="stat-row" style="grid-template-columns:repeat(2,1fr)">
+            <div class="stat-card cyan"><div class="stat-label">Throughput (24h)</div><div class="stat-value">${t24.findings}</div><div class="stat-sub">findings · ${t24.patched} patched · ${t24.blocked} blocked</div></div>
+            <div class="stat-card green"><div class="stat-label">Patch Rate</div><div class="stat-value">${Math.round(t24.patched/t24.findings*100)}%</div><div class="stat-sub">Auto-remediation success</div></div>
+        </div>`;
+}
+
+function renderProjects(el, projects){
+    el.innerHTML = `<div class="panel"><div class="panel-header"><h3>Project Compliance Scores</h3></div>
+    <div class="panel-body">${projects.projects.map(p=>`
+        <div class="project-row"><div class="project-name">${p.name}<small>${p.id}</small></div>
+            <div class="score-bar"><div class="score-fill ${p.score>=80?'high':p.score>=60?'medium':'low'}" style="width:${p.score}%"></div></div>
+            <div class="score-value">${p.score}</div>
+            <span class="badge badge-${p.compliance==='HIGH'?'high':p.compliance==='MEDIUM'?'medium':'low'}">${p.compliance}</span>
+        </div>
+        ${p.failing_checks.length?`<div class="failing-checks"><ul>${p.failing_checks.map(f=>`<li>${f}</li>`).join('')}</ul></div>`:''}
+    `).join('')}</div></div>`;
+}
+
+function renderBlocks(el, blocks){
+    el.innerHTML = `<div class="panel"><div class="panel-header"><h3>Blocked & Failing Items</h3></div>
+    <div class="panel-body"><table class="blocks-table"><thead><tr><th>ID</th><th>Project</th><th>Target</th><th>CWE</th><th>Reason</th><th>Status</th></tr></thead>
+    <tbody>${blocks.blocks.map(b=>`<tr>
+        <td><span style="font-family:var(--f3);font-size:10px">${b.id}</span></td>
+        <td>${b.project}</td><td><span style="font-family:var(--f3);font-size:9px">${b.target}</span></td>
+        <td><span class="badge badge-critical">${b.cwe}</span></td>
+        <td style="font-size:10px">${b.reason}</td>
+        <td><span class="badge ${b.status==='BLOCKED'?'badge-blocked':'badge-active'}">${b.status}</span></td>
+    </tr>`).join('')}</tbody></table></div></div>`;
+}
+
+function renderAgents(el, metrics){
+    el.innerHTML = `<div class="panel"><div class="panel-header"><h3>Agent Status & Latency</h3></div>
+    <div class="panel-body"><div class="agent-grid">${Object.entries(metrics.agents).map(([id,a])=>`
+        <div class="agent-item"><span class="agent-dot ${a.status==='healthy'?'on':a.errors_24h>2?'warn':'off'}"></span>${id}
+            <span class="agent-ms">${a.avg_ms}ms</span></div>
+    `).join('')}</div></div></div>`;
+}
+
+function renderCompliance(el, compliance){
+    const pci = compliance.pci_dss;
+    const lgpd = compliance.lgpd;
+    const opa = compliance.opa_policies;
+    el.innerHTML = `<div class="comp-grid">
+        <div class="comp-item"><h4>PCI DSS 4.0</h4><span style="font-size:24px;font-weight:700;color:var(--ztk-amber)">${pci.coverage}%</span><span style="font-size:11px;color:var(--tx3)"> · ${pci.controls_mapped} mapped, ${pci.controls_implemented} implemented</span>
+            <div class="comp-bar"><div class="comp-fill" style="width:${pci.coverage}%;background:var(--ztk-amber)"></div></div><small style="color:var(--tx3)">Target: ${pci.target}</small></div>
+        <div class="comp-item"><h4>LGPD</h4><span style="font-size:24px;font-weight:700;color:var(--ztk-green)">${lgpd.coverage}%</span><span style="font-size:11px;color:var(--tx3)"> · ${lgpd.items_conforme} conforme, ${lgpd.items_pendentes} pendentes</span>
+            <div class="comp-bar"><div class="comp-fill" style="width:${lgpd.coverage}%;background:var(--ztk-green)"></div></div><small style="color:var(--tx3)">Pendentes: ${lgpd.pendentes.join(', ')}</small></div>
+        <div class="comp-item"><h4>OPA Policies</h4><span style="font-size:24px;font-weight:700;color:var(--ztk-cyan)">${opa.total} policies</span><span style="font-size:11px;color:var(--tx3)"> · ${opa.passing} tests, deny-by-default: ${opa.deny_by_default?'ON':'OFF'}</span></div>
+        <div class="comp-item"><h4>CIS Benchmarks</h4><span style="font-size:12px;color:var(--tx2)">vLLM: ${compliance.cis_benchmarks.vllm}</span><br>
+            <span style="font-size:12px;color:var(--tx2)">Aurora: ${compliance.cis_benchmarks.aurora}</span><br>
+            <span style="font-size:12px;color:var(--tx2)">Containers: ${compliance.cis_benchmarks.containers}</span></div>
+    </div>`;
+}
+
+document.getElementById('time').textContent = new Date().toLocaleTimeString('pt-BR');
+loadTab('overview');
+</script>
+</body>
+</html>
