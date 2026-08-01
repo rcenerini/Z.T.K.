@@ -90,3 +90,23 @@ class TestDashboardAPI:
         r = client.get("/api/admin/throughput")
         assert r.status_code == 200
         assert r.json()["total_24h"]["findings"] > 0
+
+    def test_admin_tenants(self) -> None:
+        r = client.get("/api/admin/tenants")
+        assert r.status_code == 200
+        assert r.json()["total"] >= 3
+
+    def test_admin_four_eyes(self) -> None:
+        r = client.get("/api/admin/four-eyes")
+        assert r.status_code == 200
+        assert r.json()["total"] >= 2
+
+    def test_admin_latency(self) -> None:
+        r = client.get("/api/admin/latency")
+        assert r.status_code == 200
+        assert len(r.json()["layers"]) == 8
+
+    def test_admin_alerts(self) -> None:
+        r = client.get("/api/admin/alerts")
+        assert r.status_code == 200
+        assert r.json()["total"] >= 3

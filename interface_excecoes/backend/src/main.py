@@ -328,3 +328,77 @@ def get_throughput() -> dict:
         ],
         "total_24h": {"findings": 478, "patched": 159, "blocked": 30},
     }
+
+
+# ── Admin: Tenant Management ──────────────────────────────────────
+
+_tenants: dict = {
+    "ztk-proj": {"name": "ZTK Project", "projects": 4, "findings_total": 128, "compliance_avg": 75, "status": "active"},
+    "acme-api": {"name": "Acme API Gateway", "projects": 2, "findings_total": 45, "compliance_avg": 88, "status": "active"},
+    "fintech-core": {"name": "Fintech Core Banking", "projects": 6, "findings_total": 312, "compliance_avg": 62, "status": "active"},
+    "dev-sandbox": {"name": "Dev Sandbox", "projects": 1, "findings_total": 12, "compliance_avg": 95, "status": "active"},
+}
+
+
+@app.get("/api/admin/tenants", tags=["admin"])
+def get_tenants() -> dict:
+    """List all tenants with compliance and project counts."""
+    return {"total": len(_tenants), "tenants": list(_tenants.values())}
+
+
+# ── Admin: Four-Eyes Tracker ──────────────────────────────────────
+
+_four_eyes_tracker: list = [
+    {"exception_id": "EXC-001", "finding_id": "f-8841", "requested_by": "eng-payments", "category": "COMPENSATING_CONTROL",
+     "current": "P1", "requested": "P3", "approval_1": "gerente@example.com", "approval_1_date": "2026-07-27T09:00:00Z",
+     "approval_2": None, "approval_2_date": None, "status": "WAITING_2ND", "ttl_days": 90, "expires": "2026-10-25"},
+    {"exception_id": "EXC-002", "finding_id": "f-9012", "requested_by": "eng-auth", "category": "DEFERRED_FIX",
+     "current": "P2", "requested": "P4", "approval_1": "gerente@example.com", "approval_1_date": "2026-07-26T14:00:00Z",
+     "approval_2": "super@example.com", "approval_2_date": "2026-07-27T08:00:00Z", "status": "APPROVED", "ttl_days": 90, "expires": "2026-10-24"},
+    {"exception_id": "EXC-003", "finding_id": "f-7654", "requested_by": "eng-frontend", "category": "FALSE_POSITIVE",
+     "current": "P1", "requested": "P4", "approval_1": None, "approval_1_date": None,
+     "approval_2": None, "approval_2_date": None, "status": "WAITING_1ST", "ttl_days": 180, "expires": "2027-01-23"},
+]
+
+
+@app.get("/api/admin/four-eyes", tags=["admin"])
+def get_four_eyes_tracker() -> dict:
+    """Track four-eyes exception approvals."""
+    waiting = [e for e in _four_eyes_tracker if "WAITING" in e["status"]]
+    return {"total": len(_four_eyes_tracker), "waiting": len(waiting), "exceptions": _four_eyes_tracker}
+
+
+# ── Admin: Latency by Layer + Alerts ──────────────────────────────
+
+@app.get("/api/admin/latency", tags=["admin"])
+def get_latency_by_layer() -> dict:
+    """Pipeline latency aggregated by layer."""
+    return {
+        "layers": [
+            {"layer": "L1 — Entrada", "p50_ms": 320, "p95_ms": 450, "p99_ms": 680, "status": "healthy"},
+            {"layer": "L2 — Especialistas", "p50_ms": 1420, "p95_ms": 2800, "p99_ms": 4200, "status": "healthy"},
+            {"layer": "L3 — Validacao", "p50_ms": 890, "p95_ms": 1500, "p99_ms": 2100, "status": "healthy"},
+            {"layer": "L4 — Consenso", "p50_ms": 180, "p95_ms": 350, "p99_ms": 520, "status": "healthy"},
+            {"layer": "L5 — Remediacao", "p50_ms": 260, "p95_ms": 480, "p99_ms": 720, "status": "healthy"},
+            {"layer": "L6 — Governanca", "p50_ms": 1, "p95_ms": 2, "p99_ms": 5, "status": "healthy"},
+            {"layer": "L7 — Ensemble", "p50_ms": 2, "p95_ms": 5, "p99_ms": 10, "status": "healthy"},
+            {"layer": "L8 — Escala", "p50_ms": 1, "p95_ms": 2, "p99_ms": 4, "status": "healthy"},
+        ],
+        "total_pipeline_p50_ms": 3074,
+    }
+
+
+_alerts: list = [
+    {"id": "ALT-001", "severity": "HIGH", "title": "Projeto Auth Module abaixo de 50", "detail": "Score 45 — 28 findings abertos, 5 bloqueados", "time": "2026-07-27T14:00:00Z", "acknowledged": False},
+    {"id": "ALT-002", "severity": "MEDIUM", "title": "Payment Service — 2 itens bloqueados", "detail": "CWE-798 (hardcoded key) e CWE-89 (SQLi) aguardando remediacao", "time": "2026-07-27T12:00:00Z", "acknowledged": False},
+    {"id": "ALT-003", "severity": "LOW", "title": "Sandbox executor — 2 erros em 24h", "detail": "Timeout em 2 execucoes de PoC — revisar threshold", "time": "2026-07-27T10:00:00Z", "acknowledged": True},
+    {"id": "ALT-004", "severity": "HIGH", "title": "Four-eyes EXC-001 — 48h sem 2a aprovacao", "detail": "Excecao CWE-89 aguardando Superintendente desde 27/07", "time": "2026-07-27T08:00:00Z", "acknowledged": False},
+    {"id": "ALT-005", "severity": "MEDIUM", "title": "PCI DSS coverage estagnado em 45%", "detail": "IaC provisionada porem sem terraform apply — sem avanco em 30 dias", "time": "2026-07-26T18:00:00Z", "acknowledged": False},
+]
+
+
+@app.get("/api/admin/alerts", tags=["admin"])
+def get_alerts() -> dict:
+    """Configurable alert system."""
+    active = [a for a in _alerts if not a["acknowledged"]]
+    return {"total": len(_alerts), "active": len(active), "alerts": _alerts}
