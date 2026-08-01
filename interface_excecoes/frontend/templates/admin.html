@@ -62,6 +62,10 @@
         <button class="tab" data-tab="blocks">Blocks & Failures</button>
         <button class="tab" data-tab="agents">Agent Status</button>
         <button class="tab" data-tab="compliance">Compliance</button>
+        <button class="tab" data-tab="tenants">Tenants</button>
+        <button class="tab" data-tab="foureyes">Four-Eyes</button>
+        <button class="tab" data-tab="latency">Latency</button>
+        <button class="tab" data-tab="alerts">Alerts</button>
     </div>
 
     <div id="content"></div>
@@ -85,6 +89,10 @@ async function loadTab(tab){
         const blocks = await fetchJSON('/api/admin/blocks');
         const compliance = await fetchJSON('/api/admin/compliance');
         const throughput = await fetchJSON('/api/admin/throughput');
+        const tenants = await fetchJSON('/api/admin/tenants');
+        const fourEyes = await fetchJSON('/api/admin/four-eyes');
+        const latency = await fetchJSON('/api/admin/latency');
+        const alerts = await fetchJSON('/api/admin/alerts');
 
         switch(tab){
             case 'overview': renderOverview(el, metrics, projects, blocks, throughput); break;
@@ -92,6 +100,10 @@ async function loadTab(tab){
             case 'blocks': renderBlocks(el, blocks); break;
             case 'agents': renderAgents(el, metrics); break;
             case 'compliance': renderCompliance(el, compliance); break;
+            case 'tenants': renderTenants(el, tenants); break;
+            case 'foureyes': renderFourEyes(el, fourEyes); break;
+            case 'latency': renderLatency(el, latency); break;
+            case 'alerts': renderAlerts(el, alerts); break;
         }
     } catch(e) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--tx3)">Backend indisponivel</div>'; }
 }
@@ -178,6 +190,62 @@ function renderCompliance(el, compliance){
             <span style="font-size:12px;color:var(--tx2)">Aurora: ${compliance.cis_benchmarks.aurora}</span><br>
             <span style="font-size:12px;color:var(--tx2)">Containers: ${compliance.cis_benchmarks.containers}</span></div>
     </div>`;
+}
+
+function renderTenants(el, tenants){
+    el.innerHTML = `<div class="panel"><div class="panel-header"><h3>Tenant Management</h3></div>
+    <div class="panel-body">
+        <table class="blocks-table"><thead><tr><th>Tenant ID</th><th>Name</th><th>Projects</th><th>Findings</th><th>Compliance Avg</th></tr></thead>
+        <tbody>${tenants.tenants.map(t=>`<tr>
+            <td><span style="font-family:var(--f3);font-size:10px">${t.name.toLowerCase().replace(/ /g,'-')}</span></td>
+            <td style="font-weight:500">${t.name}</td><td>${t.projects}</td><td>${t.findings_total}</td>
+            <td><span class="badge badge-${t.compliance_avg>=80?'high':t.compliance_avg>=60?'medium':'low'}">${t.compliance_avg}%</span></td>
+        </tr>`).join('')}</tbody></table>
+    </div></div>`;
+}
+
+function renderFourEyes(el, fourEyes){
+    el.innerHTML = `<div class="panel"><div class="panel-header"><h3>Four-Eyes Tracker</h3><span style="font-family:var(--f3);font-size:10px;color:var(--tx3)">${fourEyes.waiting} aguardando aprovacao</span></div>
+    <div class="panel-body">
+        <table class="blocks-table"><thead><tr><th>Exception</th><th>Finding</th><th>Category</th><th>Severity</th><th>Approval 1</th><th>Approval 2</th><th>Status</th><th>Expires</th></tr></thead>
+        <tbody>${fourEyes.exceptions.map(e=>`<tr>
+            <td><span style="font-family:var(--f3);font-size:10px">${e.exception_id}</span></td>
+            <td><span style="font-family:var(--f3);font-size:10px">${e.finding_id}</span></td>
+            <td>${e.category.replace(/_/g,' ')}</td>
+            <td>${e.current} -> ${e.requested}</td>
+            <td>${e.approval_1?e.approval_1.split('@')[0]:'—'}</td>
+            <td style="color:${e.approval_2?'var(--ztk-green)':'var(--ztk-red)'}">${e.approval_2?e.approval_2.split('@')[0]:'PENDENTE'}</td>
+            <td><span class="badge ${e.status==='APPROVED'?'badge-high':e.status==='WAITING_1ST'?'badge-low':'badge-medium'}">${e.status}</span></td>
+            <td style="font-family:var(--f3);font-size:9px">${new Date(e.expires).toLocaleDateString('pt-BR')}</td>
+        </tr>`).join('')}</tbody></table>
+    </div></div>`;
+}
+
+function renderLatency(el, latency){
+    el.innerHTML = `<div class="panel"><div class="panel-header"><h3>Pipeline Latency by Layer (ms)</h3><span style="font-family:var(--f3);font-size:10px;color:var(--tx3)">Total P50: ${latency.total_pipeline_p50_ms}ms</span></div>
+    <div class="panel-body">${latency.layers.map(l=>{
+        const max=Math.max(...latency.layers.map(x=>x.p95_ms));
+        return `<div class="metric-row" style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+            <span style="width:140px;font-size:11px">${l.layer}</span>
+            <div style="flex:1;height:8px;background:var(--bg3);border-radius:4px;overflow:hidden">
+                <div style="width:${(l.p95_ms/max*100)}%;height:100%;background:${l.status==='healthy'?'var(--ztk-green)':'var(--ztk-amber)'};border-radius:4px"></div></div>
+            <span style="font-family:var(--f3);font-size:10px;width:160px;text-align:right">p50:${l.p50_ms}ms p95:${l.p95_ms}ms p99:${l.p99_ms}ms</span>
+        </div>`}).join('')}</div></div>`;
+}
+
+function renderAlerts(el, alerts){
+    el.innerHTML = `<div class="stat-row" style="grid-template-columns:repeat(2,1fr)">
+        <div class="stat-card red"><div class="stat-label">Active Alerts</div><div class="stat-value">${alerts.active}</div><div class="stat-sub">Total: ${alerts.total}</div></div>
+        <div class="stat-card green"><div class="stat-label">Acknowledged</div><div class="stat-value">${alerts.total - alerts.active}</div></div>
+    </div>
+    <div class="panel"><div class="panel-header"><h3>Alertas Configuraveis</h3></div>
+    <div class="panel-body">${alerts.alerts.map(a=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)">
+            <span class="badge badge-${a.severity==='HIGH'?'critical':a.severity==='MEDIUM'?'medium':'low'}">${a.severity}</span>
+            <div style="flex:1"><strong style="font-size:12px">${a.title}</strong><br><span style="font-size:10px;color:var(--tx2)">${a.detail}</span></div>
+            <span style="font-family:var(--f3);font-size:9px;color:var(--tx3)">${new Date(a.time).toLocaleString('pt-BR')}</span>
+            <span class="badge badge-${a.acknowledged?'high':'blocked'}" style="font-size:9px">${a.acknowledged?'ACK':'NEW'}</span>
+        </div>`).join('')}</div></div>`;
 }
 
 document.getElementById('time').textContent = new Date().toLocaleTimeString('pt-BR');
