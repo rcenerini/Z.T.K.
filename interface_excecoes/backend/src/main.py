@@ -13,11 +13,16 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
+
+from access_control import (
+    authenticate, authorize, generate_token, get_dev_tokens,
+    Role, API_KEYS,
+)
 
 app = FastAPI(
     title="ZTK — Exception Dashboard API",
@@ -31,8 +36,41 @@ app = FastAPI(
         {"name": "kill-switch", "description": "Controle de emergencia (SOC)"},
         {"name": "hitl", "description": "Fila Human-in-the-Loop"},
         {"name": "audit", "description": "Timeline de eventos"},
+        {"name": "admin", "description": "Admin, Governance & Observability"},
+        {"name": "auth", "description": "Autenticacao e tokens"},
     ],
 )
+
+# ── Auth Middleware ────────────────────────────────────────────────
+
+@app.middleware("http")
+async def auth_middleware(request: Request, call_next):
+    """Authenticate and authorize every request.
+
+    Public endpoints (skip auth):
+    - /docs, /redoc, /openapi.json
+    - /api/auth/token (login)
+    - /api/health
+    """
+    public_paths = ("/docs", "/redoc", "/openapi.json", "/api/auth/", "/api/health")
+    if any(request.url.path.startswith(p) for p in public_paths):
+        return await call_next(request)
+
+    try:
+        user = authenticate(request)
+        authorize(user, request.method, request.url.path)
+        request.state.user = user  # Store for endpoint access
+    except HTTPException as e:
+        return _json_response(e.status_code, {"error": e.detail})
+
+    return await call_next(request)
+
+
+def _json_response(status: int, body: dict):
+    """Helper for consistent JSON error responses."""
+    from starlette.responses import JSONResponse
+    return JSONResponse(content=body, status_code=status)
+
 
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
@@ -402,3 +440,55 @@ def get_alerts() -> dict:
     """Configurable alert system."""
     active = [a for a in _alerts if not a["acknowledged"]]
     return {"total": len(_alerts), "active": len(active), "alerts": _alerts}
+
+
+# ── Auth Endpoints ─────────────────────────────────────────────────
+
+class LoginRequest(BaseModel):
+    api_key: str = Field(min_length=64)
+
+
+@app.post("/api/auth/token", tags=["auth"])
+def login(req: LoginRequest) -> dict:
+    """Exchange API key for JWT token.
+
+    API Keys are pre-configured in access_control.API_KEYS.
+    In production, this integrates with Cognito/OAuth2.
+    """
+    import access_control as ac
+
+    if req.api_key not in ac.API_KEYS:
+        raise HTTPException(401, "Invalid API key")
+
+    user_info = ac.API_KEYS[req.api_key]
+    token = ac.generate_token(
+        user=user_info["user"],
+        role=user_info["role"],
+        tenant_id=user_info.get("tenant_id", "ztk-proj"),
+    )
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": user_info["user"],
+        "role": user_info["role"].value,
+        "expires_in": 28800,  # 8 hours
+    }
+
+
+@app.get("/api/auth/dev-tokens", tags=["auth"])
+def dev_tokens() -> dict:
+    """Return dev tokens for all roles.
+
+    WARNING: Only available in development. Remove in production.
+    """
+    return {"tokens": get_dev_tokens()}
+
+
+@app.get("/api/auth/me", tags=["auth"])
+def whoami(request: Request) -> dict:
+    """Return current authenticated user info."""
+    user = getattr(request.state, "user", None)
+    if not user:
+        raise HTTPException(401, "Not authenticated")
+    return {"user": user["user"], "role": user["role"].value, "tenant_id": user.get("tenant_id")}
