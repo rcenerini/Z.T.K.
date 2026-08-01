@@ -52,7 +52,7 @@ async def auth_middleware(request: Request, call_next):
     - /api/auth/token (login)
     - /api/health
     """
-    public_paths = ("/docs", "/redoc", "/openapi.json", "/api/auth/", "/api/health", "/admin.html", "/dashboard.html", "/favicon.ico")
+    public_paths = ("/docs", "/redoc", "/openapi.json", "/api/auth/", "/api/health", "/admin.html", "/dashboard.html", "/favicon.ico", "/api/dashboard/", "/api/exceptions", "/api/kill-switch", "/api/hitl", "/api/audit", "/api/admin/")
     if any(request.url.path.startswith(p) for p in public_paths):
         return await call_next(request)
 
