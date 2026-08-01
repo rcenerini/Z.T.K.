@@ -64,4 +64,29 @@ class TestDashboardAPI:
     def test_audit_timeline(self) -> None:
         r = client.get("/api/audit")
         assert r.status_code == 200
-        assert r.json()["total"] > 0  # Created exceptions generate audit events
+        assert r.json()["total"] > 0
+
+    def test_admin_projects(self) -> None:
+        r = client.get("/api/admin/projects")
+        assert r.status_code == 200
+        assert r.json()["total"] >= 4
+
+    def test_admin_metrics(self) -> None:
+        r = client.get("/api/admin/metrics")
+        assert r.status_code == 200
+        assert r.json()["total_agents"] >= 10
+
+    def test_admin_blocks(self) -> None:
+        r = client.get("/api/admin/blocks")
+        assert r.status_code == 200
+        assert r.json()["total"] >= 3
+
+    def test_admin_compliance(self) -> None:
+        r = client.get("/api/admin/compliance")
+        assert r.status_code == 200
+        assert "pci_dss" in r.json()
+
+    def test_admin_throughput(self) -> None:
+        r = client.get("/api/admin/throughput")
+        assert r.status_code == 200
+        assert r.json()["total_24h"]["findings"] > 0
