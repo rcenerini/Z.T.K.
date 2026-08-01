@@ -499,6 +499,6 @@ def whoami(request: Request) -> dict:
 import os
 from pathlib import Path
 
-_templates_dir = Path(__file__).resolve().parents[3] / "frontend" / "templates"
+_templates_dir = Path(__file__).resolve().parents[2] / "frontend" / "templates"
 if _templates_dir.exists():
     app.mount("/", StaticFiles(directory=str(_templates_dir), html=True), name="static")
