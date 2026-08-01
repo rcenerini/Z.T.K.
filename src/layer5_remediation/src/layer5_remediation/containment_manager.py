@@ -149,6 +149,66 @@ CONTAINMENT_TEMPLATES: dict[str, dict] = {
         "target": "RPS",
         "ttl_hours": 72,
     },
+    "CWE-798": {
+        "type": ContainmentType.IAM_REVOKE,
+        "description": "Revoke compromised API keys and rotate credentials",
+        "target": "IAM_KEY_ID",
+        "ttl_hours": 1,
+    },
+    "CWE-306": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block unauthenticated access to sensitive endpoints",
+        "target": "COOKIES|HEADERS",
+        "ttl_hours": 24,
+    },
+    "CWE-319": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Redirect HTTP to HTTPS — block cleartext",
+        "target": "SCHEME",
+        "ttl_hours": 168,
+    },
+    "CWE-400": {
+        "type": ContainmentType.RATE_LIMIT,
+        "description": "Rate-limit resource-intensive endpoints (DoS prevention)",
+        "target": "RPS",
+        "ttl_hours": 72,
+    },
+    "CWE-295": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block connections with invalid/expired TLS certificates",
+        "target": "TLS_CERT",
+        "ttl_hours": 168,
+    },
+    "CWE-269": {
+        "type": ContainmentType.IAM_REVOKE,
+        "description": "Revoke temporary elevated privileges — enforce least privilege",
+        "target": "IAM_POLICY",
+        "ttl_hours": 24,
+    },
+    "CWE-601": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block open redirect to external domains",
+        "target": "LOCATION_HEADER",
+        "ttl_hours": 72,
+    },
+    "CWE-276": {
+        "type": ContainmentType.WAF_RULE,
+        "description": "Block access to world-readable files in production",
+        "target": "FILE_PERMS",
+        "ttl_hours": 168,
+    },
+    "CWE-307": {
+        "type": ContainmentType.RATE_LIMIT,
+        "description": "Rate-limit authentication attempts (brute force)",
+        "target": "AUTH_RPS",
+        "ttl_hours": 72,
+    },
+    "CWE-522": {
+        "type": ContainmentType.IAM_REVOKE,
+        "description": "Force password reset for accounts with weak credential storage",
+        "target": "USER_ACCOUNT",
+        "ttl_hours": 24,
+    },
 }
 
 

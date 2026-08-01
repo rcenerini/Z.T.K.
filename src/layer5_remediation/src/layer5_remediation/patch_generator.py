@@ -124,6 +124,61 @@ PATCH_TEMPLATES: dict[str, str] = {
 # BEFORE: def get_data(id): return db.query(id)
 # AFTER:  def get_data(id): verify_access(current_user, id); return db.query(id)
 """,
+    "CWE-798": """
+# FIX: Hardcoded Credentials — Use Secrets Manager
+# BEFORE: API_KEY = "sk-1234567890abcdef"
+# AFTER:  API_KEY = boto3.client('secretsmanager').get_secret_value(SecretId='api-key')['SecretString']
+""",
+    "CWE-306": """
+# FIX: Missing Authentication — Add auth decorator
+# BEFORE: def get_data(request): return sensitive_info
+# AFTER:  @auth_required
+#         def get_data(request): return sensitive_info
+""",
+    "CWE-319": """
+# FIX: Cleartext Transmission — Enforce HTTPS
+# BEFORE: requests.get("http://api.internal/data")
+# AFTER:  requests.get("https://api.internal/data", verify=True)
+""",
+    "CWE-400": """
+# FIX: Resource Exhaustion — Add size limits
+# BEFORE: data = "x" * int(user_input)
+# AFTER:  size = min(int(user_input), MAX_SIZE); data = "x" * size
+""",
+    "CWE-295": """
+# FIX: Certificate Validation — Enable proper verification
+# BEFORE: ctx.verify_mode = ssl.CERT_NONE
+# AFTER:  ctx.check_hostname = True; ctx.verify_mode = ssl.CERT_REQUIRED
+""",
+    "CWE-269": """
+# FIX: Privilege Management — Validate against token/session
+# BEFORE: if role == "admin": grant_access()
+# AFTER:  if session.token and verify_admin(session.token): grant_access()
+""",
+    "CWE-601": """
+# FIX: Open Redirect — Validate redirect URL
+# BEFORE: return redirect(user_input)
+# AFTER:  validate_redirect_url(user_input, allowed_hosts=['app.internal'])
+#         return redirect(user_input)
+""",
+    "CWE-522": """
+# FIX: Weak Credential Storage — Use bcrypt/argon2
+# BEFORE: stored = base64.b64encode(password)
+# AFTER:  stored = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+""",
+    "CWE-307": """
+# FIX: Brute Force — Add rate limiting
+# BEFORE: if pass == stored: return "ok"
+# AFTER:  if rate_limiter.is_limited(request.ip): return "too many attempts"
+#         if pass == stored: rate_limiter.reset(request.ip); return "ok"
+#         rate_limiter.increment(request.ip)
+""",
+    "CWE-276": """
+# FIX: Default Permissions — Set secure umask
+# BEFORE: os.umask(0); open(path, 'w')
+# AFTER:  os.umask(0o077); with open(path, 'w') as f: f.write(data)
+#         os.chmod(path, 0o600)
+""",
 }
 
 
