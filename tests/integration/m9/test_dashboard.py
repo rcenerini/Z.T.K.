@@ -35,16 +35,16 @@ class TestDashboardAPI:
         assert r.json()["status"] == "REQUESTED"
 
     def test_list_exceptions(self) -> None:
-        r = client.get("/api/exceptions")
+        r = client.get("/api/exceptions", headers=_admin_headers)
         assert r.status_code == 200
 
     def test_dashboard_summary(self) -> None:
-        r = client.get("/api/dashboard/summary")
+        r = client.get("/api/dashboard/summary", headers=_admin_headers)
         assert r.status_code == 200
         assert "exceptions" in r.json()
 
     def test_kill_switch_soc(self) -> None:
-        r = client.post("/api/kill-switch", json={
+        r = client.post("/api/kill-switch", headers=_soc_headers, json={
             "scope": "full", "reason": "Test activation — emergency drill with documented justification",
             "operator": "SOC",
         })
@@ -52,14 +52,14 @@ class TestDashboardAPI:
         assert r.json()["active"] is True
 
     def test_kill_switch_denied_non_soc(self) -> None:
-        r = client.post("/api/kill-switch", json={
+        r = client.post("/api/kill-switch", headers=_admin_headers, json={
             "scope": "full", "reason": "Test unauthorized activation",
             "operator": "ENGINEERING",
         })
         assert r.status_code == 403
 
     def test_create_hitl(self) -> None:
-        r = client.post("/api/hitl", json={
+        r = client.post("/api/hitl", headers=_admin_headers, json={
             "finding_id": "test-456", "title": "Prompt injection blocked",
             "description": "Content blocked by L1.03 guard requires human review and analysis",
             "priority": "HIGH",
@@ -67,52 +67,52 @@ class TestDashboardAPI:
         assert r.status_code == 200
 
     def test_audit_timeline(self) -> None:
-        r = client.get("/api/audit")
+        r = client.get("/api/audit", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total"] > 0
 
     def test_admin_projects(self) -> None:
-        r = client.get("/api/admin/projects")
+        r = client.get("/api/admin/projects", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total"] >= 4
 
     def test_admin_metrics(self) -> None:
-        r = client.get("/api/admin/metrics")
+        r = client.get("/api/admin/metrics", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total_agents"] >= 10
 
     def test_admin_blocks(self) -> None:
-        r = client.get("/api/admin/blocks")
+        r = client.get("/api/admin/blocks", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total"] >= 3
 
     def test_admin_compliance(self) -> None:
-        r = client.get("/api/admin/compliance")
+        r = client.get("/api/admin/compliance", headers=_admin_headers)
         assert r.status_code == 200
         assert "pci_dss" in r.json()
 
     def test_admin_throughput(self) -> None:
-        r = client.get("/api/admin/throughput")
+        r = client.get("/api/admin/throughput", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total_24h"]["findings"] > 0
 
     def test_admin_tenants(self) -> None:
-        r = client.get("/api/admin/tenants")
+        r = client.get("/api/admin/tenants", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total"] >= 3
 
     def test_admin_four_eyes(self) -> None:
-        r = client.get("/api/admin/four-eyes")
+        r = client.get("/api/admin/four-eyes", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total"] >= 2
 
     def test_admin_latency(self) -> None:
-        r = client.get("/api/admin/latency")
+        r = client.get("/api/admin/latency", headers=_admin_headers)
         assert r.status_code == 200
         assert len(r.json()["layers"]) == 8
 
     def test_admin_alerts(self) -> None:
-        r = client.get("/api/admin/alerts")
+        r = client.get("/api/admin/alerts", headers=_admin_headers)
         assert r.status_code == 200
         assert r.json()["total"] >= 3
 
