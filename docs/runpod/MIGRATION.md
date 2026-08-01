@@ -23,7 +23,9 @@
 | RunPod A40 (Community) | A40 | 48 GB | $0.35 | $252 |
 | RunPod A40 (Secure) | A40 | 48 GB | $0.44 | $317 |
 
-**Recomendacao:** L40S (48 GB VRAM) ou A40 (48 GB) para Llama 3.3 70B.
+**Recomendacao POC:** Serverless (paga so pelo uso, escala a zero quando idle). Sem custo fixo.
+
+**Recomendacao Producao:** Pod A40 Secure Cloud 24/7 ($317/mes) + Serverless.
 
 ### LLM Inference (substituto Bedrock)
 
@@ -34,15 +36,15 @@
 | RunPod Serverless (LLaMA 3.3 70B) | L40S workers | **~$200/mes** |
 | RunPod Serverless (Mistral 7B) | L4 workers | **~$50/mes** |
 
-### Custo Total
+### Custo Total (POC — Serverless on-demand, nao 24/7)
 
-| Stack | GPU | LLM | Total/mes |
-|-------|-----|-----|-----------|
-| **AWS (atual)** | EC2 g5 $871 | Bedrock $850 | **~$1,721** |
-| **RunPod (recomendado)** | L40S $569 | Serverless $200 | **~$769** |
-| **RunPod (economico)** | A40 $317 | Serverless $50 | **~$367** |
+| Stack | GPU | LLM | Total estimado/mes |
+|-------|-----|-----|-------------------|
+| **AWS (atual)** | EC2 g5 24/7 $871 | Bedrock $850 | **~$1,721** |
+| **RunPod POC (serverless)** | $0/mes (idle) ~$5 uso | Serverless ~$15 uso | **~$20/mes** |
+| **RunPod POC (pod on-demand)** | A40 $0.35/hr (~$50/mes POC) | Serverless ~$15 | **~$65/mes** |
 
-**Economia: 55-79%**
+**Economia POC: 96-99%** (vs AWS 24/7)
 
 ---
 
@@ -185,15 +187,22 @@ LLM_BACKENDS = {
 
 ---
 
-## 7. Roteiro de Migracao
+## 7. Roteiro de Migracao (POC — serverless, custo ~$20/mes)
 
-| Fase | Acao | Tempo |
-|------|------|-------|
-| 1 | Criar conta RunPod + API key | 30 min |
-| 2 | Deploy vLLM pod no RunPod | 1h |
-| 3 | Configurar serverless endpoint (LLaMA 70B) | 1h |
-| 4 | Atualizar L7 router (apontar para RunPod) | 30 min |
-| 5 | Testar pipeline E2E com RunPod | 1h |
-| 6 | Migrar Aurora pgvector para RunPod Network Storage | 2h (opcional) |
-| 7 | Desligar EC2 g5 + Bedrock na AWS | 10 min |
-| **Total** | | **~6h** |
+| Fase | Acao | Tempo | Custo |
+|------|------|-------|-------|
+| 1 | Criar conta RunPod (gratis) | 10 min | $0 |
+| 2 | Deploy serverless endpoint com LLaMA 8B via template | 30 min | $0 |
+| 3 | Testar 1 chamada de inferencia | 5 min | ~$0.001 |
+| 4 | Atualizar L7 router (apontar para RunPod) | 30 min | $0 |
+| 5 | Rodar E2E com RunPod | 10 min | ~$0.01 |
+| **Total** | | **~1.5h** | **~$0.01** |
+
+### Pos-POC (producao)
+
+| Fase | Acao | Tempo | Custo/mes |
+|------|------|-------|-----------|
+| 6 | Subir Pod A40 24/7 para vLLM | 1h | $252 |
+| 7 | Migrar Aurora pgvector (opcional) | 2h | $30 |
+| 8 | Desligar EC2 g5 + Bedrock AWS | 10 min | -$1,650 |
+| **Total** | | **~3h** | **~$300/mes** |
