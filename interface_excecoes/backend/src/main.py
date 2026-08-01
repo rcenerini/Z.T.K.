@@ -52,7 +52,7 @@ async def auth_middleware(request: Request, call_next):
     - /api/auth/token (login)
     - /api/health
     """
-    public_paths = ("/docs", "/redoc", "/openapi.json", "/api/auth/", "/api/health")
+    public_paths = ("/docs", "/redoc", "/openapi.json", "/api/auth/", "/api/health", "/admin.html", "/dashboard.html", "/favicon.ico")
     if any(request.url.path.startswith(p) for p in public_paths):
         return await call_next(request)
 
@@ -492,3 +492,13 @@ def whoami(request: Request) -> dict:
     if not user:
         raise HTTPException(401, "Not authenticated")
     return {"user": user["user"], "role": user["role"].value, "tenant_id": user.get("tenant_id")}
+
+
+# ── Static Files (must be last) ────────────────────────────────────
+
+import os
+from pathlib import Path
+
+_templates_dir = Path(__file__).resolve().parents[3] / "frontend" / "templates"
+if _templates_dir.exists():
+    app.mount("/", StaticFiles(directory=str(_templates_dir), html=True), name="static")
