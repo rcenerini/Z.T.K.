@@ -57,3 +57,5 @@ out/
 Brainstorming/
 
 reports/
+
+.env
