@@ -279,6 +279,131 @@ def vulnerable_function(user_input):
         exploit_payload='<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><root>&xxe;</root>',
         expected_behavior="XML parser resolves external entity (XXE)",
     ),
+    "CWE-798": PoCTemplate(
+        cwe_id="CWE-798", name="Hardcoded Credentials PoC",
+        description="Test if credentials are hardcoded in source code",
+        target_code="""
+def vulnerable_function(user_input):
+    API_KEY = "sk-1234567890abcdef"
+    PASSWORD = "admin123"
+    return authenticate(API_KEY, PASSWORD)
+""",
+        exploit_payload="sk-1234567890abcdef",
+        expected_behavior="Hardcoded API key and password exposed in source code",
+    ),
+    "CWE-306": PoCTemplate(
+        cwe_id="CWE-306", name="Missing Authentication PoC",
+        description="Test if endpoint lacks authentication check",
+        target_code="""
+def vulnerable_function(user_input):
+    data = get_sensitive_data(user_input.get("id"))
+    return data
+""",
+        exploit_payload='{"id": "admin_config"}',
+        expected_behavior="Sensitive data returned without authentication check",
+    ),
+    "CWE-269": PoCTemplate(
+        cwe_id="CWE-269", name="Improper Privilege Management PoC",
+        description="Test if privileges can be escalated improperly",
+        target_code="""
+def vulnerable_function(user_input):
+    if user_input.get("role") == "user":
+        return "user_data"
+    if user_input.get("role") == "admin":
+        return grant_admin_access()
+    return "denied"
+""",
+        exploit_payload='{"role": "admin"}',
+        expected_behavior="Admin access granted without proper privilege validation",
+    ),
+    "CWE-319": PoCTemplate(
+        cwe_id="CWE-319", name="Cleartext Transmission PoC",
+        description="Test if sensitive data is sent over HTTP without encryption",
+        target_code="""
+import requests
+def vulnerable_function(user_input):
+    return requests.get("http://api.internal/data", auth=(user_input["user"], user_input["pass"]))
+""",
+        exploit_payload='{"user": "admin", "pass": "secret"}',
+        expected_behavior="Credentials sent over HTTP (cleartext) — TLS not enforced",
+    ),
+    "CWE-400": PoCTemplate(
+        cwe_id="CWE-400", name="Uncontrolled Resource Consumption PoC",
+        description="Test for denial of service via resource exhaustion",
+        target_code="""
+def vulnerable_function(user_input):
+    size = int(user_input.get("size", "1"))
+    data = "x" * size
+    return process_data(data)
+""",
+        exploit_payload='{"size": "999999999"}',
+        expected_behavior="Massive memory allocation from user-controlled size (DoS)",
+    ),
+    "CWE-295": PoCTemplate(
+        cwe_id="CWE-295", name="Improper Certificate Validation PoC",
+        description="Test if TLS certificate validation is disabled or bypassed",
+        target_code="""
+import ssl
+def vulnerable_function(user_input):
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    return connect(user_input["host"], ctx)
+""",
+        exploit_payload='{"host": "malicious.server.com"}',
+        expected_behavior="Certificate validation disabled — MITM possible",
+    ),
+    "CWE-601": PoCTemplate(
+        cwe_id="CWE-601", name="Open Redirect PoC",
+        description="Test if URL redirection can be manipulated",
+        target_code="""
+from flask import redirect
+def vulnerable_function(user_input):
+    return redirect(user_input.get("next", "/"))
+""",
+        exploit_payload='{"next": "https://evil.com/phishing"}',
+        expected_behavior="Redirect to attacker-controlled URL (phishing vector)",
+    ),
+    "CWE-276": PoCTemplate(
+        cwe_id="CWE-276", name="Incorrect Default Permissions PoC",
+        description="Test if files are created with overly permissive defaults",
+        target_code="""
+import os
+def vulnerable_function(user_input):
+    os.umask(0)
+    with open("/etc/app/config.json", "w") as f:
+        f.write(user_input)
+    return "saved"
+""",
+        exploit_payload='{"admin": true}',
+        expected_behavior="Config file written with world-readable permissions (umask 0)",
+    ),
+    "CWE-307": PoCTemplate(
+        cwe_id="CWE-307", name="Improper Restriction of Auth Attempts PoC",
+        description="Test if brute force protection is absent",
+        target_code="""
+def vulnerable_function(user_input):
+    if user_input.get("pass") == "secret123":
+        return "authenticated"
+    return "try again"
+""",
+        exploit_payload='{"pass": "attempt"}',
+        expected_behavior="No rate limiting or account lockout — brute-force possible",
+    ),
+    "CWE-522": PoCTemplate(
+        cwe_id="CWE-522", name="Insufficiently Protected Credentials PoC",
+        description="Test if passwords are stored insecurely",
+        target_code="""
+import base64
+def vulnerable_function(user_input):
+    stored_password = base64.b64decode("c2VjcmV0MTIz")
+    if user_input.get("pass") == stored_password.decode():
+        return "authenticated"
+    return "denied"
+""",
+        exploit_payload='{"pass": "secret123"}',
+        expected_behavior="Password stored with reversible encoding (base64, not hashed)",
+    ),
 }
 
 POC_TEMPLATES = {k.value if hasattr(k, 'value') else k: v for k, v in POC_TEMPLATES.items()}
