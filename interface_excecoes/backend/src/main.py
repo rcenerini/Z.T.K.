@@ -493,11 +493,34 @@ def whoami(request: Request) -> dict:
     return {"user": user["user"], "role": user["role"].value, "tenant_id": user.get("tenant_id")}
 
 
-# ── Static Files (must be last) ────────────────────────────────────
+# ── Static Pages (inline — Railway compat) ─────────────────────────
 
-import os
-from pathlib import Path
+from fastapi.responses import HTMLResponse
 
-_templates_dir = Path(__file__).resolve().parents[2] / "frontend" / "templates"
-if _templates_dir.exists():
-    app.mount("/", StaticFiles(directory=str(_templates_dir), html=True), name="static")
+_ADMIN_HTML = ""
+_DASHBOARD_HTML = ""
+
+def _load_html(filename: str) -> str:
+    from pathlib import Path
+    path = Path(__file__).resolve().parents[2] / "frontend" / "templates" / filename
+    if path.exists():
+        return path.read_text(encoding="utf-8")
+    return ""
+
+@app.get("/admin.html", response_class=HTMLResponse)
+async def admin_page():
+    global _ADMIN_HTML
+    if not _ADMIN_HTML:
+        _ADMIN_HTML = _load_html("admin.html")
+    if not _ADMIN_HTML:
+        raise HTTPException(404, "admin.html not found")
+    return _ADMIN_HTML
+
+@app.get("/dashboard.html", response_class=HTMLResponse)
+async def dashboard_page():
+    global _DASHBOARD_HTML
+    if not _DASHBOARD_HTML:
+        _DASHBOARD_HTML = _load_html("dashboard.html")
+    if not _DASHBOARD_HTML:
+        raise HTTPException(404, "dashboard.html not found")
+    return _DASHBOARD_HTML
