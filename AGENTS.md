@@ -153,6 +153,32 @@ ZTK/
 | vLLM local (GPU) | `terraform apply` pendente | ✅ Script hardening CIS L1 (299 LOC) |
 | Deploy AWS real | IaC provisionada, apply pendente | ✅ CI/CD pipeline completo |
 
+### POC — Validada em 2026-08-01
+
+| Validacao | Resultado |
+|---|---|
+| Pipeline E2E (L1-L5) | ✅ Git repo → Patch + Containment em <1s |
+| Performance (1.000 findings) | ✅ 1.214/sec, P99 5ms |
+| RunPod GPU (RTX 3090) | ✅ Deployado via API, $0.22/hr |
+| Railway Dashboard | ✅ Deployado (gratuito) |
+| Admin Dashboard (9 tabs) | ✅ Funcional local + remoto |
+| Testes (336+) | ✅ Todos passando |
+| OPA Policies (30/30) | ✅ Passando |
+| Secret Scan | ✅ Zero leaks |
+
+### Proximo Passo — Integracao Pipeline + CI/CD (Pendente)
+
+```
+Git push/PR → GitHub Action → Pipeline L1-L5 → POST /api/pipeline/analyze → Dashboard M9
+```
+
+| # | O que implementar | Esforco |
+|---|---|---|
+| 1 | Endpoint `POST /api/pipeline/analyze` — recebe `{repo_url, commit_sha}`, roda pipeline, retorna JSON | 1h |
+| 2 | GitHub Action `pipeline.yml` — dispara no push, chama endpoint de analise | 30min |
+| 3 | Webhook de resultados — dashboard atualiza em tempo real (sem F5) | 30min |
+| 4 | Conectar RunPod GPU ao pipeline (vLLM) | 1h |
+
 ### Handoff — Proximos passos para producao
 1. Obter conta AWS com VPC e permissões IAM
 2. `terraform apply` (IaC provisionada, validada)
