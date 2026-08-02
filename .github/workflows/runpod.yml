@@ -1,0 +1,40 @@
+name: RunPod GPU — Deploy on Demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Acao'
+        required: true
+        type: choice
+        options:
+          - create
+          - status
+          - stop
+          - destroy
+      gpu_type:
+        description: 'GPU Type'
+        required: false
+        type: string
+        default: 'NVIDIA RTX A5000'
+
+jobs:
+  runpod:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy RunPod
+        env:
+          RUNPOD_API_KEY: ${{ secrets.RUNPOD_API_KEY }}
+        run: |
+          bash infra/runpod/deploy.sh ${{ inputs.action }} "${{ inputs.gpu_type }}"
+
+      - name: Show Status
+        if: inputs.action == 'status' || inputs.action == 'create'
+        run: |
+          if [ -f .env.runpod ]; then source .env.runpod; fi
+          echo "Pod ID: ${POD_ID:-N/A}"
+          echo "GPU: ${{ inputs.gpu_type }}"
+          echo "Access dashboard: https://console.runpod.io/pods/${POD_ID}"
